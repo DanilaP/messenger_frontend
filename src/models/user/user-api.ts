@@ -2,17 +2,17 @@ import $api from "../../configs/axios";
 import type { IUser } from "./user-interface";
 
 export const registration = async (userInfo: Partial<IUser>) => {
-    const response = $api.post("/registration", { ...userInfo });
+    const response = $api.post("/auth/registration", { ...userInfo });
     return response;
 }
 
 export const login = async (login: string, password: string) => {
-    const response = $api.post("/login", { login, password });
+    const response = $api.post("/auth/login", { login, password });
     return response;
 }
 
 export const logout = async () => {
-    const response = $api.post("/logout");
+    const response = $api.post("/auth/logout");
     return response;
 }
 

@@ -21,3 +21,10 @@ export interface IRegistrationResponse {
         user: Partial<IUser>
     }
 }
+
+export interface IGetUserInfoResponse {
+    data: {
+        message: string,
+        user: Partial<IUser>
+    }
+}
