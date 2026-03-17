@@ -34,11 +34,18 @@
     }
 }
 
+@media screen and (max-width: 500px) {
+    .profile-header {
+        & .profile-status {
+            font-size: 12px;
+        }
+    }
+}
+
 @media screen and (max-width: 380px) {
     .profile-header {
         & .profile-status {
             width: 100%;
-            font-size: 12px;
         }
     }
 }
