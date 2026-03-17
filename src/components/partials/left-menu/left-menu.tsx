@@ -6,17 +6,23 @@ import { logout } from "../../../models/user/user-api";
 import MenuItem from "./components/item/item";
 import './left-menu.scss';
 
-const LeftMenu = () => {
+interface ILeftMenuProps {
+    handleCloseMenu: () => void
+}
+
+const LeftMenu = ({ handleCloseMenu }: ILeftMenuProps) => {
 
     const navigate = useNavigate();
 
     const handleProfileClick = () => {
+        handleCloseMenu();
         navigate("/main/profile");
     }
 
     const handleExitClick = () => {
         logout()
         .then(() => {
+            handleCloseMenu();
             navigate("/auth/signin");
         })
         .catch((error: unknown) => {
@@ -25,7 +31,8 @@ const LeftMenu = () => {
     }
 
     const handleDialogsClick = () => {
-        console.log("mock");
+        handleCloseMenu();
+        navigate("/main/dialogs");
     }
 
     return (

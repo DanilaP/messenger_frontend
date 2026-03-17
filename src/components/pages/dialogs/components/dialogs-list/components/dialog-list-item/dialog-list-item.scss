@@ -1,0 +1,48 @@
+.dialog-list-item-wrapper {
+    display: flex;
+    gap: 10px;
+    position: relative;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 0px 10px 0px;
+    cursor: pointer;
+    
+    & .dialog-avatar-wrapper {
+        display: flex;
+        align-items: center;
+
+        & .image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+    }
+
+    & .dialog-info {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        & .dialog-name {
+            font-weight: 600;
+        }
+
+        & .dialog-last-message {
+            width: 150px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-size: 12px;
+        }
+    }
+
+    & .last-message-info {
+        position: absolute;
+        right: 0px;
+        bottom: 0px;
+
+        & .time {
+            font-size: 10px;
+        }
+    }
+}

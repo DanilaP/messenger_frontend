@@ -30,7 +30,7 @@ export default function MainLayout (props: MainLayoutProps) {
             <div className="main-footer">
 
             </div>
-            { isLeftMenuOpen &&<LeftMenu /> }
+            { isLeftMenuOpen && <LeftMenu handleCloseMenu={ handleChangeMenuVisibility } /> }
         </div>
     );
 }
