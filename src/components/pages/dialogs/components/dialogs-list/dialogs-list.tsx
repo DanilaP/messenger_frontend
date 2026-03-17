@@ -11,7 +11,7 @@ const DialogsList = ({ dialogsList }: IDialogsListProps) => {
         <div className='dialogs-list-wrapper'>
             {
                 dialogsList.map(dialogListItem => {
-                    return <DialogListItemWrapper dialogListItem = { dialogListItem } />
+                    return <DialogListItemWrapper key={ dialogListItem.dialog_id } dialogListItem = { dialogListItem } />
                 })
             }
         </div>
