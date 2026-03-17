@@ -1,0 +1,20 @@
+.left-menu-wrapper {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: 10px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    color: var(--text-color);
+    z-index: 5;
+
+    .menu {
+        padding: 75px 20px 0px 20px;
+        width: 25vw;
+        background-color: var(--left-menu-color);
+        border-right: 1px solid var(--border-color);
+        font-size: 17px;
+    }
+}
