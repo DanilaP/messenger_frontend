@@ -25,3 +25,20 @@
         text-align: center;
     }
 }
+
+@media screen and (max-width: 1065px) {
+    .profile-header {
+        & .profile-status {
+            width: 70vw;
+        }
+    }
+}
+
+@media screen and (max-width: 380px) {
+    .profile-header {
+        & .profile-status {
+            width: 100%;
+            font-size: 12px;
+        }
+    }
+}
