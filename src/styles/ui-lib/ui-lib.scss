@@ -1,0 +1,42 @@
+@mixin input-styles {
+    background-color: var(--bg-color-block);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+
+    &::placeholder {
+        color: var(--text-color);
+    }
+
+    &:hover,
+    &:focus,
+    &:focus-within {
+        background-color: var(--bg-color-block);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+    }
+}
+
+.ant-form-item .ant-form-item-label >label {
+    color: var(--text-color) !important;
+}
+
+.ant-btn {
+    background-color: var(--default-color);
+    color: var(--text-color);
+}
+
+.ant-input, .ant-input-affix-wrapper {
+    @include input-styles;
+}
+
+.ant-input-affix-wrapper .anticon.ant-input-password-icon {
+    color: var(--text-color);
+
+    &:hover {
+        color: var(--text-color);
+    }
+}
+
+.ant-input-outlined.ant-input-status-error:not(.ant-input-disabled) {
+    @include input-styles;
+}
