@@ -33,8 +33,6 @@ const FileList = ({ files }: IFileListProps) => {
         }
     }
 
-
-    console.log(files);
     return (
         <div className='file-list'>
             {

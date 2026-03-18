@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { getDialogInfo, getDialogsList } from '../../../models/dialogs/dialogs-api';
-import { type IDialog, type IDialogListItem, type IGetDialogResponse, type IGetDialogsListResponse, type IOpponent } from '../../../models/dialogs/dialogs-interface';
+import { type IDialog, type IDialogListItem, type IGetDialogResponse, type IGetDialogsListResponse, type IMessage, type IOpponent } from '../../../models/dialogs/dialogs-interface';
 import { type UserStore } from '../../../stores/user/user';
 import DialogsList from './components/dialogs-list/dialogs-list';
 import Dialog from './components/dialog/dialog';
@@ -33,6 +33,15 @@ const Dialogs = () => {
         }
     }
 
+    const handleSendMessage = (message: IMessage) => {
+        if (dialogInfo) {
+            setDialogInfo({
+                ...dialogInfo,
+                messages: [...dialogInfo.messages, message]
+            })
+        }
+    }
+
     useEffect(() => {
         getDialogsList()
         .then((res: IGetDialogsListResponse) => {
@@ -51,8 +60,8 @@ const Dialogs = () => {
     }
     return (
         <div className='dialogs-wrapper'>
-            <DialogsList handleFetchDialogInfo = { handleFetchDialogInfo } dialogsList = { dialogsList } />
-            { dialogInfo && user && <Dialog user = { user } dialogInfo={ dialogInfo } />  }
+            <DialogsList handleFetchDialogInfo = {handleFetchDialogInfo} dialogsList = {dialogsList} />
+            { dialogInfo && user && <Dialog handleSendMessage = {handleSendMessage} user = {user} dialogInfo={dialogInfo} /> }
         </div>
     );
 };

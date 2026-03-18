@@ -43,3 +43,10 @@ export interface IGetDialogResponse {
         dialog: IMessage[]
     }
 }
+
+export interface ISendMessageResponse {
+    data: {
+        message: string,
+        createdMessage: IMessage
+    }
+}

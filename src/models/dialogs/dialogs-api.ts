@@ -9,3 +9,8 @@ export const getDialogInfo = async (dialogId: number) => {
     const response = $api.get(`/dialogs?id=${dialogId}`);
     return response;
 }
+
+export const sendMessage = async (formData: FormData) => {
+    const response = $api.post("/dialogs/message/send", formData);
+    return response;
+}   
