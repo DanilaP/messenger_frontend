@@ -1,6 +1,7 @@
 import { Fragment } from 'react/jsx-runtime';
 import type { IDialog } from '../../../../../../../models/dialogs/dialogs-interface';
 import type { IUser } from '../../../../../../../models/user/user-interface';
+import { useEffect, useRef } from 'react';
 import DialogMessage from '../message/message';
 import './messages-list.scss';
 
@@ -11,8 +12,20 @@ interface IDialogsMessages {
 
 const DialogsMessages = ({ dialogInfo, user }: IDialogsMessages) => {
 
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    const scrollToBottom = () => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+        }
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [dialogInfo.messages]);
+
     return (
-        <div className='messages-list'>
+        <div ref={messagesEndRef} className='messages-list'>
             {
                 dialogInfo.messages.map(message => {
                     const senderInfo = message.sender_id === user.id ? user : dialogInfo.opponent
