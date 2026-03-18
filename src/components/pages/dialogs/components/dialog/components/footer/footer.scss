@@ -1,0 +1,12 @@
+.dialog-footer {
+    width: 70vw;
+    display: flex;
+    padding: 10px;
+    gap: 10px;
+    box-sizing: border-box;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+    position: absolute;
+    bottom: 0;
+    z-index: 5;
+}

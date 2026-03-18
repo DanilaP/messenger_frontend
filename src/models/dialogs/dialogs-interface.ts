@@ -1,25 +1,33 @@
 import type { IFile } from "../../interfaces/interfaces"
 
+export interface IOpponent {
+    id: number,
+    name: string,
+    surname: string,
+    avatar: string
+}
+
 export interface IDialogListItem {
     dialog_id: number,
     last_message: {
         text: string,
         date: string
     },
-    opponent: {
-        id: number,
-        name: string,
-        surname: string,
-        avatar: string
-    }
+    opponent: IOpponent
 }
 
 export interface IMessage {
-    messade_id: number,
+    message_id: number,
     text: string,
     date: string,
     sender_id: number
     files: IFile[]
+}
+
+export interface IDialog {
+    dialog_id: number,
+    messages: IMessage[],
+    opponent: IOpponent
 }
 
 export interface IGetDialogsListResponse {

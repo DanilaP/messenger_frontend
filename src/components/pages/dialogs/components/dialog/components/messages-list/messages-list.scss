@@ -1,0 +1,14 @@
+.messages-list {
+    position: relative; /* чтобы псевдоэлемент позиционировался относительно него */
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 20px;
+    box-sizing: border-box;
+    color: var(--text-color);
+    font-size: 13px;
+    height: calc(100vh - 166px);
+    overflow-y: scroll;
+    scrollbar-color: var(--text-color) var(--bg-color);
+    scrollbar-width: thin;
+}
