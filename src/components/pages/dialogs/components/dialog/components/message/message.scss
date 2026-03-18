@@ -11,6 +11,7 @@
         padding: 15px 10px 15px 10px;
         box-sizing: border-box;
         position: relative;
+        min-width: 250px;
 
         & .text-content {
             display: flex;
