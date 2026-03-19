@@ -32,9 +32,10 @@ const DialogsMessages = ({ dialogInfo, user }: IDialogsMessages) => {
                     return (
                         <Fragment key={ message.message_id }>
                             <DialogMessage 
-                                user={user} 
+                                user = {user} 
                                 senderInfo = {senderInfo} 
                                 message = {message} 
+                                dialogInfo = {dialogInfo}
                             />
                         </Fragment>
                     )

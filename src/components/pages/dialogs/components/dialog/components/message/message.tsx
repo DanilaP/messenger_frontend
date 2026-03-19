@@ -1,28 +1,61 @@
-import type { IMessage, IOpponent } from '../../../../../../../models/dialogs/dialogs-interface';
+import { Dropdown, type MenuProps } from 'antd';
+import type { IDialog, IMessage, IOpponent } from '../../../../../../../models/dialogs/dialogs-interface';
 import type { IUser } from '../../../../../../../models/user/user-interface';
+import { deleteMessage } from '../../../../../../../models/dialogs/dialogs-api';
 import FileList from '../../../../../../partials/file-list/file-list';
 import './message.scss';
 
 interface IMessageProps {
     senderInfo: Partial<IUser> | IOpponent,
     message: IMessage,
-    user: Partial<IUser>
+    user: Partial<IUser>,
+    dialogInfo: IDialog
 }
 
-const DialogMessage = ({ senderInfo, message, user }: IMessageProps) => {
+const DialogMessage = ({ senderInfo, message, user, dialogInfo }: IMessageProps) => {
+
+    const items: MenuProps['items'] = [
+        {
+            label: 'Редактировать',
+            key: '1',
+        },
+        {
+            label: 'Удалить',
+            key: '2',
+        }
+    ];
+
+    const handleDeleteMessage = async () => {
+        await deleteMessage(dialogInfo.dialog_id, message.message_id)
+        .then(res => {
+            console.log(res);
+        })
+        .catch((error: unknown) => {
+            console.error(error);
+        })
+    }
+
+    const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
+        if (key === '2') {
+            handleDeleteMessage();
+        }
+    };
+
     return (
-        <div className={`message-wrapper ${ senderInfo.id === user.id ? `user-message` : `opponent-message` }`}>
-            <div className="message">
-                <div className={`text-content ${ senderInfo.id === user.id ? `user-message` : `opponent-message` }`}>
-                    <div className="avatar">
-                        <img className='image' src = {senderInfo.avatar} />
+        <Dropdown menu={{ items, onClick: handleMenuClick }} trigger={['contextMenu']}>
+            <div className={`message-wrapper ${ senderInfo.id === user.id ? `user-message` : `opponent-message` }`}>
+                <div className="message">
+                    <div className={`text-content ${ senderInfo.id === user.id ? `user-message` : `opponent-message` }`}>
+                        <div className="avatar">
+                            <img className='image' src = {senderInfo.avatar} />
+                        </div>
+                        <div className="text">{message.text}</div>
                     </div>
-                    <div className="text">{message.text}</div>
+                    <FileList files={ message.files } />
+                    <div className="date">{message.date}</div>
                 </div>
-                <FileList files={ message.files } />
-                <div className="date">{message.date}</div>
             </div>
-        </div>
+        </Dropdown>
     );
 };
 
