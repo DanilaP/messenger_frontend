@@ -40,3 +40,33 @@
 .ant-input-outlined.ant-input-status-error:not(.ant-input-disabled) {
     @include input-styles;
 }
+
+.ant-modal .ant-modal-container {
+    background-color: var(--bg-color-block);
+    color: var(--text-color);
+
+    & .ant-modal-title, .ant-modal-close-x {
+        color: var(--text-color);
+    }
+}
+
+.ant-upload-list-item-container {
+    color: var(--text-color);
+}
+
+.ant-upload-wrapper .ant-upload-list .ant-upload-list-item .ant-upload-icon .anticon {
+    color: var(--text-color);
+}
+
+.ant-upload-wrapper .ant-upload-list .ant-upload-list-item .ant-upload-list-item-actions .anticon {
+    color: var(--text-color);
+}
+
+.ant-btn.ant-btn-color-default.ant-btn-variant-outlined {
+    border: none;
+
+    &:hover {
+        background-color: var(--default-color);
+        color: var(--text-color);
+    }
+}

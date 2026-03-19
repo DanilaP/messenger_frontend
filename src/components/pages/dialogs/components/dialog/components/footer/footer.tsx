@@ -1,7 +1,9 @@
-import { Button, Input, type InputRef } from 'antd';
+import { Button, Input } from 'antd';
 import { sendMessage } from '../../../../../../../models/dialogs/dialogs-api';
-import { useRef } from 'react';
+import { useState } from 'react';
+import type { UploadFile } from 'antd/es/upload/interface';
 import type { IDialog, IMessage, ISendMessageResponse } from '../../../../../../../models/dialogs/dialogs-interface';
+import FileUploader from '../../../../../../partials/file-uploader/file-uploader';
 import './footer.scss';
 
 interface IDialogFooterProps {
@@ -11,32 +13,64 @@ interface IDialogFooterProps {
 
 const DialogFooter = ({ dialogInfo, handleSendMessage }: IDialogFooterProps) => {
 
-    const messageInput = useRef<InputRef>(null);
+    const [messageText, setMessageText] = useState<string>("");
 
     const handleSendButtonClick = async () => {
-        if (messageInput.current) {
-            if ('input' in messageInput.current && messageInput.current.input) {
-                const text = messageInput.current.input.value;
-                if (text !== "") {
-                    const formData = new FormData();
-                    formData.append('opponentId', dialogInfo.opponent.id.toString());
-                    formData.append('text', text);
+        if (messageText !== "") {
+            const formData = new FormData();
+            formData.append('opponentId', dialogInfo.opponent.id.toString());
+            formData.append('text', messageText);
 
-                    await sendMessage(formData)
-                    .then((res: ISendMessageResponse) => {
-                        handleSendMessage(res.data.createdMessage);
-                    })
-                    .catch((error: unknown) => {
-                        console.error(error);
-                    })
-                }
-            }
+            await sendMessage(formData)
+            .then((res: ISendMessageResponse) => {
+                handleSendMessage(res.data.createdMessage);
+            })
+            .catch((error: unknown) => {
+                console.error(error);
+            })
         }
+    }
+
+    const handleSendMessageWithFiles = async (text: string, files: UploadFile[]) => {
+        if (text !== "") {
+            const formData = new FormData();
+            formData.append('opponentId', dialogInfo.opponent.id.toString());
+            formData.append('text', text);
+            
+            files.forEach(file => {
+                if (file.originFileObj) {
+                    formData.append('files', file.originFileObj);
+                }
+            });
+
+            await sendMessage(formData)
+            .then((res: ISendMessageResponse) => {
+                handleSendMessage(res.data.createdMessage);
+            })
+            .catch((error: unknown) => {
+                console.error(error);
+            })
+        }
+    }
+
+    const handleClearMessageText = () => {
+        setMessageText("");
     }
 
     return (
         <div className='dialog-footer'>
-            <Input ref={messageInput} placeholder='Введите текст сообщения' />
+            <Input 
+                value={messageText} 
+                onChange = {(e) => setMessageText(e.target.value)} 
+                placeholder='Введите текст сообщения' 
+            />
+            {   
+                <FileUploader
+                    handleSendMessageWithFiles = {handleSendMessageWithFiles}
+                    handleClearMessageText = {handleClearMessageText}
+                    message = {messageText} 
+                /> 
+            }
             <Button onClick={handleSendButtonClick} type='primary'>Отправить</Button>
         </div>
     );
