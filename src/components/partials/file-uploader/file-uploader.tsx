@@ -12,13 +12,12 @@ interface IFileUploaderProps {
 }
 
 const FileUploader = ({ message, handleClearMessageText, handleSendMessageWithFiles }: IFileUploaderProps) => {
+    
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [messageText, setMessageText] = useState<string>("");
     const [fileList, setFileList] = useState<UploadFile[]>([]);
 
     const handleSendMessage = () => {
-        console.log('Message:', messageText);
-        console.log('Files:', fileList);
         handleSendMessageWithFiles(messageText, fileList);
         handleClearMessageText();
         handleChangeModalVisibility();
