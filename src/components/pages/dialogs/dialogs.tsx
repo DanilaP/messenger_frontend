@@ -45,15 +45,12 @@ const Dialogs = () => {
 
     const handleDeleteMessage = (message_id: number) => {
         if (dialogInfo) {
-            setDialogInfo((prev: IDialog | null) => {
-                if (prev) {
-                    return {
-                        ...prev,
-                        messages: prev?.messages.filter(message => message.message_id !== message_id)
-                    }
-                }
-                return null;
-            })
+            const updatedDialogInfo = {
+                ...dialogInfo,
+                messages: dialogInfo.messages.filter(message => message.message_id !== message_id)
+            }
+            setDialogInfo(updatedDialogInfo);
+            handleUpdatedLastMessageBeforeDeleting(updatedDialogInfo);
         }
     }
 
@@ -66,6 +63,24 @@ const Dialogs = () => {
                         last_message: {
                             text: message.text !== "" ? message.text : "Файл",
                             date: message.date
+                        }
+                    }
+                }
+                return dialogListItem;
+            })
+        });
+    }
+
+    const handleUpdatedLastMessageBeforeDeleting = (dialogInfo: IDialog) => {
+        const lastMessage = dialogInfo.messages.sort()[dialogInfo.messages.length - 1];
+        setDialogsList(prev => {
+            return prev.map(dialogListItem => {
+                if (dialogListItem.dialog_id === dialogInfo?.dialog_id) {
+                    return {
+                        ...dialogListItem,
+                        last_message: {
+                            text: lastMessage.text !== "" ? lastMessage.text : "Файл",
+                            date: lastMessage.date
                         }
                     }
                 }
