@@ -3,7 +3,6 @@ import MainLayout from './components/layouts/main/main';
 import SignIn from './components/pages/auth/sign-in/sign-in';
 import SignUp from './components/pages/auth/sign-up/sign-up';
 import Dialogs from './components/pages/dialogs/dialogs';
-import Profile from './components/pages/profile/profile';
 
 export const publicRoutes = [
     {
@@ -20,12 +19,6 @@ export const publicRoutes = [
     }
 ];
 export const routes = [
-    {
-        path: '/main/profile',
-        component: MainLayout,
-        children: Profile,
-        authRequired: true,
-    },
     {
         path: '/main/dialogs',
         component: MainLayout,
