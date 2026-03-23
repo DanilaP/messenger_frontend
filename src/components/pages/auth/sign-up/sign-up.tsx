@@ -25,7 +25,7 @@ function SignUp() {
         registration(values)
         .then((res: IRegistrationResponse) => {
             userStore.dispatch({ type: "SET_USER", payload: res.data.user });
-            navigate("/main/profile");
+            navigate("/main/dialogs");
         })
         .catch((error: unknown) => {
             console.error(error);

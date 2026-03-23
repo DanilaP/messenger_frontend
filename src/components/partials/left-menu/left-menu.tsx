@@ -1,10 +1,10 @@
-import { FaUserCircle } from "react-icons/fa";
 import { BiSolidMessageRounded } from "react-icons/bi";
 import { IoMdExit } from "react-icons/io";
 import { useNavigate } from "react-router";
 import { logout } from "../../../models/user/user-api";
 import { useSelector } from "react-redux";
 import type { UserStore } from "../../../stores/user/user";
+import { useEffect } from "react";
 import MenuItem from "./components/item/item";
 import './left-menu.scss';
 
@@ -16,11 +16,6 @@ const LeftMenu = ({ handleCloseMenu }: ILeftMenuProps) => {
 
     const user = useSelector((state: UserStore) => state.user);
     const navigate = useNavigate();
-
-    const handleProfileClick = () => {
-        handleCloseMenu();
-        navigate("/main/profile");
-    }
 
     const handleExitClick = () => {
         logout()
@@ -37,6 +32,10 @@ const LeftMenu = ({ handleCloseMenu }: ILeftMenuProps) => {
         handleCloseMenu();
         navigate("/main/dialogs");
     }
+    
+    useEffect(() => {
+        console.log(user);
+    }, [user]);
 
     return (
         <div className='left-menu-wrapper'>

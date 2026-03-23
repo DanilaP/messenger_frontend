@@ -23,7 +23,7 @@ function SignIn() {
         login(values.login, values.password)
         .then((res: ILoginResponse) => {
             userStore.dispatch({ type: "SET_USER", payload: res.data.user });
-            navigate("/main/profile");
+            navigate("/main/dialogs");
         })
         .catch((error: unknown) => {
             console.error(error);
