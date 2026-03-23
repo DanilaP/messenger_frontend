@@ -40,6 +40,38 @@ const Dialogs = () => {
                 messages: [...dialogInfo.messages, message]
             })
         }
+        handleUpdateLastMessageBeforeSending(message);
+    }
+
+    const handleDeleteMessage = (message_id: number) => {
+        if (dialogInfo) {
+            setDialogInfo((prev: IDialog | null) => {
+                if (prev) {
+                    return {
+                        ...prev,
+                        messages: prev?.messages.filter(message => message.message_id !== message_id)
+                    }
+                }
+                return null;
+            })
+        }
+    }
+
+    const handleUpdateLastMessageBeforeSending = (message: IMessage) => {
+        setDialogsList(prev => {
+            return prev.map(dialogListItem => {
+                if (dialogListItem.dialog_id === dialogInfo?.dialog_id) {
+                    return {
+                        ...dialogListItem,
+                        last_message: {
+                            text: message.text !== "" ? message.text : "Файл",
+                            date: message.date
+                        }
+                    }
+                }
+                return dialogListItem;
+            })
+        });
     }
 
     useEffect(() => {
@@ -52,7 +84,7 @@ const Dialogs = () => {
             console.error(error);
         })
     }, []);
-    
+
     if (!isLoading) {
         return (
             <Loader />
@@ -61,7 +93,15 @@ const Dialogs = () => {
     return (
         <div className='dialogs-wrapper'>
             <DialogsList handleFetchDialogInfo = {handleFetchDialogInfo} dialogsList = {dialogsList} />
-            {  user && <Dialog handleSendMessage = {handleSendMessage} user = {user} dialogInfo={dialogInfo} /> }
+            {  
+                user && 
+                    <Dialog 
+                        handleSendMessage = {handleSendMessage} 
+                        handleDeleteMessage = {handleDeleteMessage}
+                        user = {user} 
+                        dialogInfo={dialogInfo} 
+                    /> 
+            }
         </div>
     );
 };

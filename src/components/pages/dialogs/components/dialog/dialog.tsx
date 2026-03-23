@@ -10,9 +10,10 @@ interface IDialogProps {
     dialogInfo: IDialog | null,
     user: Partial<IUser>,
     handleSendMessage: (message: IMessage) => void,
+    handleDeleteMessage: (message_id: number) => void
 }
 
-const Dialog = memo(({ dialogInfo, user, handleSendMessage }: IDialogProps) => {
+const Dialog = memo(({ dialogInfo, user, handleSendMessage, handleDeleteMessage }: IDialogProps) => {
 
     if (!dialogInfo) {
         return (
@@ -24,7 +25,11 @@ const Dialog = memo(({ dialogInfo, user, handleSendMessage }: IDialogProps) => {
     return (
         <div className='dialog-wrapper'>
             <DialogHeader opponent={dialogInfo.opponent} />
-            <DialogsMessages user = {user} dialogInfo = {dialogInfo} />
+            <DialogsMessages 
+                user = {user} 
+                dialogInfo = {dialogInfo} 
+                handleDeleteMessage = {handleDeleteMessage}
+            />
             <DialogFooter handleSendMessage = {handleSendMessage} dialogInfo={dialogInfo} />
         </div>
     );

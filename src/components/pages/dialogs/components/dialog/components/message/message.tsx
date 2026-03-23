@@ -9,10 +9,11 @@ interface IMessageProps {
     senderInfo: Partial<IUser> | IOpponent,
     message: IMessage,
     user: Partial<IUser>,
-    dialogInfo: IDialog
+    dialogInfo: IDialog,
+    handleDeleteMessage: (message_id: number) => void
 }
 
-const DialogMessage = ({ senderInfo, message, user, dialogInfo }: IMessageProps) => {
+const DialogMessage = ({ senderInfo, message, user, dialogInfo, handleDeleteMessage }: IMessageProps) => {
 
     const items: MenuProps['items'] = [
         {
@@ -25,10 +26,10 @@ const DialogMessage = ({ senderInfo, message, user, dialogInfo }: IMessageProps)
         }
     ];
 
-    const handleDeleteMessage = async () => {
+    const deleteMessageFromDialog = async () => {
         await deleteMessage(dialogInfo.dialog_id, message.message_id)
-        .then(res => {
-            console.log(res);
+        .then(() => {
+            handleDeleteMessage(message.message_id);
         })
         .catch((error: unknown) => {
             console.error(error);
@@ -37,7 +38,7 @@ const DialogMessage = ({ senderInfo, message, user, dialogInfo }: IMessageProps)
 
     const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
         if (key === '2') {
-            handleDeleteMessage();
+            deleteMessageFromDialog();
         }
     };
 

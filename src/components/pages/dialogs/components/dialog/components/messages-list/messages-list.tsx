@@ -7,10 +7,11 @@ import './messages-list.scss';
 
 interface IDialogsMessages {
     dialogInfo: IDialog,
-    user: Partial<IUser>
+    user: Partial<IUser>,
+    handleDeleteMessage: (message_id: number) => void
 }
 
-const DialogsMessages = ({ dialogInfo, user }: IDialogsMessages) => {
+const DialogsMessages = ({ dialogInfo, user, handleDeleteMessage }: IDialogsMessages) => {
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -36,6 +37,7 @@ const DialogsMessages = ({ dialogInfo, user }: IDialogsMessages) => {
                                 senderInfo = {senderInfo} 
                                 message = {message} 
                                 dialogInfo = {dialogInfo}
+                                handleDeleteMessage = {handleDeleteMessage}
                             />
                         </Fragment>
                     )
