@@ -24,7 +24,7 @@ function App() {
             userStore.dispatch({ type: "SET_USER", payload: res.data.user });
             
             if (location.pathname === "/") {
-                navigate("/main/profile");
+                navigate("/main/dialogs");
             }
         })
         .catch((error) => {

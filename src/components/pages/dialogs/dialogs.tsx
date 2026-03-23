@@ -61,7 +61,7 @@ const Dialogs = () => {
     return (
         <div className='dialogs-wrapper'>
             <DialogsList handleFetchDialogInfo = {handleFetchDialogInfo} dialogsList = {dialogsList} />
-            { dialogInfo && user && <Dialog handleSendMessage = {handleSendMessage} user = {user} dialogInfo={dialogInfo} /> }
+            {  user && <Dialog handleSendMessage = {handleSendMessage} user = {user} dialogInfo={dialogInfo} /> }
         </div>
     );
 };

@@ -42,11 +42,6 @@ const LeftMenu = ({ handleCloseMenu }: ILeftMenuProps) => {
         <div className='left-menu-wrapper'>
             <div className="menu">
                 <MenuItem 
-                    title = "Профиль" 
-                    icon={ <FaUserCircle /> } 
-                    handleClick={ handleProfileClick }
-                />
-                <MenuItem 
                     title = "Диалоги" 
                     icon={ <BiSolidMessageRounded /> } 
                     handleClick={ handleDialogsClick }

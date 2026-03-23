@@ -7,13 +7,20 @@ import DialogsMessages from './components/messages-list/messages-list';
 import './dialog.scss';
 
 interface IDialogProps {
-    dialogInfo: IDialog,
+    dialogInfo: IDialog | null,
     user: Partial<IUser>,
     handleSendMessage: (message: IMessage) => void,
 }
 
 const Dialog = memo(({ dialogInfo, user, handleSendMessage }: IDialogProps) => {
 
+    if (!dialogInfo) {
+        return (
+            <div className="dialog-wrapper-empty">
+                <div className="message">Здесь пока ничего нет...</div>
+            </div>
+        )
+    }
     return (
         <div className='dialog-wrapper'>
             <DialogHeader opponent={dialogInfo.opponent} />
