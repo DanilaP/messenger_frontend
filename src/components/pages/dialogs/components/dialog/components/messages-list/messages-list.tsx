@@ -8,7 +8,7 @@ import './messages-list.scss';
 interface IDialogsMessages {
     dialogInfo: IDialog,
     user: Partial<IUser>,
-    handleDeleteMessage: (message_id: number) => void
+    handleDeleteMessage: (messageId: number) => void
 }
 
 const DialogsMessages = ({ dialogInfo, user, handleDeleteMessage }: IDialogsMessages) => {
