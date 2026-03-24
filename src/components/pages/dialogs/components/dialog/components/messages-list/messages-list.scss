@@ -1,14 +1,13 @@
 .messages-list {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    padding: 20px;
-    box-sizing: border-box;
+    width: 100%;
     color: var(--text-color);
     font-size: 13px;
     height: calc(100vh - 166px);
-    overflow-y: scroll;
+}
+
+.messages-list-virtualized {
+    box-sizing: border-box;
     scrollbar-color: var(--text-color) var(--bg-color);
     scrollbar-width: thin;
 }
