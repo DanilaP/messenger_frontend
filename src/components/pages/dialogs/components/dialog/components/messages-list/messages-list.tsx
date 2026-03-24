@@ -23,7 +23,7 @@ const DialogsMessages = ({ dialogInfo, user, handleDeleteMessage }: IDialogsMess
 
     useEffect(() => {
         scrollToBottom();
-    }, [dialogInfo.messages]);
+    }, []);
 
     return (
         <div ref={messagesEndRef} className='messages-list'>
