@@ -1,5 +1,5 @@
 .messages-list {
-    position: relative; /* чтобы псевдоэлемент позиционировался относительно него */
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 30px;

@@ -41,6 +41,27 @@ function App() {
         document.body.className = theme ? theme : "dark-theme";
     }, []);
 
+    useEffect(() => {
+        const socket = new WebSocket("ws://localhost:5000/");
+
+        socket.onopen = function() {
+            console.log("Соединение с вебсокетом открыто");
+        };
+
+        socket.onmessage = function(event) {
+            console.log(event.data);
+        };
+
+        socket.onclose = function() {
+            console.log("Соединение с вебсокетом закрыто");
+        };
+
+        socket.onerror = function(error) {
+            console.error(error);
+        };
+
+    }, [])
+
     return (
         <>
             <Routes>
