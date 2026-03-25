@@ -4,6 +4,7 @@ import { useState } from 'react';
 import type { UploadFile } from 'antd/es/upload/interface';
 import type { IDialog, IMessage, ISendMessageResponse } from '../../../../../../../models/dialogs/dialogs-interface';
 import FileUploader from '../../../../../../partials/file-uploader/file-uploader';
+import EmojiPicker from '../../../../../../partials/emoji-picker/emoji-picker';
 import './footer.scss';
 
 interface IDialogFooterProps {
@@ -70,6 +71,9 @@ const DialogFooter = ({ dialogInfo, handleSendMessage }: IDialogFooterProps) => 
                     handleClearMessageText = {handleClearMessageText}
                     message = {messageText} 
                 /> 
+            }
+            {
+                <EmojiPicker />
             }
             <Button onClick={handleSendButtonClick} type='primary'>Отправить</Button>
         </div>

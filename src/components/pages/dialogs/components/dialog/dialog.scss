@@ -13,7 +13,7 @@
     & .message {
         padding: 30px 50px 30px 50px;
         border: 1px solid var(--border-color);
-        background-color: rgba(0, 0, 0, 0.25);
+        background-color: var(--default-color-second);
         opacity: 0.75;
     }
 }

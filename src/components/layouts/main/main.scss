@@ -11,7 +11,7 @@
         align-items: center;
         position: absolute;
         padding: 5px 20px 5px 20px;
-        background-color: rgba(0, 0, 0, 0.25);
+        background-color: var(--default-color-second);
         color: var(--text-color);
         width: 100vw;
         border-bottom: 1px solid var(--border-color);
