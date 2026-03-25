@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { getDialogInfo, getDialogsList } from '../../../models/dialogs/dialogs-api';
+import { parseCustomDate } from '../../../helpers/parsers/parsers';
 import { type IDialog, type IDialogListItem, type IGetDialogResponse, type IGetDialogsListResponse, type IMessage, type IOpponent } from '../../../models/dialogs/dialogs-interface';
 import { type UserStore } from '../../../stores/user/user';
 import DialogsList from './components/dialogs-list/dialogs-list';
@@ -56,7 +57,7 @@ const Dialogs = () => {
 
     const handleUpdateLastMessageBeforeSending = (message: IMessage) => {
         setDialogsList(prev => {
-            return prev.map(dialogListItem => {
+            const updatedList = prev.map(dialogListItem => {
                 if (dialogListItem.dialog_id === dialogInfo?.dialog_id) {
                     return {
                         ...dialogListItem,
@@ -67,14 +68,15 @@ const Dialogs = () => {
                     }
                 }
                 return dialogListItem;
-            })
+            });
+            return handleSortDialogsListByLastMessageDate(updatedList);
         });
     }
 
     const handleUpdatedLastMessageBeforeDeleting = (dialogInfo: IDialog) => {
         const lastMessage = dialogInfo.messages.sort()[dialogInfo.messages.length - 1];
         setDialogsList(prev => {
-            return prev.map(dialogListItem => {
+            const updatedList = prev.map(dialogListItem => {
                 if (dialogListItem.dialog_id === dialogInfo?.dialog_id) {
                     return {
                         ...dialogListItem,
@@ -85,15 +87,26 @@ const Dialogs = () => {
                     }
                 }
                 return dialogListItem;
-            })
+            });
+            return handleSortDialogsListByLastMessageDate(updatedList);
         });
     }
+
+    const handleSortDialogsListByLastMessageDate = (currentDialogList: IDialogListItem[]) => {
+        const result = [...currentDialogList];
+        result.sort((a, b) => {
+            const dateA = parseCustomDate(a.last_message.date);
+            const dateB = parseCustomDate(b.last_message.date);
+            return dateB.getTime() - dateA.getTime();
+        });
+        return result;
+    };
 
     useEffect(() => {
         getDialogsList()
         .then((res: IGetDialogsListResponse) => {
             setIsLoading(true);
-            setDialogsList(res.data.dialogs);
+            setDialogsList(handleSortDialogsListByLastMessageDate(res.data.dialogs));
         })
         .catch((error: unknown) => {
             console.error(error);

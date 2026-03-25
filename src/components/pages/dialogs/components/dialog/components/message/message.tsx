@@ -1,8 +1,10 @@
-import { Dropdown, type MenuProps } from 'antd';
+import { Dropdown, Modal, type MenuProps } from 'antd';
 import type { IDialog, IMessage, IOpponent } from '../../../../../../../models/dialogs/dialogs-interface';
 import type { IUser } from '../../../../../../../models/user/user-interface';
 import { deleteMessage } from '../../../../../../../models/dialogs/dialogs-api';
+import { Fragment, useState } from 'react';
 import FileList from '../../../../../../partials/file-list/file-list';
+import MessageEditor from '../message-editor/message-editor';
 import './message.scss';
 
 interface IMessageProps {
@@ -13,7 +15,15 @@ interface IMessageProps {
     handleDeleteMessage: (message_id: number) => void
 }
 
-const DialogMessage = ({ senderInfo, message, user, dialogInfo, handleDeleteMessage }: IMessageProps) => {
+const DialogMessage = ({ 
+    senderInfo, 
+    message, 
+    user, 
+    dialogInfo, 
+    handleDeleteMessage 
+}: IMessageProps) => {
+
+    const [isModifyMessageModalOpen, setIsModifyMessageModalOpen] = useState<boolean>(false);
 
     const items: MenuProps['items'] = [
         {
@@ -26,6 +36,15 @@ const DialogMessage = ({ senderInfo, message, user, dialogInfo, handleDeleteMess
         }
     ];
 
+    const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
+        if (key === '1') {
+            handleChangeModifyMessageModalVisibility();
+        }
+        if (key === '2') {
+            deleteMessageFromDialog();
+        }
+    };
+
     const deleteMessageFromDialog = async () => {
         await deleteMessage(dialogInfo.dialog_id, message.message_id)
         .then(() => {
@@ -36,27 +55,47 @@ const DialogMessage = ({ senderInfo, message, user, dialogInfo, handleDeleteMess
         })
     }
 
-    const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
-        if (key === '2') {
-            deleteMessageFromDialog();
-        }
-    };
+    const handleChangeModifyMessageModalVisibility = () => {
+        setIsModifyMessageModalOpen(!isModifyMessageModalOpen);
+    }
+
+    const handleChangeMessage = (modifiedMessage: IMessage) => {
+        console.log(modifiedMessage);
+    }
 
     return (
-        <Dropdown menu={{ items, onClick: handleMenuClick }} trigger={['contextMenu']}>
-            <div className={`message-wrapper ${ senderInfo.id === user.id ? `user-message` : `opponent-message` }`}>
-                <div className="message">
-                    <div className={`text-content ${ senderInfo.id === user.id ? `user-message` : `opponent-message` }`}>
-                        <div className="avatar">
-                            <img className='image' src = {senderInfo.avatar} />
+        <Fragment>
+            <Dropdown menu={{ items, onClick: handleMenuClick }} trigger={['contextMenu']}>
+                <div className={`message-wrapper ${ senderInfo.id === user.id ? `user-message` : `opponent-message` }`}>
+                    <div className="message">
+                        <div className={`text-content ${ senderInfo.id === user.id ? `user-message` : `opponent-message` }`}>
+                            <div className="avatar">
+                                <img className='image' src = {senderInfo.avatar} />
+                            </div>
+                            <div className="text">{message.text}</div>
                         </div>
-                        <div className="text">{message.text}</div>
+                        <FileList files={ message.files } />
+                        <div className="date">{message.date}</div>
                     </div>
-                    <FileList files={ message.files } />
-                    <div className="date">{message.date}</div>
                 </div>
-            </div>
-        </Dropdown>
+            </Dropdown>
+            {
+                <Modal
+                    centered
+                    destroyOnHidden
+                    footer={null}
+                    title="Редактирование сообщения"
+                    open={isModifyMessageModalOpen}
+                    onCancel={handleChangeModifyMessageModalVisibility}
+                >
+                    <MessageEditor 
+                        message={message}
+                        handleChangeMessage={handleChangeMessage}
+                        handleCloseModal={handleChangeModifyMessageModalVisibility}
+                    />
+                </Modal>
+            }
+        </Fragment>
     );
 };
 
