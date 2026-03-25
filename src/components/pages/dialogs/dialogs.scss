@@ -4,3 +4,9 @@
     height: 100vh;
     padding-top: 40.8px;
 }
+
+@media screen and (max-width: 925px) {
+    .dialogs-wrapper {
+        grid-template-columns: 40% 60%;
+    }
+}

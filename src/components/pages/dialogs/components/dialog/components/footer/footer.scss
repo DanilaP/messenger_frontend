@@ -10,3 +10,9 @@
     bottom: 0;
     z-index: 5;
 }
+
+@media screen and (max-width: 925px) {
+    .dialog-footer {
+        width: 60vw;
+    }
+}
