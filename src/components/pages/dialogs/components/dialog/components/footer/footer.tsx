@@ -1,6 +1,6 @@
 import { Button, Input } from 'antd';
 import { sendMessage } from '../../../../../../../models/dialogs/dialogs-api';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import type { UploadFile } from 'antd/es/upload/interface';
 import type { IDialog, IMessage, ISendMessageResponse } from '../../../../../../../models/dialogs/dialogs-interface';
 import FileUploader from '../../../../../../partials/file-uploader/file-uploader';
@@ -12,7 +12,7 @@ interface IDialogFooterProps {
     handleSendMessage: (message: IMessage) => void 
 }
 
-const DialogFooter = ({ dialogInfo, handleSendMessage }: IDialogFooterProps) => {
+const DialogFooter = memo(({ dialogInfo, handleSendMessage }: IDialogFooterProps) => {
 
     const [messageText, setMessageText] = useState<string>("");
 
@@ -78,6 +78,6 @@ const DialogFooter = ({ dialogInfo, handleSendMessage }: IDialogFooterProps) => 
             <Button onClick={handleSendButtonClick} type='primary'>Отправить</Button>
         </div>
     );
-};
+});
 
 export default DialogFooter;

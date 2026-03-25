@@ -2,7 +2,7 @@ import { Dropdown, Modal, type MenuProps } from 'antd';
 import type { IDialog, IMessage, IOpponent } from '../../../../../../../models/dialogs/dialogs-interface';
 import type { IUser } from '../../../../../../../models/user/user-interface';
 import { deleteMessage } from '../../../../../../../models/dialogs/dialogs-api';
-import { Fragment, useState } from 'react';
+import { Fragment, memo, useState } from 'react';
 import FileList from '../../../../../../partials/file-list/file-list';
 import MessageEditor from '../message-editor/message-editor';
 import './message.scss';
@@ -15,7 +15,7 @@ interface IMessageProps {
     handleDeleteMessage: (message_id: number) => void
 }
 
-const DialogMessage = ({ 
+const DialogMessage = memo(({ 
     senderInfo, 
     message, 
     user, 
@@ -97,6 +97,6 @@ const DialogMessage = ({
             }
         </Fragment>
     );
-};
+});
 
 export default DialogMessage;

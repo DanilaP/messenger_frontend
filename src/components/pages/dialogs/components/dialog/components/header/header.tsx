@@ -1,12 +1,14 @@
 import type { IOpponent } from '../../../../../../../models/dialogs/dialogs-interface';
 import { MdSearch } from "react-icons/md";
+import { memo } from 'react';
+
 import './header.scss';
 
 interface IDialogHeaderProps {
     opponent: IOpponent
 }
 
-const DialogHeader = ({ opponent }: IDialogHeaderProps) => {
+const DialogHeader = memo(({ opponent }: IDialogHeaderProps) => {
     return (
         <div className='dialog-header'>
             <div className="dialog-image-wrapper">
@@ -18,6 +20,6 @@ const DialogHeader = ({ opponent }: IDialogHeaderProps) => {
             </div>
         </div>
     );
-};
+});
 
 export default DialogHeader;
