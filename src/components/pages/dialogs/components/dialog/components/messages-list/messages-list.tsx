@@ -49,6 +49,7 @@ const MessageRow = ({ index, style, ...data }: IMessageRowProps) => {
 };
 
 const DialogsMessages = ({ dialogInfo, user, handleDeleteMessage }: IDialogsMessages) => {
+    
     const listRef = useRef<ListImperativeAPI>(null);
     const rowHeightCache = useDynamicRowHeight({
         defaultRowHeight: DEFAULT_MESSAGE_HEIGHT,
@@ -60,8 +61,6 @@ const DialogsMessages = ({ dialogInfo, user, handleDeleteMessage }: IDialogsMess
         if (!element) {
             return;
         }
-
-        // Для динамических высот надежнее "принудительно" прокрутить к самому низу.
         element.scrollTop = element.scrollHeight;
     }, []);
 
