@@ -1,5 +1,5 @@
 import type { IOpponent } from '../../../../../../../models/dialogs/dialogs-interface';
-import { CiSearch } from "react-icons/ci";
+import { MdSearch } from "react-icons/md";
 import './header.scss';
 
 interface IDialogHeaderProps {
@@ -14,7 +14,7 @@ const DialogHeader = ({ opponent }: IDialogHeaderProps) => {
             </div>
             <div className="dialog-name">{opponent.name} {opponent.surname}</div>
             <div className="dialog-settings">
-                <CiSearch />
+                <MdSearch />
             </div>
         </div>
     );
