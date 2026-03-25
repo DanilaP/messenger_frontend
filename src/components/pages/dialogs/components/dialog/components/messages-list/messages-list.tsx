@@ -50,49 +50,49 @@ const MessageRow = ({ index, style, ...data }: IMessageRowProps) => {
 
 const DialogsMessages = ({ dialogInfo, user, handleDeleteMessage }: IDialogsMessages) => {
     const listRef = useRef<ListImperativeAPI>(null);
-    const initialScrollDoneRef = useRef(false);
     const rowHeightCache = useDynamicRowHeight({
         defaultRowHeight: DEFAULT_MESSAGE_HEIGHT,
         key: `${dialogInfo.dialog_id}-${dialogInfo.messages.length}`
     });
 
-    const scrollToBottom = useCallback(() => {
-        if (dialogInfo.messages.length > 0) {
-            listRef.current?.scrollToRow({ index: dialogInfo.messages.length - 1, align: 'end' });
-        }
-    }, [dialogInfo.messages.length]);
-
-    useEffect(() => {
-        initialScrollDoneRef.current = false;
-    }, [dialogInfo.dialog_id]);
-
-    useEffect(() => {
-        if (initialScrollDoneRef.current || dialogInfo.messages.length === 0) {
+    const forceScrollToBottom = useCallback(() => {
+        const element = listRef.current?.element;
+        if (!element) {
             return;
         }
 
-        initialScrollDoneRef.current = true;
+        // Для динамических высот надежнее "принудительно" прокрутить к самому низу.
+        element.scrollTop = element.scrollHeight;
+    }, []);
 
+    useEffect(() => {
+        if (dialogInfo.messages.length === 0) {
+            return;
+        }
+
+        let raf1: number | null = null;
+        let raf2: number | null = null;
         const timeoutId = window.setTimeout(() => {
-            scrollToBottom();
-        }, 0);
+            forceScrollToBottom();
 
-        let nestedFrameId = 0;
-        const frameId = window.requestAnimationFrame(() => {
-            scrollToBottom();
-            nestedFrameId = window.requestAnimationFrame(() => {
-                scrollToBottom();
+            raf1 = window.requestAnimationFrame(() => {
+                forceScrollToBottom();
+                raf2 = window.requestAnimationFrame(() => {
+                    forceScrollToBottom();
+                });
             });
-        });
+        }, 0);
 
         return () => {
             window.clearTimeout(timeoutId);
-            window.cancelAnimationFrame(frameId);
-            if (nestedFrameId) {
-                window.cancelAnimationFrame(nestedFrameId);
+            if (raf1 !== null) {
+                window.cancelAnimationFrame(raf1);
+            }
+            if (raf2 !== null) {
+                window.cancelAnimationFrame(raf2);
             }
         };
-    }, [scrollToBottom, dialogInfo.messages.length]);
+    }, [dialogInfo.dialog_id, dialogInfo.messages.length, forceScrollToBottom]);
 
     const rowData = useMemo<IRowData>(() => {
         return {
