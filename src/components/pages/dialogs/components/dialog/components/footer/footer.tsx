@@ -24,6 +24,7 @@ const DialogFooter = memo(({ dialogInfo, handleSendMessage }: IDialogFooterProps
 
             await sendMessage(formData)
             .then((res: ISendMessageResponse) => {
+                handleClearMessageText();
                 handleSendMessage(res.data.createdMessage);
             })
             .catch((error: unknown) => {
@@ -63,6 +64,7 @@ const DialogFooter = memo(({ dialogInfo, handleSendMessage }: IDialogFooterProps
             <Input 
                 value={messageText} 
                 onChange = {(e) => setMessageText(e.target.value)} 
+                onPressEnter={handleSendButtonClick}
                 placeholder='Введите текст сообщения' 
             />
             {   

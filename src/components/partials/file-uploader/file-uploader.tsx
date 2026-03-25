@@ -64,6 +64,7 @@ const FileUploader = ({ message, handleClearMessageText, handleSendMessageWithFi
                         <Input
                             onChange={(e) => setMessageText(e.target.value)}
                             value={messageText}
+                            onPressEnter={handleSendMessage}
                             placeholder="Введите текст сообщения"
                         />
                         <Upload
