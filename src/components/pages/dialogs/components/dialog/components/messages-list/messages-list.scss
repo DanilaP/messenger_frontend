@@ -4,6 +4,8 @@
     color: var(--text-color);
     font-size: 13px;
     height: calc(100vh - 166px);
+    padding-top: 30px;
+    box-sizing: border-box;
 }
 
 .messages-list-virtualized {
