@@ -1,4 +1,4 @@
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import { Link, useNavigate } from "react-router";
 import { useState } from 'react';
 import { login } from '../../../../models/user/user-api';
@@ -16,7 +16,8 @@ function SignIn() {
     const [form] = Form.useForm();
     const [isSubmited, setIsSubmited] = useState<boolean>(false);
     const [passVisible, setPassVisible] = useState<boolean>(false);
-
+    const [messageApi, contextHolder] = message.useMessage();
+    
     const navigate = useNavigate();
 
     const onFinish = (values: ISignInForm) => {
@@ -25,8 +26,14 @@ function SignIn() {
             userStore.dispatch({ type: "SET_USER", payload: res.data.user });
             navigate("/main/dialogs");
         })
-        .catch((error: unknown) => {
+        .catch((error) => {
             console.error(error);
+            if (error.response.data.message) {
+                messageApi.open({
+                    type: 'error',
+                    content: error.response.data.message,
+                });   
+            }
         })
     };
 
@@ -36,6 +43,7 @@ function SignIn() {
 
     return (
         <div className="signin-form-container">
+            {contextHolder}
             <div className="title">
                 Авторизация
             </div>
