@@ -11,7 +11,11 @@ interface IFileUploaderProps {
     handleSendMessageWithFiles: (text: string, file: UploadFile[]) => void
 }
 
-const FileUploader = ({ message, handleClearMessageText, handleSendMessageWithFiles }: IFileUploaderProps) => {
+const FileUploader = ({ 
+    message, 
+    handleClearMessageText, 
+    handleSendMessageWithFiles 
+}: IFileUploaderProps) => {
     
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [messageText, setMessageText] = useState<string>("");

@@ -3,7 +3,7 @@ import { sendMessage } from '../../../../../../../models/dialogs/dialogs-api';
 import { memo, useState } from 'react';
 import type { UploadFile } from 'antd/es/upload/interface';
 import type { IDialog, IMessage, ISendMessageResponse } from '../../../../../../../models/dialogs/dialogs-interface';
-import FileUploader from '../../../../../../partials/file-uploader/file-uploader';
+import FileUploader from '../file-uploader/file-uploader';
 import EmojiPicker from '../../../../../../partials/emoji-picker/emoji-picker';
 import './footer.scss';
 
@@ -12,7 +12,10 @@ interface IDialogFooterProps {
     handleSendMessage: (message: IMessage) => void 
 }
 
-const DialogFooter = memo(({ dialogInfo, handleSendMessage }: IDialogFooterProps) => {
+const DialogFooter = memo(({ 
+    dialogInfo, 
+    handleSendMessage
+}: IDialogFooterProps) => {
 
     const [messageText, setMessageText] = useState<string>("");
 

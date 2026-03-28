@@ -8,7 +8,10 @@ interface IDialogsListProps {
     handleFetchDialogInfo: (dialogId: number, opponent: IOpponent) => void
 }
 
-const DialogsList = memo(({ dialogsList, handleFetchDialogInfo }: IDialogsListProps) => {
+const DialogsList = memo(({ 
+    dialogsList, 
+    handleFetchDialogInfo 
+}: IDialogsListProps) => {
 
     const handleDialogListItemClick = (dialogId: number, opponent: IOpponent) => {
         handleFetchDialogInfo(dialogId, opponent);

@@ -13,7 +13,12 @@ interface IDialogProps {
     handleDeleteMessage: (message_id: number) => void
 }
 
-const Dialog = memo(({ dialogInfo, user, handleSendMessage, handleDeleteMessage }: IDialogProps) => {
+const Dialog = memo(({ 
+    dialogInfo, 
+    user, 
+    handleSendMessage, 
+    handleDeleteMessage 
+}: IDialogProps) => {
 
     if (!dialogInfo) {
         return (

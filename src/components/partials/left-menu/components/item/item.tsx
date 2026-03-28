@@ -7,7 +7,11 @@ interface IMenuItemProps {
     handleClick: () => void
 }
 
-const MenuItem = ({ title, icon, handleClick }: IMenuItemProps) => {
+const MenuItem = ({ 
+    title, 
+    icon,
+    handleClick 
+}: IMenuItemProps) => {
     return (
         <div onClick={ handleClick } className="menu-item">
             <div className="icon">

@@ -1,5 +1,6 @@
-import { Button, Input } from 'antd';
+import { Button, Input, Upload, type UploadFile, type UploadProps } from 'antd';
 import { useState } from 'react';
+import { UploadOutlined } from '@ant-design/icons';
 import type { IMessage } from '../../../../../../../models/dialogs/dialogs-interface';
 import './message-editor.scss';
 
@@ -12,11 +13,22 @@ interface IMessageEditorProps {
 const MessageEditor = ({ message, handleChangeMessage, handleCloseModal }: IMessageEditorProps) => {
 
     const [modifiedMessage, setModifiedMessage] = useState<IMessage>(message);
+    const [modifiedFileList, setModifiedFileList] = useState<UploadFile[]>([]);
 
     const handleConfirmButtonClick = () => {
         handleChangeMessage(modifiedMessage);
         handleCloseModal();
     }
+
+    const handleUploadChange: UploadProps['onChange'] = ({ fileList }) => {
+        setModifiedFileList(fileList);
+    };
+
+    const handleRemoveFile = (file: UploadFile) => {
+        setModifiedFileList(prev => prev.filter(item => item.uid !== file.uid));
+    };
+
+    const beforeUpload = () => false;
 
     return (
         <div className='message-editor'>
@@ -27,6 +39,17 @@ const MessageEditor = ({ message, handleChangeMessage, handleCloseModal }: IMess
                 } 
                 placeholder='Текст сообщения' 
             />
+            <Upload
+                multiple
+                fileList={modifiedFileList}
+                onChange={handleUploadChange}
+                beforeUpload={beforeUpload}
+                onRemove={handleRemoveFile}
+                maxCount={5}
+                accept="*/*"
+            >
+                <Button icon={<UploadOutlined />}>Выбрать файлы</Button>
+            </Upload>
             <Button onClick={handleConfirmButtonClick} type="primary">Подтвердить</Button>
         </div>
     );
