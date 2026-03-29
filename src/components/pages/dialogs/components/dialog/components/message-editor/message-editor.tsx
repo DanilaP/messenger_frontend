@@ -2,6 +2,7 @@ import { Button, Input, Upload, type UploadFile, type UploadProps } from 'antd';
 import { useState } from 'react';
 import { UploadOutlined } from '@ant-design/icons';
 import type { IMessage } from '../../../../../../../models/dialogs/dialogs-interface';
+import FileList from '../../../../../../partials/file-list/file-list';
 import './message-editor.scss';
 
 interface IMessageEditorProps {
@@ -36,6 +37,8 @@ const MessageEditor = ({
 
     return (
         <div className='message-editor'>
+            <div className="files-number">Загружено файлов: {message.files.length}</div>
+            <FileList files={message.files} />
             <Input 
                 defaultValue={message.text}
                 onChange={
@@ -52,7 +55,7 @@ const MessageEditor = ({
                 maxCount={5}
                 accept="*/*"
             >
-                <Button icon={<UploadOutlined />}>Выбрать файлы</Button>
+                <Button icon={<UploadOutlined />}>Заменить файлы</Button>
             </Upload>
             <Button onClick={handleConfirmButtonClick} type="primary">Подтвердить</Button>
         </div>
