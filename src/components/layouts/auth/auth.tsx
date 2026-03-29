@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FaTelegram } from "react-icons/fa6";
+import { IoLogoElectron } from "react-icons/io5";
 import './auth.scss';
 
 interface AuthLayoutProps {
@@ -13,7 +13,7 @@ export default function AuthLayout (props: AuthLayoutProps) {
     return (
         <div className='auth-wrapper'>
             <div className="logo-wrapper">
-                <FaTelegram className='logo' />
+                <IoLogoElectron className='logo' />
             </div>
             <div className="auth-form">
                 <div className="auth-form-header">
