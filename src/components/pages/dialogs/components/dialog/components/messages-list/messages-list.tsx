@@ -25,7 +25,7 @@ const DEFAULT_MESSAGE_HEIGHT = 120;
 
 type IMessageRowProps = RowComponentProps<IRowData>;
 
-const MESSAGE_GAP = 30;
+const MESSAGE_GAP = 10;
 
 const MessageRow = ({ index, style, ...data }: IMessageRowProps) => {
     const message = data.messages[index];
