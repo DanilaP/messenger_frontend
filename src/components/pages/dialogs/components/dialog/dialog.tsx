@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import type { IDialog, IMessage } from '../../../../../models/dialogs/dialogs-interface';
 import type { IUser } from '../../../../../models/user/user-interface';
+import type { UploadFile } from 'antd';
 import DialogHeader from './components/header/header';
 import DialogFooter from './components/footer/footer';
 import DialogsMessages from './components/messages-list/messages-list';
@@ -10,14 +11,16 @@ interface IDialogProps {
     dialogInfo: IDialog | null,
     user: Partial<IUser>,
     handleSendMessage: (message: IMessage) => void,
-    handleDeleteMessage: (message_id: number) => void
+    handleDeleteMessage: (message_id: number) => void,
+    handleChangeMessage: (message: IMessage, files: UploadFile[]) => void
 }
 
 const Dialog = memo(({ 
     dialogInfo, 
     user, 
     handleSendMessage, 
-    handleDeleteMessage 
+    handleDeleteMessage,
+    handleChangeMessage
 }: IDialogProps) => {
 
     if (!dialogInfo) {
@@ -31,9 +34,10 @@ const Dialog = memo(({
         <div className='dialog-wrapper'>
             <DialogHeader opponent={dialogInfo.opponent} />
             <DialogsMessages 
-                user = {user} 
-                dialogInfo = {dialogInfo} 
-                handleDeleteMessage = {handleDeleteMessage}
+                user={user} 
+                dialogInfo={dialogInfo} 
+                handleDeleteMessage={handleDeleteMessage}
+                handleChangeMessage={handleChangeMessage}
             />
             <DialogFooter handleSendMessage = {handleSendMessage} dialogInfo={dialogInfo} />
         </div>

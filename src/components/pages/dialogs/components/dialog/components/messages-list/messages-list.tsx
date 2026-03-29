@@ -1,21 +1,24 @@
-import type { IDialog } from '../../../../../../../models/dialogs/dialogs-interface';
-import type { IUser } from '../../../../../../../models/user/user-interface';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { List, useDynamicRowHeight, type ListImperativeAPI, type RowComponentProps } from 'react-window';
+import type { UploadFile } from 'antd';
+import type { IDialog, IMessage } from '../../../../../../../models/dialogs/dialogs-interface';
+import type { IUser } from '../../../../../../../models/user/user-interface';
 import DialogMessage from '../message/message';
 import './messages-list.scss';
 
 interface IDialogsMessages {
     dialogInfo: IDialog,
     user: Partial<IUser>,
-    handleDeleteMessage: (messageId: number) => void
+    handleDeleteMessage: (messageId: number) => void,
+    handleChangeMessage: (message: IMessage, files: UploadFile[]) => void
 }
 
 interface IRowData {
     messages: IDialog['messages'],
     dialogInfo: IDialog,
     user: Partial<IUser>,
-    handleDeleteMessage: (messageId: number) => void
+    handleDeleteMessage: (messageId: number) => void,
+    handleChangeMessage: (message: IMessage, files: UploadFile[]) => void
 }
 
 const DEFAULT_MESSAGE_HEIGHT = 120;
@@ -42,13 +45,14 @@ const MessageRow = ({ index, style, ...data }: IMessageRowProps) => {
                     message={message}
                     dialogInfo={data.dialogInfo}
                     handleDeleteMessage={data.handleDeleteMessage}
+                    handleChangeMessage={data.handleChangeMessage}
                 />
             </div>
         </div>
     );
 };
 
-const DialogsMessages = ({ dialogInfo, user, handleDeleteMessage }: IDialogsMessages) => {
+const DialogsMessages = ({ dialogInfo, user, handleDeleteMessage, handleChangeMessage }: IDialogsMessages) => {
     
     const listRef = useRef<ListImperativeAPI>(null);
     const rowHeightCache = useDynamicRowHeight({
@@ -98,9 +102,10 @@ const DialogsMessages = ({ dialogInfo, user, handleDeleteMessage }: IDialogsMess
             messages: dialogInfo.messages,
             dialogInfo,
             user,
-            handleDeleteMessage
+            handleDeleteMessage,
+            handleChangeMessage
         };
-    }, [dialogInfo, user, handleDeleteMessage]);
+    }, [dialogInfo, user, handleDeleteMessage, handleChangeMessage]);
 
     return (
         <div className='messages-list'>

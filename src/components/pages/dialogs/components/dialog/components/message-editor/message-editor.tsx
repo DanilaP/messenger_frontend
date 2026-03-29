@@ -6,17 +6,21 @@ import './message-editor.scss';
 
 interface IMessageEditorProps {
     message: IMessage
-    handleChangeMessage: (msg: IMessage) => void,
+    handleChangeMessage: (msg: IMessage, files: UploadFile[]) => void,
     handleCloseModal: () => void
 }
 
-const MessageEditor = ({ message, handleChangeMessage, handleCloseModal }: IMessageEditorProps) => {
+const MessageEditor = ({ 
+    message, 
+    handleChangeMessage, 
+    handleCloseModal 
+}: IMessageEditorProps) => {
 
     const [modifiedMessage, setModifiedMessage] = useState<IMessage>(message);
     const [modifiedFileList, setModifiedFileList] = useState<UploadFile[]>([]);
 
     const handleConfirmButtonClick = () => {
-        handleChangeMessage(modifiedMessage);
+        handleChangeMessage(modifiedMessage, modifiedFileList);
         handleCloseModal();
     }
 

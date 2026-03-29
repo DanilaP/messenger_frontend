@@ -1,4 +1,4 @@
-import { Dropdown, Modal, type MenuProps } from 'antd';
+import { Dropdown, Modal, type MenuProps, type UploadFile } from 'antd';
 import type { IDialog, IMessage, IOpponent } from '../../../../../../../models/dialogs/dialogs-interface';
 import type { IUser } from '../../../../../../../models/user/user-interface';
 import { deleteMessage } from '../../../../../../../models/dialogs/dialogs-api';
@@ -12,7 +12,8 @@ interface IMessageProps {
     message: IMessage,
     user: Partial<IUser>,
     dialogInfo: IDialog,
-    handleDeleteMessage: (message_id: number) => void
+    handleDeleteMessage: (message_id: number) => void,
+    handleChangeMessage: (message: IMessage, files: UploadFile[]) => void
 }
 
 const DialogMessage = memo(({ 
@@ -20,7 +21,8 @@ const DialogMessage = memo(({
     message, 
     user, 
     dialogInfo, 
-    handleDeleteMessage 
+    handleDeleteMessage,
+    handleChangeMessage
 }: IMessageProps) => {
 
     const [isModifyMessageModalOpen, setIsModifyMessageModalOpen] = useState<boolean>(false);
@@ -59,8 +61,8 @@ const DialogMessage = memo(({
         setIsModifyMessageModalOpen(!isModifyMessageModalOpen);
     }
 
-    const handleChangeMessage = (modifiedMessage: IMessage) => {
-        console.log(modifiedMessage);
+    const changeMessage = (modifiedMessage: IMessage, files: UploadFile[]) => {
+        handleChangeMessage(modifiedMessage, files);
     }
 
     return (
@@ -90,7 +92,7 @@ const DialogMessage = memo(({
                 >
                     <MessageEditor 
                         message={message}
-                        handleChangeMessage={handleChangeMessage}
+                        handleChangeMessage={changeMessage}
                         handleCloseModal={handleChangeModifyMessageModalVisibility}
                     />
                 </Modal>

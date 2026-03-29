@@ -4,6 +4,7 @@ import { getDialogInfo, getDialogsList } from '../../../models/dialogs/dialogs-a
 import { parseCustomDate } from '../../../helpers/parsers/parsers';
 import { type IDialog, type IDialogListItem, type IGetDialogResponse, type IGetDialogsListResponse, type IMessage, type IOpponent } from '../../../models/dialogs/dialogs-interface';
 import { type UserStore } from '../../../stores/user/user';
+import { type UploadFile } from 'antd';
 import DialogsList from './components/dialogs-list/dialogs-list';
 import Dialog from './components/dialog/dialog';
 import Loader from '../../partials/loader/loader';
@@ -51,10 +52,15 @@ const Dialogs = () => {
                 messages: dialogInfo.messages.filter(message => message.message_id !== message_id)
             }
             setDialogInfo(updatedDialogInfo);
-            handleUpdatedLastMessageBeforeDeleting(updatedDialogInfo);
+            handleUpdateLastMessageBeforeDeleting(updatedDialogInfo);
         }
     }
 
+    const handleChangeMessage = (message: IMessage, files: UploadFile[]) => {
+        console.log(message);
+        console.log(files);
+    }
+    
     const handleUpdateLastMessageBeforeSending = (message: IMessage) => {
         setDialogsList(prev => {
             const updatedList = prev.map(dialogListItem => {
@@ -73,7 +79,7 @@ const Dialogs = () => {
         });
     }
 
-    const handleUpdatedLastMessageBeforeDeleting = (dialogInfo: IDialog) => {
+    const handleUpdateLastMessageBeforeDeleting = (dialogInfo: IDialog) => {
         const lastMessage = dialogInfo.messages.sort()[dialogInfo.messages.length - 1];
         setDialogsList(prev => {
             const updatedList = prev.map(dialogListItem => {
@@ -120,14 +126,18 @@ const Dialogs = () => {
     }
     return (
         <div className='dialogs-wrapper'>
-            <DialogsList handleFetchDialogInfo = {handleFetchDialogInfo} dialogsList = {dialogsList} />
+            <DialogsList 
+                handleFetchDialogInfo={handleFetchDialogInfo} 
+                dialogsList={dialogsList} 
+            />
             {  
                 user && 
                     <Dialog 
-                        handleSendMessage = {handleSendMessage} 
-                        handleDeleteMessage = {handleDeleteMessage}
-                        user = {user} 
+                        handleSendMessage={handleSendMessage} 
+                        handleDeleteMessage={handleDeleteMessage}
+                        user={user} 
                         dialogInfo={dialogInfo} 
+                        handleChangeMessage={handleChangeMessage}
                     /> 
             }
         </div>
