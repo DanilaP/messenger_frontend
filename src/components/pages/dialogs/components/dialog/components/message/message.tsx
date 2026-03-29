@@ -1,8 +1,9 @@
 import { Dropdown, Modal, type MenuProps, type UploadFile } from 'antd';
-import type { IDialog, IMessage, IOpponent } from '../../../../../../../models/dialogs/dialogs-interface';
+import type { IDialog, IEditMessageResponse, IMessage, IOpponent } from '../../../../../../../models/dialogs/dialogs-interface';
 import type { IUser } from '../../../../../../../models/user/user-interface';
-import { deleteMessage } from '../../../../../../../models/dialogs/dialogs-api';
+import { deleteMessage, editMessage } from '../../../../../../../models/dialogs/dialogs-api';
 import { Fragment, memo, useState } from 'react';
+import type { IFile } from '../../../../../../../interfaces/interfaces';
 import FileList from '../../../../../../partials/file-list/file-list';
 import MessageEditor from '../message-editor/message-editor';
 import './message.scss';
@@ -13,7 +14,7 @@ interface IMessageProps {
     user: Partial<IUser>,
     dialogInfo: IDialog,
     handleDeleteMessage: (message_id: number) => void,
-    handleChangeMessage: (message: IMessage, files: UploadFile[]) => void
+    handleChangeMessage: (message: IMessage, files: IFile[]) => void
 }
 
 const DialogMessage = memo(({ 
@@ -61,8 +62,26 @@ const DialogMessage = memo(({
         setIsModifyMessageModalOpen(!isModifyMessageModalOpen);
     }
 
-    const changeMessage = (modifiedMessage: IMessage, files: UploadFile[]) => {
-        handleChangeMessage(modifiedMessage, files);
+    const changeMessage = async (modifiedMessage: IMessage, files: UploadFile[]) => {
+        const formData = new FormData();
+        formData.append('dialogId', dialogInfo.dialog_id.toString());
+        formData.append('messageId', modifiedMessage.message_id.toString());
+        formData.append('text', modifiedMessage.text);
+
+        files.forEach(file => {
+            if (file.originFileObj) {
+                formData.append('files', file.originFileObj);
+            }
+        });
+
+        await editMessage(formData)
+        .then((res: IEditMessageResponse) => {
+            const updatedFiles = files.length > 0 ? res.data.modifiedMessageInfo.files : modifiedMessage.files;
+            handleChangeMessage(modifiedMessage, updatedFiles);
+        })
+        .catch((error: unknown) => {
+            console.error(error);
+        })
     }
 
     return (

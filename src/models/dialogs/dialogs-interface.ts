@@ -10,6 +10,7 @@ export interface IOpponent {
 export interface IDialogListItem {
     dialog_id: number,
     last_message: {
+        id: number,
         text: string,
         date: string
     },
@@ -48,5 +49,16 @@ export interface ISendMessageResponse {
     data: {
         message: string,
         createdMessage: IMessage
+    }
+}
+
+export interface IEditMessageResponse {
+    data: {
+        message: string,
+        modifiedMessageInfo: {
+            id: string,
+            text: string,
+            files: IFile[]
+        }
     }
 }

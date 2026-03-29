@@ -4,7 +4,7 @@ import { getDialogInfo, getDialogsList } from '../../../models/dialogs/dialogs-a
 import { parseCustomDate } from '../../../helpers/parsers/parsers';
 import { type IDialog, type IDialogListItem, type IGetDialogResponse, type IGetDialogsListResponse, type IMessage, type IOpponent } from '../../../models/dialogs/dialogs-interface';
 import { type UserStore } from '../../../stores/user/user';
-import { type UploadFile } from 'antd';
+import type { IFile } from '../../../interfaces/interfaces';
 import DialogsList from './components/dialogs-list/dialogs-list';
 import Dialog from './components/dialog/dialog';
 import Loader from '../../partials/loader/loader';
@@ -56,13 +56,48 @@ const Dialogs = () => {
         }
     }
 
-    const handleChangeMessage = (message: IMessage, files: UploadFile[]) => {
+    const handleChangeMessage = (message: IMessage, files: IFile[]) => {
+        if (dialogInfo) {
+            const updatedDialogInfo = {
+                ...dialogInfo,
+                messages: dialogInfo.messages.map(msg => {
+                    if (msg.message_id === message.message_id) {
+                        return {
+                            ...msg,
+                            text: message.text,
+                            files: files
+                        }
+                    }
+                    return msg;
+                })
+            }
+            setDialogInfo(updatedDialogInfo);
+            handleUpdateLastMessageBeforeChanging(message);
+        }
         console.log(message);
         console.log(files);
     }
     
     const handleUpdateLastMessageBeforeChanging = (message: IMessage) => {
-        
+        setDialogsList(prev => {
+            const updatedList = prev.map(dialogListItem => {
+                if (dialogListItem.dialog_id === dialogInfo?.dialog_id) {
+                    if (dialogListItem.last_message.id === message.message_id) {
+                        return {
+                            ...dialogListItem,
+                            last_message: {
+                                id: dialogListItem.last_message.id,
+                                text: message.text !== "" ? message.text : "Файл",
+                                date: message.date
+                            }
+                        }
+                    }
+                    return dialogListItem;
+                }
+                return dialogListItem;
+            });
+            return handleSortDialogsListByLastMessageDate(updatedList);
+        });
     }
 
     const handleUpdateLastMessageBeforeSending = (message: IMessage) => {
@@ -72,6 +107,7 @@ const Dialogs = () => {
                     return {
                         ...dialogListItem,
                         last_message: {
+                            id: dialogListItem.last_message.id,
                             text: message.text !== "" ? message.text : "Файл",
                             date: message.date
                         }
@@ -91,6 +127,7 @@ const Dialogs = () => {
                     return {
                         ...dialogListItem,
                         last_message: {
+                            id: dialogListItem.last_message.id,
                             text: lastMessage.text !== "" ? lastMessage.text : "Файл",
                             date: lastMessage.date
                         }

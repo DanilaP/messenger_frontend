@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { List, useDynamicRowHeight, type ListImperativeAPI, type RowComponentProps } from 'react-window';
-import type { UploadFile } from 'antd';
+import type { IFile } from '../../../../../../../interfaces/interfaces';
 import type { IDialog, IMessage } from '../../../../../../../models/dialogs/dialogs-interface';
 import type { IUser } from '../../../../../../../models/user/user-interface';
 import DialogMessage from '../message/message';
@@ -10,7 +10,7 @@ interface IDialogsMessages {
     dialogInfo: IDialog,
     user: Partial<IUser>,
     handleDeleteMessage: (messageId: number) => void,
-    handleChangeMessage: (message: IMessage, files: UploadFile[]) => void
+    handleChangeMessage: (message: IMessage, files: IFile[]) => void
 }
 
 interface IRowData {
@@ -18,7 +18,7 @@ interface IRowData {
     dialogInfo: IDialog,
     user: Partial<IUser>,
     handleDeleteMessage: (messageId: number) => void,
-    handleChangeMessage: (message: IMessage, files: UploadFile[]) => void
+    handleChangeMessage: (message: IMessage, files: IFile[]) => void
 }
 
 const DEFAULT_MESSAGE_HEIGHT = 120;

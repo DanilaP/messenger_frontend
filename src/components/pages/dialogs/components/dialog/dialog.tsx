@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import type { IDialog, IMessage } from '../../../../../models/dialogs/dialogs-interface';
 import type { IUser } from '../../../../../models/user/user-interface';
-import type { UploadFile } from 'antd';
+import type { IFile } from '../../../../../interfaces/interfaces';
 import DialogHeader from './components/header/header';
 import DialogFooter from './components/footer/footer';
 import DialogsMessages from './components/messages-list/messages-list';
@@ -12,7 +12,7 @@ interface IDialogProps {
     user: Partial<IUser>,
     handleSendMessage: (message: IMessage) => void,
     handleDeleteMessage: (message_id: number) => void,
-    handleChangeMessage: (message: IMessage, files: UploadFile[]) => void
+    handleChangeMessage: (message: IMessage, files: IFile[]) => void
 }
 
 const Dialog = memo(({ 
