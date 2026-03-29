@@ -61,6 +61,10 @@ const Dialogs = () => {
         console.log(files);
     }
     
+    const handleUpdateLastMessageBeforeChanging = (message: IMessage) => {
+        
+    }
+
     const handleUpdateLastMessageBeforeSending = (message: IMessage) => {
         setDialogsList(prev => {
             const updatedList = prev.map(dialogListItem => {
