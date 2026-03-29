@@ -1,9 +1,13 @@
 import { Dropdown, Modal, type MenuProps, type UploadFile } from 'antd';
-import type { IDialog, IEditMessageResponse, IMessage, IOpponent } from '../../../../../../../models/dialogs/dialogs-interface';
-import type { IUser } from '../../../../../../../models/user/user-interface';
+import { message as messageAntd } from 'antd';
 import { deleteMessage, editMessage } from '../../../../../../../models/dialogs/dialogs-api';
 import { Fragment, memo, useState } from 'react';
+import { MdDeleteOutline } from "react-icons/md";
+import { MdContentCopy } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
+import type { IDialog, IEditMessageResponse, IMessage, IOpponent } from '../../../../../../../models/dialogs/dialogs-interface';
 import type { IFile } from '../../../../../../../interfaces/interfaces';
+import type { IUser } from '../../../../../../../models/user/user-interface';
 import FileList from '../../../../../../partials/file-list/file-list';
 import MessageEditor from '../message-editor/message-editor';
 import './message.scss';
@@ -27,16 +31,24 @@ const DialogMessage = memo(({
 }: IMessageProps) => {
 
     const [isModifyMessageModalOpen, setIsModifyMessageModalOpen] = useState<boolean>(false);
+    const [messageApi, contextHolder] = messageAntd.useMessage();
 
     const items: MenuProps['items'] = [
         {
+            label: 'Копировать',
+            key: '3',
+            icon: <MdContentCopy />,
+        },
+        {
             label: 'Редактировать',
             key: '1',
+            icon: <MdEdit />,
         },
         {
             label: 'Удалить',
             key: '2',
-        }
+            icon: <MdDeleteOutline />,
+        },
     ];
 
     const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
@@ -45,6 +57,9 @@ const DialogMessage = memo(({
         }
         if (key === '2') {
             deleteMessageFromDialog();
+        }
+        if (key === '3') {
+            handleCopyMessageText();
         }
     };
 
@@ -84,8 +99,26 @@ const DialogMessage = memo(({
         })
     }
 
+    const handleCopyMessageText = async () => {
+        if (!message.text) return;
+        try {
+            await navigator.clipboard.writeText(message.text);
+            messageApi.open({
+                type: 'success',
+                content: 'Текст успешно скопирован',
+            });   
+        } catch (error) {
+            messageApi.open({
+                type: 'error',
+                content: 'Ошибка при копировании текста',
+            });   
+            console.error(error);
+        }
+    }
+
     return (
         <Fragment>
+            {contextHolder} 
             <Dropdown menu={{ items, onClick: handleMenuClick }} trigger={['contextMenu']}>
                 <div className={`message-wrapper ${ senderInfo.id === user.id ? `user-message` : `opponent-message` }`}>
                     <div className="message">
