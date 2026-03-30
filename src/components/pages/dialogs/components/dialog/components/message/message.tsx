@@ -124,8 +124,10 @@ const DialogMessage = memo(({
     }
 
     const handleMessageWrapperClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        e.stopPropagation();
-        handleChooseMessage(message)
+       if (message.sender_id === user.id) {
+            e.stopPropagation();
+            handleChooseMessage(message)
+       }
     }
 
     return (

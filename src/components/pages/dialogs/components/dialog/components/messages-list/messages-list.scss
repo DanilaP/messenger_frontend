@@ -21,6 +21,17 @@
         background-color: var(--bg-color-block);
         border-bottom: 1px solid var(--border-color);
     }
+
+    & .scroll-down-button {
+        position: absolute;
+        bottom: 0px;
+        left: 10px;
+        cursor: pointer;
+
+        &:hover {
+            color: var(--default-color);
+        }
+    }
 }
 
 .messages-list-virtualized {

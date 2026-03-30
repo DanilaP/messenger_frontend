@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { List, useDynamicRowHeight, type ListImperativeAPI, type RowComponentProps } from 'react-window';
 import { Button } from 'antd';
 import { deleteMessage } from '../../../../../../../models/dialogs/dialogs-api';
+import { FaCircleChevronDown } from "react-icons/fa6";
 import type { IFile } from '../../../../../../../interfaces/interfaces';
 import type { IDialog, IMessage } from '../../../../../../../models/dialogs/dialogs-interface';
 import type { IUser } from '../../../../../../../models/user/user-interface';
@@ -75,6 +76,7 @@ const DialogsMessages = ({
     
     const listRef = useRef<ListImperativeAPI>(null);
     const [selectedMessages, setSelectedMessages] = useState<IMessage[]>([]);
+    const [isScrollAtBottom, setIsScrollAtBottom] = useState(true);
 
     const rowHeightCache = useDynamicRowHeight({
         defaultRowHeight: DEFAULT_MESSAGE_HEIGHT,
@@ -88,32 +90,6 @@ const DialogsMessages = ({
         }
         element.scrollTop = element.scrollHeight;
     }, []);
-
-    // Скролл вниз при добавлении новых сообщений
-    useEffect(() => {
-        if (dialogInfo.messages.length === 0) {
-            return;
-        }
-
-        let raf1: number | null = null;
-        let raf2: number | null = null;
-        const timeoutId = window.setTimeout(() => {
-            forceScrollToBottom();
-
-            raf1 = window.requestAnimationFrame(() => {
-                forceScrollToBottom();
-                raf2 = window.requestAnimationFrame(() => {
-                    forceScrollToBottom();
-                });
-            });
-        }, 0);
-
-        return () => {
-            window.clearTimeout(timeoutId);
-            if (raf1 !== null) window.cancelAnimationFrame(raf1);
-            if (raf2 !== null) window.cancelAnimationFrame(raf2);
-        };
-    }, [dialogInfo.dialog_id, dialogInfo.messages.length, forceScrollToBottom]);
 
     // Функция выбора/снятия выбора сообщения
     const handleChooseMessage = useCallback((message: IMessage) => {
@@ -158,9 +134,44 @@ const DialogsMessages = ({
         };
     }, [dialogInfo, user, selectedMessages, handleDeleteMessage, handleChangeMessage, handleChooseMessage]);
 
+    // Скролл вниз при добавлении новых сообщений
+    useEffect(() => {
+        if (dialogInfo.messages.length === 0) {
+            return;
+        }
+
+        let raf1: number | null = null;
+        let raf2: number | null = null;
+        const timeoutId = window.setTimeout(() => {
+            forceScrollToBottom();
+
+            raf1 = window.requestAnimationFrame(() => {
+                forceScrollToBottom();
+                raf2 = window.requestAnimationFrame(() => {
+                    forceScrollToBottom();
+                });
+            });
+        }, 0);
+
+        return () => {
+            window.clearTimeout(timeoutId);
+            if (raf1 !== null) window.cancelAnimationFrame(raf1);
+            if (raf2 !== null) window.cancelAnimationFrame(raf2);
+        };
+    }, [dialogInfo.dialog_id, dialogInfo.messages.length, forceScrollToBottom]);
+    
+    const handleScroll = useCallback(() => {
+        const element = listRef.current?.element;
+        if (!element) return;
+        const { scrollTop, scrollHeight, clientHeight } = element;
+        const atBottom = scrollHeight - scrollTop - clientHeight < 5;
+        setIsScrollAtBottom(atBottom);
+    }, []);
+
     return (
         <div className='messages-list'>
             <List
+                onScroll={handleScroll}
                 listRef={listRef}
                 className='messages-list-virtualized'
                 rowCount={dialogInfo.messages.length}
@@ -181,6 +192,12 @@ const DialogsMessages = ({
                         >
                             Удалить
                         </Button>
+                    </div>
+            }
+            {   
+                !isScrollAtBottom &&
+                    <div onClick={forceScrollToBottom} className="scroll-down-button">
+                        <FaCircleChevronDown fontSize={30} />
                     </div>
             }
         </div>
