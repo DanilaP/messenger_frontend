@@ -15,8 +15,8 @@ export const sendMessage = async (formData: FormData) => {
     return response;
 }   
 
-export const deleteMessage = async (dialogId: number, messageId: number) => {
-    const response = $api.post("/dialogs/message/delete", {dialogId, messagesIds: [messageId]});
+export const deleteMessage = async (dialogId: number, messagesIds: number[]) => {
+    const response = $api.post("/dialogs/message/delete", {dialogId, messagesIds});
     return response;
 }   
 

@@ -11,7 +11,7 @@ interface IDialogProps {
     dialogInfo: IDialog | null,
     user: Partial<IUser>,
     handleSendMessage: (message: IMessage) => void,
-    handleDeleteMessage: (message_id: number) => void,
+    handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void
 }
 

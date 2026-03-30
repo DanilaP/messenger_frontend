@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { List, useDynamicRowHeight, type ListImperativeAPI, type RowComponentProps } from 'react-window';
-import { Button, message } from 'antd';
+import { Button } from 'antd';
+import { deleteMessage } from '../../../../../../../models/dialogs/dialogs-api';
 import type { IFile } from '../../../../../../../interfaces/interfaces';
 import type { IDialog, IMessage } from '../../../../../../../models/dialogs/dialogs-interface';
 import type { IUser } from '../../../../../../../models/user/user-interface';
@@ -10,7 +11,7 @@ import './messages-list.scss';
 interface IDialogsMessages {
     dialogInfo: IDialog,
     user: Partial<IUser>,
-    handleDeleteMessage: (messageId: number) => void,
+    handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
     // Опционально: колбэк, который будет вызываться при изменении выбранных сообщений
     onSelectedMessagesChange?: (selectedMessages: IMessage[]) => void,
@@ -21,7 +22,7 @@ interface IRowData {
     dialogInfo: IDialog,
     user: Partial<IUser>,
     selectedMessages: IMessage[],
-    handleDeleteMessage: (messageId: number) => void,
+    handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
     handleChooseMessage: (message: IMessage) => void,
 }
@@ -130,8 +131,19 @@ const DialogsMessages = ({
         });
     }, [onSelectedMessagesChange]);
 
-    const handleDeleteButtonClick = () => {
-        console.log(selectedMessages);
+    const handleDeleteButtonClick = async () => {
+        if (selectedMessages.length !== 0) {
+            const selectedMessagesIds = selectedMessages.map(msg => msg.message_id);
+
+            await deleteMessage(dialogInfo.dialog_id, selectedMessagesIds)
+            .then(() => {
+                setSelectedMessages([]);
+                handleDeleteMessage(selectedMessagesIds);
+            })
+            .catch((error: unknown) => {
+                console.error(error);
+            })
+        }
     }
 
     const rowData = useMemo<IRowData>(() => {
@@ -162,7 +174,13 @@ const DialogsMessages = ({
                 selectedMessages.length !== 0 &&
                     <div className="selected-messages-wrapper">
                         Выбранных сообщений: { selectedMessages.length }
-                        <Button onClick={handleDeleteButtonClick} type='primary'>Удалить</Button>
+                        <Button 
+                            className='deleting-button' 
+                            onClick={handleDeleteButtonClick} 
+                            type='primary'
+                        >
+                            Удалить
+                        </Button>
                     </div>
             }
         </div>

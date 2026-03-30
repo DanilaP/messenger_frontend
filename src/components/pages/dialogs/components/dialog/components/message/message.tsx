@@ -19,7 +19,7 @@ interface IMessageProps {
     user: Partial<IUser>,
     dialogInfo: IDialog,
     isSelected: boolean,
-    handleDeleteMessage: (message_id: number) => void,
+    handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
     handleChooseMessage: (message: IMessage) => void
 }
@@ -56,7 +56,9 @@ const DialogMessage = memo(({
         },
     ];
 
-    const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
+    const handleMenuClick: MenuProps['onClick'] = (info) => {
+        info.domEvent.stopPropagation();
+        const { key } = info;
         if (key === '1') {
             handleChangeModifyMessageModalVisibility();
         }
@@ -69,9 +71,9 @@ const DialogMessage = memo(({
     };
 
     const deleteMessageFromDialog = async () => {
-        await deleteMessage(dialogInfo.dialog_id, message.message_id)
+        await deleteMessage(dialogInfo.dialog_id, [message.message_id])
         .then(() => {
-            handleDeleteMessage(message.message_id);
+            handleDeleteMessage([message.message_id]);
         })
         .catch((error: unknown) => {
             console.error(error);

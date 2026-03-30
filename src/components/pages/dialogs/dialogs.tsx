@@ -45,11 +45,16 @@ const Dialogs = () => {
         handleUpdateLastMessageBeforeSending(message);
     }
 
-    const handleDeleteMessage = (message_id: number) => {
+    const handleDeleteMessage = (messagesIds: number[]) => {
         if (dialogInfo) {
             const updatedDialogInfo = {
                 ...dialogInfo,
-                messages: dialogInfo.messages.filter(message => message.message_id !== message_id)
+                messages: dialogInfo.messages.filter(message => {
+                    if (messagesIds.find(id => message.message_id === id)) {
+                        return false;
+                    }
+                    return true;
+                })
             }
             setDialogInfo(updatedDialogInfo);
             handleUpdateLastMessageBeforeDeleting(updatedDialogInfo);
@@ -166,17 +171,17 @@ const Dialogs = () => {
     return (
         <div className='dialogs-wrapper'>
             <DialogsList 
-                handleFetchDialogInfo={handleFetchDialogInfo} 
                 dialogsList={dialogsList} 
+                handleFetchDialogInfo={handleFetchDialogInfo}
             />
             {  
                 user && 
                     <Dialog 
-                        handleSendMessage={handleSendMessage} 
-                        handleDeleteMessage={handleDeleteMessage}
                         user={user} 
                         dialogInfo={dialogInfo} 
                         handleChangeMessage={handleChangeMessage}
+                        handleSendMessage={handleSendMessage} 
+                        handleDeleteMessage={handleDeleteMessage}
                     /> 
             }
         </div>
