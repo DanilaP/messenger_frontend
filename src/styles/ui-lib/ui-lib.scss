@@ -82,3 +82,11 @@
         background-color: var(--bg-color-block);
     }
 }
+
+.ant-popover .ant-popover-container {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    scrollbar-color: var(--text-color) var(--bg-color);
+    scrollbar-width: thin;
+    border: 1px solid var(--border-color);
+}

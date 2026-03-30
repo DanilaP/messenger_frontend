@@ -62,6 +62,11 @@ const DialogFooter = memo(({
         setMessageText("");
     }
 
+    const handleAddEmojiToMessageText = (emoji: string) => {
+        const modifiedMessageText = messageText + emoji;
+        setMessageText(modifiedMessageText);
+    }
+
     return (
         <div className='dialog-footer'>
             <Input 
@@ -78,7 +83,7 @@ const DialogFooter = memo(({
                 /> 
             }
             {
-                <EmojiPicker />
+                <EmojiPicker handleChangeValue={ handleAddEmojiToMessageText } />
             }
             <Button onClick={handleSendButtonClick} type='primary'>Отправить</Button>
         </div>

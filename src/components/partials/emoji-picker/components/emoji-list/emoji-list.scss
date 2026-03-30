@@ -1,0 +1,13 @@
+.emoji-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    width: 200px;
+    height: 150px;
+    overflow-y: auto;
+    background-color: var(--bg-color);
+
+    & .emoji-item {
+        font-size: 20px;
+    }
+}
