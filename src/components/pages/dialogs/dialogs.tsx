@@ -74,8 +74,6 @@ const Dialogs = () => {
             setDialogInfo(updatedDialogInfo);
             handleUpdateLastMessageBeforeChanging(message);
         }
-        console.log(message);
-        console.log(files);
     }
     
     const handleUpdateLastMessageBeforeChanging = (message: IMessage) => {

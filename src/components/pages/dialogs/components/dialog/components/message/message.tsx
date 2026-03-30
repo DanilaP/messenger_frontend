@@ -5,6 +5,7 @@ import { Fragment, memo, useState } from 'react';
 import { MdDeleteOutline } from "react-icons/md";
 import { MdContentCopy } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
+import { CiCircleCheck } from 'react-icons/ci';
 import type { IDialog, IEditMessageResponse, IMessage, IOpponent } from '../../../../../../../models/dialogs/dialogs-interface';
 import type { IFile } from '../../../../../../../interfaces/interfaces';
 import type { IUser } from '../../../../../../../models/user/user-interface';
@@ -17,8 +18,10 @@ interface IMessageProps {
     message: IMessage,
     user: Partial<IUser>,
     dialogInfo: IDialog,
+    isSelected: boolean,
     handleDeleteMessage: (message_id: number) => void,
-    handleChangeMessage: (message: IMessage, files: IFile[]) => void
+    handleChangeMessage: (message: IMessage, files: IFile[]) => void,
+    handleChooseMessage: (message: IMessage) => void
 }
 
 const DialogMessage = memo(({ 
@@ -26,8 +29,10 @@ const DialogMessage = memo(({
     message, 
     user, 
     dialogInfo, 
+    isSelected,
     handleDeleteMessage,
-    handleChangeMessage
+    handleChangeMessage,
+    handleChooseMessage
 }: IMessageProps) => {
 
     const [isModifyMessageModalOpen, setIsModifyMessageModalOpen] = useState<boolean>(false);
@@ -116,11 +121,19 @@ const DialogMessage = memo(({
         }
     }
 
+    const handleMessageWrapperClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        e.stopPropagation();
+        handleChooseMessage(message)
+    }
+
     return (
         <Fragment>
             {contextHolder} 
-            <Dropdown menu={{ items, onClick: handleMenuClick }} trigger={['contextMenu']}>
-                <div className={`message-wrapper ${ senderInfo.id === user.id ? `user-message` : `opponent-message` }`}>
+            <div 
+                onClick={handleMessageWrapperClick} 
+                className={`message-wrapper ${ senderInfo.id === user.id ? `user-message` : `opponent-message` } ${ isSelected ? `selected-wrapper` : "" }`}
+            >
+                <Dropdown menu={{ items, onClick: handleMenuClick }} trigger={['contextMenu']}>
                     <div className="message">
                         <div className={`text-content ${ senderInfo.id === user.id ? `user-message` : `opponent-message` }`}>
                             <div className="avatar">
@@ -131,8 +144,14 @@ const DialogMessage = memo(({
                         <FileList files={ message.files } />
                         <div className="date">{message.date}</div>
                     </div>
-                </div>
-            </Dropdown>
+                </Dropdown>
+                {
+                    senderInfo.id === user.id &&
+                        <div className={`select-button ${ isSelected ? `selected` : "" } `}>
+                            <CiCircleCheck />
+                        </div>
+                }
+            </div>
             {
                 <Modal
                     centered

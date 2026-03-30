@@ -41,6 +41,26 @@
             right: 10px;
             font-size: 10px;
         }
+
+        & .user-message {
+            & .select-button {
+                display: none;
+            }
+
+            &:hover {
+                background-color: transparent;
+                border-radius: 0;
+
+                & .select-button {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    &.user-message.selected-wrapper {
+        background-color: var(--default-color-second);
+        border-radius: 8px;
     }
 }
 
@@ -49,6 +69,30 @@
     flex-direction: row-reverse;
     margin-right: 10px;
     margin-left: 10px;
+    cursor: pointer;
+
+    & .select-button {
+        position: absolute;
+        left: 20px;
+        top: calc(50% - 15px);
+        font-size: 25px;
+        opacity: 0.5;
+        visibility: hidden;
+    }
+
+    & .selected {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    &:hover {
+        background-color: var(--default-color-second);
+        border-radius: 8px;
+
+        & .select-button {
+            visibility: visible;
+        }
+    }
 }
 
 .opponent-message {
