@@ -1,4 +1,4 @@
-import { FiPaperclip } from 'react-icons/fi';
+import { FiUpload } from "react-icons/fi";
 import { Button, Input, Modal, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
@@ -54,7 +54,7 @@ const FileUploader = ({
 
     return (
         <div className="file-uploader">
-            <FiPaperclip onClick={handleChangeModalVisibility} />
+            <FiUpload onClick={handleChangeModalVisibility} />
             { isModalOpen &&
                 <Modal
                     destroyOnHidden
