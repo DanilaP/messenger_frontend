@@ -38,8 +38,17 @@
         & .date {
             position: absolute;
             bottom: 0px;
-            right: 10px;
+            right: 20px;
             font-size: 10px;
+        }
+
+        & .read-status {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            right: 5px;
+            bottom: 2px;
+            font-size: 14px;
         }
 
         & .user-message {

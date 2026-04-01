@@ -6,6 +6,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { MdContentCopy } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import { CiCircleCheck } from 'react-icons/ci';
+import { IoCheckmarkDoneOutline } from "react-icons/io5";
 import type { IDialog, IEditMessageResponse, IMessage, IOpponent } from '../../../../../../../models/dialogs/dialogs-interface';
 import type { IFile } from '../../../../../../../interfaces/interfaces';
 import type { IUser } from '../../../../../../../models/user/user-interface';
@@ -147,6 +148,12 @@ const DialogMessage = memo(({
                         </div>
                         <FileList files={ message.files } />
                         <div className="date">{message.date}</div>
+                        { 
+                            senderInfo.id === user.id &&
+                                <div className="read-status">
+                                    <IoCheckmarkDoneOutline />
+                                </div>
+                        }
                     </div>
                 </Dropdown>
                 {
