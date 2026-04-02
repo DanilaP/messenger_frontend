@@ -2,9 +2,9 @@ import { Button, Form, Input, message } from 'antd';
 import { Link, useNavigate } from "react-router";
 import { useState } from 'react';
 import { login } from '../../../../models/user/user-api';
+import { rootStore } from '../../../../stores/root/root';
 import type { ILoginResponse } from '../../../../models/user/user-interface';
 import FormItem from "antd/es/form/FormItem";
-import userStore from '../../../../stores/user/user';
 
 interface ISignInForm {
     login: string,
@@ -23,7 +23,7 @@ function SignIn() {
     const onFinish = (values: ISignInForm) => {
         login(values.login, values.password)
         .then((res: ILoginResponse) => {
-            userStore.dispatch({ type: "SET_USER", payload: res.data.user });
+            rootStore.dispatch({ type: "SET_USER", payload: res.data.user });
             navigate("/main/dialogs");
         })
         .catch((error) => {

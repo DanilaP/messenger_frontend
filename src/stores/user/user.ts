@@ -1,20 +1,18 @@
-import { createStore } from 'redux';
 import type { IUser } from '../../models/user/user-interface';
 
-export interface UserStore {
-    user: IUser | null,
+export interface UserState {
+    user: IUser | null;
 }
-const stateInitial: UserStore = {
+
+const initialState: UserState = {
     user: null,
-}
+};
 
-function reducer(state = stateInitial, action: { type: string, payload: any }) {
-    switch(action.type) {
-        case "SET_USER": return { ...state, user: action.payload }
-        default: return state;
+export const userReducer = (state = initialState, action: { type: string; payload: any }): UserState => {
+    switch (action.type) {
+        case 'SET_USER':
+            return { ...state, user: action.payload };
+        default:
+            return state;
     }
-}
-
-const userStore = createStore(reducer);
-
-export default userStore;
+};

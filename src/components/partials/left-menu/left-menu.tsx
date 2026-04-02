@@ -3,7 +3,7 @@ import { IoMdExit } from "react-icons/io";
 import { useNavigate } from "react-router";
 import { logout } from "../../../models/user/user-api";
 import { useSelector } from "react-redux";
-import type { UserStore } from "../../../stores/user/user";
+import type { RootState } from '../../../stores/root/root';
 import MenuItem from "./components/item/item";
 import './left-menu.scss';
 
@@ -13,7 +13,7 @@ interface ILeftMenuProps {
 
 const LeftMenu = ({ handleCloseMenu }: ILeftMenuProps) => {
 
-    const user = useSelector((state: UserStore) => state.user);
+    const user = useSelector((state: RootState) => state.user.user);
     const navigate = useNavigate();
 
     const handleExitClick = () => {

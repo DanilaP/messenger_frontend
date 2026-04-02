@@ -1,5 +1,5 @@
+import { rootStore } from "../stores/root/root";
 import axios from "axios";
-import userStore from "../stores/user/user";
 
 const $api = axios.create({
     baseURL: import.meta.env.VITE_APP_SERVER_API,
@@ -12,7 +12,7 @@ $api.interceptors.response.use(
     },
     (error) => {
         if (error.response && error.response.status === 401) {
-            userStore.dispatch({ type: "SET_USER", payload: null });
+            rootStore.dispatch({ type: "SET_USER", payload: null });
         }
         return Promise.reject(error);
     }

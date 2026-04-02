@@ -2,9 +2,9 @@ import { Button, Form, Input, message } from 'antd';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { registration } from '../../../../models/user/user-api';
+import { rootStore } from '../../../../stores/root/root';
 import type { IRegistrationResponse } from '../../../../models/user/user-interface';
 import FormItem from "antd/es/form/FormItem";
-import userStore from '../../../../stores/user/user';
 
 interface ISignUpForm {
     login: string,
@@ -25,7 +25,7 @@ function SignUp() {
     const onFinish = (values: ISignUpForm) => {
         registration(values)
         .then((res: IRegistrationResponse) => {
-            userStore.dispatch({ type: "SET_USER", payload: res.data.user });
+            rootStore.dispatch({ type: "SET_USER", payload: res.data.user });
             navigate("/main/dialogs");
         })
         .catch((error) => {

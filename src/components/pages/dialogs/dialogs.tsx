@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { getDialogInfo, getDialogsList } from '../../../models/dialogs/dialogs-api';
 import { parseCustomDate } from '../../../helpers/parsers/parsers';
 import { type IDialog, type IDialogListItem, type IGetDialogResponse, type IGetDialogsListResponse, type IMessage, type IOpponent } from '../../../models/dialogs/dialogs-interface';
-import { type UserStore } from '../../../stores/user/user';
+import type { RootState } from '../../../stores/root/root';
 import type { IFile } from '../../../interfaces/interfaces';
 import DialogsList from './components/dialogs-list/dialogs-list';
 import Dialog from './components/dialog/dialog';
@@ -12,7 +12,7 @@ import './dialogs.scss';
 
 const Dialogs = () => {
 
-    const user = useSelector((state: UserStore) => state.user);
+    const user = useSelector((state: RootState) => state.user.user);
     const [dialogsList, setDialogsList] = useState<IDialogListItem[]>([]);
     const [dialogInfo, setDialogInfo] = useState<IDialog | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
