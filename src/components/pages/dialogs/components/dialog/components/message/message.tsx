@@ -151,7 +151,7 @@ const DialogMessage = memo(({
                         { 
                             senderInfo.id === user.id &&
                                 <div className="read-status">
-                                    <IoCheckmarkDoneOutline />
+                                    <IoCheckmarkDoneOutline color={`${ message.isread ? `var(--default-color)` : `` }`} />
                                 </div>
                         }
                     </div>

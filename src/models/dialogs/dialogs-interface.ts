@@ -21,6 +21,7 @@ export interface IMessage {
     message_id: number,
     text: string,
     date: string,
+    isread: boolean,
     sender_id: number
     files: IFile[]
 }
