@@ -3,7 +3,7 @@ import { List, useDynamicRowHeight, type ListImperativeAPI, type RowComponentPro
 import { Button } from 'antd';
 import { deleteMessage } from '../../../../../../../models/dialogs/dialogs-api';
 import { FaCircleChevronDown } from "react-icons/fa6";
-import type { IFile } from '../../../../../../../interfaces/interfaces';
+import type { IFile } from '../../../../../../../interfaces/files';
 import type { IDialog, IMessage } from '../../../../../../../models/dialogs/dialogs-interface';
 import type { IUser } from '../../../../../../../models/user/user-interface';
 import DialogMessage from '../message/message';

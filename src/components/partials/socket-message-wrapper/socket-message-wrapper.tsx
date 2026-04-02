@@ -1,5 +1,10 @@
 
-import type { IChangeMessageData, IDeleteMessageData, INewMessageData, IReadMessageData } from '../../../interfaces/interfaces';
+import type { 
+    IChangeMessageData, 
+    IDeleteMessageData, 
+    INewMessageData, 
+    IReadMessageData 
+} from '../../../interfaces/socket-messages';
 import './socket-message-wrapper.scss';
 
 interface ISocketMessageWrapperProps {

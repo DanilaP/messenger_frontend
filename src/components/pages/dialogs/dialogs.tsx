@@ -5,7 +5,7 @@ import { parseCustomDate } from '../../../helpers/parsers/parsers';
 import { useNavigate, useParams } from 'react-router';
 import { type IDialog, type IDialogListItem, type IMessage } from '../../../models/dialogs/dialogs-interface';
 import type { RootState } from '../../../stores/root/root';
-import type { IFile } from '../../../interfaces/interfaces';
+import type { IFile } from '../../../interfaces/files';
 import DialogsList from './components/dialogs-list/dialogs-list';
 import Dialog from './components/dialog/dialog';
 import Loader from '../../partials/loader/loader';

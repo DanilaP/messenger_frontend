@@ -8,7 +8,7 @@ import { MdEdit } from "react-icons/md";
 import { CiCircleCheck } from 'react-icons/ci';
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
 import type { IDialog, IEditMessageResponse, IMessage, IOpponent } from '../../../../../../../models/dialogs/dialogs-interface';
-import type { IFile } from '../../../../../../../interfaces/interfaces';
+import type { IFile } from '../../../../../../../interfaces/files';
 import type { IUser } from '../../../../../../../models/user/user-interface';
 import FileList from '../../../../../../partials/file-list/file-list';
 import MessageEditor from '../message-editor/message-editor';

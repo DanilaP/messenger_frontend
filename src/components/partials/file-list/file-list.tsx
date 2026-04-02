@@ -1,4 +1,4 @@
-import type { IFile } from '../../../interfaces/interfaces';
+import type { IFile } from '../../../interfaces/files';
 import { FaFileWord } from "react-icons/fa";
 import { AiFillFileText } from "react-icons/ai";
 import { FaFileExcel } from "react-icons/fa";

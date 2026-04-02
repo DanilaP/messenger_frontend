@@ -2,7 +2,7 @@ import { memo, useEffect } from 'react';
 import { readMessages } from '../../../../../models/dialogs/dialogs-api';
 import type { IDialog, IMessage } from '../../../../../models/dialogs/dialogs-interface';
 import type { IUser } from '../../../../../models/user/user-interface';
-import type { IFile } from '../../../../../interfaces/interfaces';
+import type { IFile } from '../../../../../interfaces/files';
 import DialogHeader from './components/header/header';
 import DialogFooter from './components/footer/footer';
 import DialogsMessages from './components/messages-list/messages-list';

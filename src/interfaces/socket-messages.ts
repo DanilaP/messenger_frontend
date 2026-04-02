@@ -1,13 +1,7 @@
 import type { IMessage } from "../models/dialogs/dialogs-interface"
+import type { IFile } from "./files"
 
-export interface IFile {
-    name: string,
-    size: number,
-    type: string,
-    url: string
-}
-
-export interface INewMessage extends IMessage {
+interface INewMessage extends IMessage {
     dialog_id: number,
 }
 
