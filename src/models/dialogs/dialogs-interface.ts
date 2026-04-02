@@ -42,7 +42,11 @@ export interface IGetDialogsListResponse {
 export interface IGetDialogResponse {
     data: {
         message: string,
-        dialog: IMessage[]
+        dialog: {
+            id: number,
+            messages: IMessage[],
+            opponent: IOpponent
+        }
     }
 }
 

@@ -2,7 +2,8 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { getDialogInfo, getDialogsList } from '../../../models/dialogs/dialogs-api';
 import { parseCustomDate } from '../../../helpers/parsers/parsers';
-import { type IDialog, type IDialogListItem, type IGetDialogResponse, type IGetDialogsListResponse, type IMessage, type IOpponent } from '../../../models/dialogs/dialogs-interface';
+import { useNavigate, useParams } from 'react-router';
+import { type IDialog, type IDialogListItem, type IMessage } from '../../../models/dialogs/dialogs-interface';
 import type { RootState } from '../../../stores/root/root';
 import type { IFile } from '../../../interfaces/interfaces';
 import DialogsList from './components/dialogs-list/dialogs-list';
@@ -11,36 +12,20 @@ import Loader from '../../partials/loader/loader';
 import './dialogs.scss';
 
 const Dialogs = () => {
-
+    
+    const { id } = useParams<{ id: string }>();
     const user = useSelector((state: RootState) => state.user.user);
     const [dialogsList, setDialogsList] = useState<IDialogListItem[]>([]);
     const [dialogInfo, setDialogInfo] = useState<IDialog | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
-    const handleFetchDialogInfo = (choosenDialogId: number, opponent: IOpponent) => {
-        setIsLoading(false);
-        if (choosenDialogId) {
-            getDialogInfo(choosenDialogId)
-            .then((res: IGetDialogResponse) => {
-                setIsLoading(true);
-                setDialogInfo({
-                    dialog_id: choosenDialogId,
-                    messages: res.data.dialog,
-                    opponent: opponent
-                })
-            })
-            .catch((error: unknown) => {
-                console.error(error);
-            })
-        }
-    }
+    const navigate = useNavigate();
 
     const handleSendMessage = (message: IMessage) => {
         if (dialogInfo) {
             setDialogInfo({
                 ...dialogInfo,
                 messages: [...dialogInfo.messages, message]
-            })
+            });
         }
         handleUpdateLastMessageBeforeSending(message);
     }
@@ -152,16 +137,36 @@ const Dialogs = () => {
         return result;
     };
 
+    const handleChangeDialog = (dialogId: number) => {
+        navigate(`/main/dialogs/${dialogId}`);
+    }
+
     useEffect(() => {
-        getDialogsList()
-        .then((res: IGetDialogsListResponse) => {
-            setIsLoading(true);
-            setDialogsList(handleSortDialogsListByLastMessageDate(res.data.dialogs));
-        })
-        .catch((error: unknown) => {
-            console.error(error);
-        })
-    }, []);
+        const fetchData = async () => {
+            setIsLoading(false);
+
+            try {
+                const dialogsRes = await getDialogsList();
+                setDialogsList(handleSortDialogsListByLastMessageDate(dialogsRes.data.dialogs));
+
+                if (id) {
+                    const dialogRes = await getDialogInfo(Number(id));
+                    setDialogInfo({
+                        dialog_id: dialogRes.data.dialog.id,
+                        messages: dialogRes.data.dialog.messages,
+                        opponent: dialogRes.data.dialog.opponent,
+                    });
+                }
+            } 
+            catch (error) {
+                console.error(error);
+            } 
+            finally {
+                setIsLoading(true);
+            }
+        };
+        fetchData();
+    }, [id]);
 
     if (!isLoading) {
         return (
@@ -172,7 +177,7 @@ const Dialogs = () => {
         <div className='dialogs-wrapper'>
             <DialogsList 
                 dialogsList={dialogsList} 
-                handleFetchDialogInfo={handleFetchDialogInfo}
+                handleChangeDialog={handleChangeDialog}
             />
             {  
                 user && 

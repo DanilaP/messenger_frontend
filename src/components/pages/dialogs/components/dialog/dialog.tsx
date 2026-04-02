@@ -8,7 +8,6 @@ import DialogFooter from './components/footer/footer';
 import DialogsMessages from './components/messages-list/messages-list';
 import './dialog.scss';
 
-
 interface IDialogProps {
     dialogInfo: IDialog | null,
     user: Partial<IUser>,

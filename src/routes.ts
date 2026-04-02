@@ -20,7 +20,7 @@ export const publicRoutes = [
 ];
 export const routes = [
     {
-        path: '/main/dialogs',
+        path: '/main/dialogs/:id',
         component: MainLayout,
         children: Dialogs,
         authRequired: true,
