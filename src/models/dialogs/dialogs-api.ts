@@ -24,3 +24,8 @@ export const editMessage = async (formData: FormData) => {
     const response = $api.post("/dialogs/message/edit", formData);
     return response;
 }   
+
+export const readMessages = async (dialogId: number, opponentId: number) => {
+    const response = $api.post("/dialogs/message/read", {dialogId, opponentId});
+    return response;
+}  

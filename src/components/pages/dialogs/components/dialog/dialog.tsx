@@ -1,4 +1,5 @@
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
+import { readMessages } from '../../../../../models/dialogs/dialogs-api';
 import type { IDialog, IMessage } from '../../../../../models/dialogs/dialogs-interface';
 import type { IUser } from '../../../../../models/user/user-interface';
 import type { IFile } from '../../../../../interfaces/interfaces';
@@ -6,6 +7,7 @@ import DialogHeader from './components/header/header';
 import DialogFooter from './components/footer/footer';
 import DialogsMessages from './components/messages-list/messages-list';
 import './dialog.scss';
+
 
 interface IDialogProps {
     dialogInfo: IDialog | null,
@@ -22,6 +24,18 @@ const Dialog = memo(({
     handleDeleteMessage,
     handleChangeMessage
 }: IDialogProps) => {
+
+    useEffect(() => {
+        if (dialogInfo) {
+            readMessages(dialogInfo?.dialog_id, dialogInfo?.opponent.id)
+            .then(res => {
+                console.log(res);
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+        }
+    }, [dialogInfo]);
 
     if (!dialogInfo) {
         return (
