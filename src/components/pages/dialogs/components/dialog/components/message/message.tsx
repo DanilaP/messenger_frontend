@@ -45,16 +45,18 @@ const DialogMessage = memo(({
             key: '3',
             icon: <MdContentCopy />,
         },
-        {
-            label: 'Редактировать',
-            key: '1',
-            icon: <MdEdit />,
-        },
-        {
-            label: 'Удалить',
-            key: '2',
-            icon: <MdDeleteOutline />,
-        },
+        ...(senderInfo.id === user.id ? [
+            {
+                label: 'Редактировать',
+                key: '1',
+                icon: <MdEdit />,
+            },
+            {
+                label: 'Удалить',
+                key: '2',
+                icon: <MdDeleteOutline />,
+            },
+        ] : []),
     ];
 
     const handleMenuClick: MenuProps['onClick'] = (info) => {
