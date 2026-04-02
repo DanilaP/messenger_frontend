@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { getUserInfo } from './models/user/user-api';
 import { rootStore, type RootState } from './stores/root/root.ts';
+import { message } from 'antd';
+import SocketMessageWrapper from './components/partials/socket-message-wrapper/socket-message-wrapper.tsx';
 import './App.css';
 import './styles/themes/dark.scss';
 import './styles/themes/white.scss';
@@ -16,6 +18,7 @@ function App() {
     const location = useLocation();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const user = useSelector((state: RootState) => state.user.user);
+    const [messageApi, contextHolder] = message.useMessage();
     
     useEffect(() => {
         getUserInfo()
@@ -24,7 +27,7 @@ function App() {
             rootStore.dispatch({ type: "SET_USER", payload: res.data.user });
             
             if (location.pathname === "/") {
-                navigate("/main/dialogs");
+                navigate("/main/dialogs/initial");
             }
         })
         .catch((error) => {
@@ -45,10 +48,16 @@ function App() {
         const socket = new WebSocket("ws://localhost:5000/");
 
         socket.onopen = function() {
+            rootStore.dispatch({ type: "WS_CONNECT", payload: socket });
             console.log("Соединение с вебсокетом открыто");
         };
 
         socket.onmessage = function(event) {
+            rootStore.dispatch({ type: "WS_MESSAGE", payload: event.data });
+            messageApi.open({
+                type: 'info',
+                content: <SocketMessageWrapper data={JSON.parse(event.data)} />,
+            });
             console.log(event.data);
         };
 
@@ -64,6 +73,7 @@ function App() {
 
     return (
         <>
+        {contextHolder}
             <Routes>
                 {
                   routes.map(({ path, component: Component, children: Children }) => (

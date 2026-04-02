@@ -24,7 +24,7 @@ function SignIn() {
         login(values.login, values.password)
         .then((res: ILoginResponse) => {
             rootStore.dispatch({ type: "SET_USER", payload: res.data.user });
-            navigate("/main/dialogs");
+            navigate("/main/dialogs/initial");
         })
         .catch((error) => {
             console.error(error);

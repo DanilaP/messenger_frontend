@@ -8,6 +8,8 @@
     background-color: var(--bg-color);
 
     & .emoji-item {
+        background-color: transparent;
+        border: none;
         font-size: 20px;
     }
 }

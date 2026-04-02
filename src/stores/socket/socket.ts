@@ -17,8 +17,6 @@ export const websocketReducer = (
     switch (action.type) {
         case 'WS_CONNECT':
             return { ...state, connection: action.payload, isConnected: true };
-        case 'WS_DISCONNECT':
-            return { ...state, connection: null, isConnected: false };
         case 'WS_MESSAGE':
             return { ...state, lastMessage: action.payload };
         default:
