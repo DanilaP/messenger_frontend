@@ -1,7 +1,7 @@
 import { publicRoutes, routes } from './routes';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router';
 import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getUserInfo } from './models/user/user-api';
 import { rootStore, type RootState } from './stores/root/root.ts';
 import { message } from 'antd';
@@ -16,9 +16,14 @@ function App() {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const locationPathRef = useRef(location.pathname);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [messageApi, contextHolder] = message.useMessage();
     const user = useSelector((state: RootState) => state.user.user);
+    
+    useEffect(() => {
+        locationPathRef.current = location.pathname;
+    }, [location.pathname]);
 
     useEffect(() => {
         getUserInfo()
@@ -55,7 +60,8 @@ function App() {
         socket.onmessage = function(event) {
             const parsedData = JSON.parse(event.data);
             rootStore.dispatch({ type: "WS_MESSAGE", payload: event.data });
-            if (location.pathname !== `/main/dialogs/${parsedData.dialogId}`) {
+
+            if (locationPathRef.current !== `/main/dialogs/${parsedData.dialogId}`) {
                 messageApi.open({
                     type: 'info',
                     content: <SocketMessageWrapper data={parsedData} />,
@@ -72,7 +78,6 @@ function App() {
         socket.onerror = function(error) {
             console.error(error);
         };
-
     }, [])
 
     return (
