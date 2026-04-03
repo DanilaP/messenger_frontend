@@ -66,6 +66,7 @@ function App() {
                     type: 'info',
                     content: <SocketMessageWrapper data={parsedData} />,
                     className: 'custom-message-position',
+                    icon: <></>
                 });
                 console.log(event.data);
             }

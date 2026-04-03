@@ -8,7 +8,13 @@ interface INewMessage extends IMessage {
 export type INewMessageData = {
     type: "new_message_dialog",
     dialogId: number,
-    message: INewMessage
+    message: INewMessage,
+    senderInfo: {
+        id: number,
+        name: string,
+        surname: string,
+        avatar: string
+    }
 }
 
 export type IDeleteMessageData = {
