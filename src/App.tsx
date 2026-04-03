@@ -17,9 +17,9 @@ function App() {
     const navigate = useNavigate();
     const location = useLocation();
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const user = useSelector((state: RootState) => state.user.user);
     const [messageApi, contextHolder] = message.useMessage();
-    
+    const user = useSelector((state: RootState) => state.user.user);
+
     useEffect(() => {
         getUserInfo()
         .then((res) => {
@@ -53,12 +53,16 @@ function App() {
         };
 
         socket.onmessage = function(event) {
+            const parsedData = JSON.parse(event.data);
             rootStore.dispatch({ type: "WS_MESSAGE", payload: event.data });
-            messageApi.open({
-                type: 'info',
-                content: <SocketMessageWrapper data={JSON.parse(event.data)} />,
-            });
-            console.log(event.data);
+            if (location.pathname !== `/main/dialogs/${parsedData.dialogId}`) {
+                messageApi.open({
+                    type: 'info',
+                    content: <SocketMessageWrapper data={parsedData} />,
+                    className: 'custom-message-position',
+                });
+                console.log(event.data);
+            }
         };
 
         socket.onclose = function() {

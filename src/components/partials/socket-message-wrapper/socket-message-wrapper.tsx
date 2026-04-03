@@ -1,4 +1,3 @@
-
 import type { 
     IChangeMessageData, 
     IDeleteMessageData, 
@@ -12,11 +11,13 @@ interface ISocketMessageWrapperProps {
 }
 
 const SocketMessageWrapper = ({ data }: ISocketMessageWrapperProps) => {
-    return (
-        <div className='socket-message-wrapper'>
-            { data.type }
-        </div>
-    );
+    if (data.type !== 'read_message_dialog') {
+        return (
+            <div className='socket-message-wrapper'>
+                { data.type }
+            </div>
+        );
+    }
 };
 
 export default SocketMessageWrapper;
