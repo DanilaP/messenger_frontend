@@ -34,5 +34,13 @@
         right: 20px;
         top: 0;
         cursor: pointer;
+
+        & .icon {
+            cursor: pointer;
+
+            &:hover {
+                color: var(--default-color);
+            }
+        }
     }
 }
