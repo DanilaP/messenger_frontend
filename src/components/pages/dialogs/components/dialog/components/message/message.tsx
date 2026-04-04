@@ -127,10 +127,14 @@ const DialogMessage = memo(({
     }
 
     const handleMessageWrapperClick = (e: React.MouseEvent<HTMLDivElement>) => {
-       if (message.sender_id === user.id) {
+        if (message.sender_id === user.id) {
             e.stopPropagation();
-            handleChooseMessage(message)
-       }
+            handleChooseMessage(message);
+        }
+    }
+
+    const handleMessageClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        e.stopPropagation();
     }
 
     return (
@@ -141,7 +145,7 @@ const DialogMessage = memo(({
                 className={`message-wrapper ${ senderInfo.id === user.id ? `user-message` : `opponent-message` } ${ isSelected ? `selected-wrapper` : "" }`}
             >
                 <Dropdown menu={{ items, onClick: handleMenuClick }} trigger={['contextMenu']}>
-                    <div className="message">
+                    <div onClick={handleMessageClick} className="message">
                         <div className={`text-content ${ senderInfo.id === user.id ? `user-message` : `opponent-message` }`}>
                             <div className="avatar">
                                 <img className='image' src = {senderInfo.avatar} />

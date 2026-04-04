@@ -42,8 +42,10 @@ const FileList = ({ files }: IFileListProps) => {
                             <div className="icon">
                                 { returnFileIcon(file.type, file.url) }
                             </div>
-                            <div className="name">{ file.name }</div>
-                            <div className="size">{ (file.size / 8 / 1024 / 1024).toFixed(2) } мб</div>
+                            <div className="file-info">
+                                <div className="name">{ file.name }</div>
+                                <div className="size">{ (file.size / 8 / 1024 / 1024).toFixed(2) } мб</div>
+                            </div>
                         </div>
                     )
                 })

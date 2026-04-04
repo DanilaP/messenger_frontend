@@ -17,6 +17,12 @@
             font-size: 60px;
         }
 
+        & .file-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
         &:hover {
             & .name {
                 color: var(--default-color);
