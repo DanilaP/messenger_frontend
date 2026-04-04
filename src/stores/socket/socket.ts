@@ -5,21 +5,21 @@ export interface WebSocketState {
 }
 
 const initialState: WebSocketState = {
-    connection: null,
-    isConnected: false,
-    lastMessage: null,
+	connection: null,
+	isConnected: false,
+	lastMessage: null,
 };
 
 export const websocketReducer = (
-    state = initialState,
-    action: { type: string; payload: any }
+	state = initialState,
+	action: { type: string; payload: any }
 ): WebSocketState => {
-    switch (action.type) {
-        case 'WS_CONNECT':
-            return { ...state, connection: action.payload, isConnected: true };
-        case 'WS_MESSAGE':
-            return { ...state, lastMessage: action.payload };
-        default:
-            return state;
-    }
+	switch (action.type) {
+	case "WS_CONNECT":
+		return { ...state, connection: action.payload, isConnected: true };
+	case "WS_MESSAGE":
+		return { ...state, lastMessage: action.payload };
+	default:
+		return state;
+	}
 };

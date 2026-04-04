@@ -1,4 +1,4 @@
-import type { IFile } from "../../interfaces/files"
+import type { IFile } from "../../interfaces/files";
 
 export interface IOpponent {
     id: number,

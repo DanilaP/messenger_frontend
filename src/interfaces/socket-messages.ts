@@ -1,5 +1,5 @@
-import type { IMessage } from "../models/dialogs/dialogs-interface"
-import type { IFile } from "./files"
+import type { IMessage } from "../models/dialogs/dialogs-interface";
+import type { IFile } from "./files";
 
 interface INewMessage extends IMessage {
     dialog_id: number,

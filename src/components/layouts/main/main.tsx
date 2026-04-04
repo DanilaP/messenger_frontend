@@ -1,8 +1,8 @@
-import * as React from 'react';
+import * as React from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { useState } from 'react';
-import LeftMenu from '../../partials/left-menu/left-menu';
-import './main.scss';
+import { useState } from "react";
+import LeftMenu from "../../partials/left-menu/left-menu";
+import "./main.scss";
 
 interface MainLayoutProps {
     children: React.ReactElement | null
@@ -10,27 +10,27 @@ interface MainLayoutProps {
 
 export default function MainLayout (props: MainLayoutProps) {
 
-    const [isLeftMenuOpen, setIsLeftMenuOpen] = useState<boolean>(false);
-    const { children } = props;
+	const [isLeftMenuOpen, setIsLeftMenuOpen] = useState<boolean>(false);
+	const { children } = props;
 
-    const handleChangeMenuVisibility = () => {
-        setIsLeftMenuOpen(!isLeftMenuOpen);
-    }
+	const handleChangeMenuVisibility = () => {
+		setIsLeftMenuOpen(!isLeftMenuOpen);
+	};
 
-    return (
-        <div className='main-wrapper'>
-            <div className="main-header">
-                <GiHamburgerMenu 
-                    onClick={ handleChangeMenuVisibility } 
-                    className='left-menu-icon' 
-                    fontSize={30} 
-                />
-            </div>
-            <div className="main-content">{ children }</div>
-            <div className="main-footer">
+	return (
+		<div className='main-wrapper'>
+			<div className="main-header">
+				<GiHamburgerMenu 
+					onClick={ handleChangeMenuVisibility } 
+					className='left-menu-icon' 
+					fontSize={ 30 } 
+				/>
+			</div>
+			<div className="main-content">{ children }</div>
+			<div className="main-footer">
 
-            </div>
-            { isLeftMenuOpen && <LeftMenu handleCloseMenu={ handleChangeMenuVisibility } /> }
-        </div>
-    );
+			</div>
+			{ isLeftMenuOpen && <LeftMenu handleCloseMenu={ handleChangeMenuVisibility } /> }
+		</div>
+	);
 }
