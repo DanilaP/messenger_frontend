@@ -14,7 +14,7 @@
         & .icon {
             display: flex;
             align-items: center;
-            font-size: 20px;
+            font-size: 60px;
         }
 
         &:hover {
@@ -25,8 +25,9 @@
     }
 
     &-image {
-        width: 30px;
-        height: 30px;
+        width: 60px;
+        height: 60px;
         background-size: cover;
+        border-radius: 8px;
     }
 }
