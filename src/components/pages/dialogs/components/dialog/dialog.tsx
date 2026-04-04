@@ -11,6 +11,7 @@ import './dialog.scss';
 interface IDialogProps {
     dialogInfo: IDialog | null,
     user: Partial<IUser>,
+    isMobile: boolean,
     handleSendMessage: (message: IMessage) => void,
     handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void
@@ -19,6 +20,7 @@ interface IDialogProps {
 const Dialog = memo(({ 
     dialogInfo, 
     user, 
+    isMobile,
     handleSendMessage, 
     handleDeleteMessage,
     handleChangeMessage
@@ -41,7 +43,7 @@ const Dialog = memo(({
         )
     }
     return (
-        <div className='dialog-wrapper'>
+        <div className={isMobile ? 'dialog-wrapper-mobile' : 'dialog-wrapper'}>
             <DialogHeader opponent={dialogInfo.opponent} />
             <DialogsMessages 
                 user={user} 

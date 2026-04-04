@@ -20,3 +20,9 @@
         width: 60vw;
     }
 }
+
+@media screen and (max-width: 610px) {
+    .dialog-footer {
+        width: 100vw;
+    }
+}

@@ -1,8 +1,19 @@
-.dialogs-list-wrapper {
+@mixin dialogs-list-base {
     display: flex;
     flex-direction: column;
     gap: 5px;
     padding: 20px;
     border-right: 1px solid var(--border-color);
     background-color: var(--default-color-second);
+    overflow-y: auto;
+}
+
+.dialogs-list-wrapper {
+    @include dialogs-list-base;
+}
+
+.dialogs-list-wrapper-mobile {
+    @include dialogs-list-base;
+    width: 100vw;
+    height: 100vh;
 }

@@ -5,6 +5,13 @@
     padding-top: 40.8px;
 }
 
+.dialogs-wrapper-mobile {
+    display: flex;
+    flex-wrap: wrap;
+    padding-top: 40.8px;
+    height: 100vh;
+}
+
 @media screen and (max-width: 925px) {
     .dialogs-wrapper {
         grid-template-columns: 40% 60%;

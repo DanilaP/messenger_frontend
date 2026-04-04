@@ -23,3 +23,11 @@
         }
     }
 }
+
+@media screen and (max-width: 610px) {
+    .main-wrapper {
+        & .main-header {
+            padding: 5px 10px 5px 10px;
+        }
+    }
+}

@@ -5,11 +5,13 @@ import './dialogs-list.scss';
 
 interface IDialogsListProps {
     dialogsList: IDialogListItem[],
+    isMobile: boolean,
     handleChangeDialog: (dialogId: number) => void
 }
 
 const DialogsList = memo(({ 
     dialogsList, 
+    isMobile,
     handleChangeDialog
 }: IDialogsListProps) => {
 
@@ -18,7 +20,7 @@ const DialogsList = memo(({
     }
 
     return (
-        <div className='dialogs-list-wrapper'>
+        <div className={isMobile ? 'dialogs-list-wrapper-mobile' : 'dialogs-list-wrapper'}>
             {
                 dialogsList.map(dialogListItem => {
                     return (

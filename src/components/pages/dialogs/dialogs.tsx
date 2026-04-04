@@ -20,6 +20,8 @@ const Dialogs = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const navigate = useNavigate();
 
+    const [isMobile, setIsMobile] = useState<boolean>(false);
+
     const handleSendMessage = (message: IMessage) => {
         if (dialogInfo) {
             setDialogInfo({
@@ -158,8 +160,8 @@ const Dialogs = () => {
                     });
                 }
             } 
-            catch (error) {
-                console.error(error);
+            catch {
+                setDialogInfo(null);
             } 
             finally {
                 setIsLoading(true);
@@ -168,26 +170,48 @@ const Dialogs = () => {
         fetchData();
     }, [id]);
 
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 610);
+        };
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     if (!isLoading) {
         return (
             <Loader />
         )
     }
     return (
-        <div className='dialogs-wrapper'>
-            <DialogsList 
-                dialogsList={dialogsList} 
-                handleChangeDialog={handleChangeDialog}
-            />
+        <div className={isMobile ? 'dialogs-wrapper-mobile' : 'dialogs-wrapper'}>
+            { 
+                !isMobile || (isMobile && !dialogInfo) 
+                    ?
+                        <DialogsList 
+                            dialogsList={dialogsList} 
+                            handleChangeDialog={handleChangeDialog}
+                            isMobile={isMobile}
+                        />
+                    : null
+            }
             {  
-                user && 
-                    <Dialog 
-                        user={user} 
-                        dialogInfo={dialogInfo} 
-                        handleChangeMessage={handleChangeMessage}
-                        handleSendMessage={handleSendMessage} 
-                        handleDeleteMessage={handleDeleteMessage}
-                    /> 
+                user ? 
+                    !isMobile || (isMobile && dialogInfo)
+                        ?
+                            <Dialog 
+                                user={user} 
+                                dialogInfo={dialogInfo} 
+                                isMobile={isMobile}
+                                handleChangeMessage={handleChangeMessage}
+                                handleSendMessage={handleSendMessage} 
+                                handleDeleteMessage={handleDeleteMessage}
+                            />
+                        : null
+                : null
             }
         </div>
     );

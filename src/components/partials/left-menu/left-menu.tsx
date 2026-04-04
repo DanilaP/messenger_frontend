@@ -29,7 +29,7 @@ const LeftMenu = ({ handleCloseMenu }: ILeftMenuProps) => {
 
     const handleDialogsClick = () => {
         handleCloseMenu();
-        navigate("/main/dialogs");
+        navigate("/main/dialogs/initial");
     }
 
     return (
