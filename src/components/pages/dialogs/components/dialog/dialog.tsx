@@ -14,7 +14,8 @@ interface IDialogProps {
     isMobile: boolean,
     handleSendMessage: (message: IMessage) => void,
     handleDeleteMessage: (messagesIds: number[]) => void,
-    handleChangeMessage: (message: IMessage, files: IFile[]) => void
+    handleChangeMessage: (message: IMessage, files: IFile[]) => void,
+	handleGetNextMessages: () => void
 }
 
 const Dialog = memo(({ 
@@ -23,7 +24,8 @@ const Dialog = memo(({
 	isMobile,
 	handleSendMessage, 
 	handleDeleteMessage,
-	handleChangeMessage
+	handleChangeMessage,
+	handleGetNextMessages
 }: IDialogProps) => {
 
 	useEffect(() => {
@@ -50,6 +52,7 @@ const Dialog = memo(({
 				dialogInfo={ dialogInfo } 
 				handleDeleteMessage={ handleDeleteMessage }
 				handleChangeMessage={ handleChangeMessage }
+				handleGetNextMessages={ handleGetNextMessages }
 			/>
 			<DialogFooter handleSendMessage = { handleSendMessage } dialogInfo={ dialogInfo } />
 		</div>

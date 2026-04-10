@@ -5,8 +5,8 @@ export const getDialogsList = async () => {
 	return response;
 };
 
-export const getDialogInfo = async (dialogId: number) => {
-	const response = $api.get(`/dialogs?id=${dialogId}`);
+export const getDialogInfo = async (dialogId: number, messageId?: number) => {
+	const response = $api.get(`/dialogs?id=${dialogId}${messageId ? `&messageId=${messageId}` : ``}`);
 	return response;
 };
 

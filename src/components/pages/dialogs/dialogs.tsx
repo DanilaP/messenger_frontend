@@ -139,6 +139,17 @@ const Dialogs = () => {
 		return result;
 	};
 
+	const handleGetNextMessages = async () => {
+		const lastMessage = dialogInfo?.messages[0];
+		const dialogRes = await getDialogInfo(Number(id), lastMessage?.message_id);
+		if (dialogInfo) {
+			setDialogInfo({
+				...dialogInfo,
+				messages: [...dialogRes.data.dialog.messages, ...dialogInfo.messages],
+			});
+		}
+	};
+
 	const handleChangeDialog = (dialogId: number) => {
 		navigate(`/main/dialogs/${dialogId}`);
 	};
@@ -209,6 +220,7 @@ const Dialogs = () => {
 							handleChangeMessage={ handleChangeMessage }
 							handleSendMessage={ handleSendMessage } 
 							handleDeleteMessage={ handleDeleteMessage }
+							handleGetNextMessages={ handleGetNextMessages }
 						/>
 						: null
 					: null

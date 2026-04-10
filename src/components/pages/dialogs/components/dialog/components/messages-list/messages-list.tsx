@@ -14,6 +14,7 @@ interface IDialogsMessages {
     user: Partial<IUser>,
     handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
+	handleGetNextMessages: () => void,
     // Опционально: колбэк, который будет вызываться при изменении выбранных сообщений
     onSelectedMessagesChange?: (selectedMessages: IMessage[]) => void,
 }
@@ -71,13 +72,15 @@ const DialogsMessages = ({
 	user, 
 	handleDeleteMessage, 
 	handleChangeMessage,
+	handleGetNextMessages,
 	onSelectedMessagesChange,
 }: IDialogsMessages) => {
     
 	const listRef = useRef<ListImperativeAPI>(null);
 	const [selectedMessages, setSelectedMessages] = useState<IMessage[]>([]);
 	const [isScrollAtBottom, setIsScrollAtBottom] = useState(true);
-
+	const [isLoadingMore, setIsLoadingMore] = useState(false);
+	
 	const rowHeightCache = useDynamicRowHeight({
 		defaultRowHeight: DEFAULT_MESSAGE_HEIGHT,
 		key: `${dialogInfo.dialog_id}-${dialogInfo.messages.length}`
@@ -133,7 +136,7 @@ const DialogsMessages = ({
 			handleChooseMessage,
 		};
 	}, [dialogInfo, user, selectedMessages, handleDeleteMessage, handleChangeMessage, handleChooseMessage]);
-
+	
 	// Скролл вниз при добавлении новых сообщений
 	useEffect(() => {
 		if (dialogInfo.messages.length === 0) {
@@ -160,13 +163,20 @@ const DialogsMessages = ({
 		};
 	}, [dialogInfo.dialog_id, dialogInfo.messages.length, forceScrollToBottom]);
     
-	const handleScroll = useCallback(() => {
+	const handleScroll = useCallback(async () => {
 		const element = listRef.current?.element;
 		if (!element) return;
 		const { scrollTop, scrollHeight, clientHeight } = element;
 		const atBottom = scrollHeight - scrollTop - clientHeight < 5;
 		setIsScrollAtBottom(atBottom);
-	}, []);
+
+		const atTop = scrollTop <= 5;
+		if (atTop && !isLoadingMore && dialogInfo.messages.length > 0) {
+			setIsLoadingMore(true);
+			await handleGetNextMessages();
+			setIsLoadingMore(false);
+		}
+	}, [handleGetNextMessages, isLoadingMore, dialogInfo.messages.length]);
 
 	return (
 		<div className='messages-list'>
