@@ -35,7 +35,8 @@ const DialogsMessages = ({
 	const [isLoadingMore, setIsLoadingMore] = useState(false);
 	const [containerHeight, setContainerHeight] = useState(0);
 	const containerRef = useRef<HTMLDivElement>(null);
-    
+	const savedScrollTopRef = useRef<number | null>(null);
+	const savedScrollHeightRef = useRef<number | null>(null);
 	// Флаг для первоначального скролла (чтобы не вызывать лишний раз)
 	const initialScrollDoneRef = useRef(false);
 
@@ -121,6 +122,20 @@ const DialogsMessages = ({
 		prevFirstMessageIdRef.current = currentFirstId;
 	}, [dialogInfo.messages, forceScrollToBottom]);
 
+	const adjustScrollAfterLoad = useCallback(() => {
+		if (savedScrollTopRef.current !== null && savedScrollHeightRef.current !== null) {
+			const container = listRef.current?.getScrollElement();
+			if (container) {
+				const newScrollHeight = container.scrollHeight;
+				const addedHeight = newScrollHeight - savedScrollHeightRef.current;
+				container.scrollTop = savedScrollTopRef.current + addedHeight;
+			}
+			savedScrollTopRef.current = null;
+			savedScrollHeightRef.current = null;
+		}
+		setIsLoadingMore(false);
+	}, []);
+
 	const handleScroll = useCallback(async (event: React.UIEvent<HTMLDivElement>) => {
 		const target = event.currentTarget;
 		const { scrollTop, scrollHeight, clientHeight } = target;
@@ -129,11 +144,17 @@ const DialogsMessages = ({
 
 		const atTop = scrollTop <= 5;
 		if (atTop && !isLoadingMore && dialogInfo.messages.length > 0) {
+			const container = listRef.current?.getScrollElement();
+			if (container) {
+				savedScrollTopRef.current = container.scrollTop;
+				savedScrollHeightRef.current = container.scrollHeight;
+			}
 			setIsLoadingMore(true);
 			await handleGetNextMessages();
-			setIsLoadingMore(false);
+			// Даём время на обновление DOM и виртуального списка
+			setTimeout(adjustScrollAfterLoad, 0);
 		}
-	}, [handleGetNextMessages, isLoadingMore, dialogInfo.messages.length]);
+	}, [handleGetNextMessages, isLoadingMore, dialogInfo.messages.length, adjustScrollAfterLoad]);
 
 	const renderMessage = useCallback((message: IMessage) => {
 		const isSelected = selectedMessages.some(
