@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { List, useDynamicRowHeight, type ListImperativeAPI, type RowComponentProps } from "react-window";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "antd";
 import { deleteMessage } from "../../../../../../../models/dialogs/dialogs-api";
 import { FaCircleChevronDown } from "react-icons/fa6";
@@ -7,6 +6,7 @@ import type { IFile } from "../../../../../../../interfaces/files";
 import type { IDialog, IMessage } from "../../../../../../../models/dialogs/dialogs-interface";
 import type { IUser } from "../../../../../../../models/user/user-interface";
 import DialogMessage from "../message/message";
+import VirtualizedList, { type VirtualizedListRef } from "../../../../../../partials/virtualized-list/virtualized-list";
 import "./messages-list.scss";
 
 interface IDialogsMessages {
@@ -14,58 +14,11 @@ interface IDialogsMessages {
     user: Partial<IUser>,
     handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
-	handleGetNextMessages: () => void,
-    // Опционально: колбэк, который будет вызываться при изменении выбранных сообщений
+    handleGetNextMessages: () => void,
     onSelectedMessagesChange?: (selectedMessages: IMessage[]) => void,
 }
 
-interface IRowData {
-    messages: IDialog["messages"],
-    dialogInfo: IDialog,
-    user: Partial<IUser>,
-    selectedMessages: IMessage[],
-    handleDeleteMessage: (messagesIds: number[]) => void,
-    handleChangeMessage: (message: IMessage, files: IFile[]) => void,
-    handleChooseMessage: (message: IMessage) => void,
-}
-
-const DEFAULT_MESSAGE_HEIGHT = 120;
-
-type IMessageRowProps = RowComponentProps<IRowData>;
-
 const MESSAGE_GAP = 10;
-
-const MessageRow = ({ index, style, ...data }: IMessageRowProps) => {
-	const message = data.messages[index];
-
-	if (!message) {
-		return null;
-	}
-
-	// Проверяем, выбрано ли текущее сообщение
-	const isSelected = data.selectedMessages.some(
-		selected => selected.message_id === message.message_id
-	);
-
-	const senderInfo = message.sender_id === data.user.id ? data.user : data.dialogInfo.opponent;
-
-	return (
-		<div style={ style }>
-			<div style={ { paddingBottom: MESSAGE_GAP } }>
-				<DialogMessage
-					user={ data.user }
-					senderInfo={ senderInfo }
-					message={ message }
-					dialogInfo={ data.dialogInfo }
-					handleDeleteMessage={ data.handleDeleteMessage }
-					handleChangeMessage={ data.handleChangeMessage }
-					handleChooseMessage={ data.handleChooseMessage }
-					isSelected={ isSelected }
-				/>
-			</div>
-		</div>
-	);
-};
 
 const DialogsMessages = ({ 
 	dialogInfo, 
@@ -76,25 +29,53 @@ const DialogsMessages = ({
 	onSelectedMessagesChange,
 }: IDialogsMessages) => {
     
-	const listRef = useRef<ListImperativeAPI>(null);
+	const listRef = useRef<VirtualizedListRef>(null);
 	const [selectedMessages, setSelectedMessages] = useState<IMessage[]>([]);
 	const [isScrollAtBottom, setIsScrollAtBottom] = useState(true);
 	const [isLoadingMore, setIsLoadingMore] = useState(false);
-	
-	const rowHeightCache = useDynamicRowHeight({
-		defaultRowHeight: DEFAULT_MESSAGE_HEIGHT,
-		key: `${dialogInfo.dialog_id}-${dialogInfo.messages.length}`
-	});
+	const [containerHeight, setContainerHeight] = useState(0);
+	const containerRef = useRef<HTMLDivElement>(null);
+    
+	// Флаг для первоначального скролла (чтобы не вызывать лишний раз)
+	const initialScrollDoneRef = useRef(false);
 
-	const forceScrollToBottom = useCallback(() => {
-		const element = listRef.current?.element;
-		if (!element) {
-			return;
-		}
-		element.scrollTop = element.scrollHeight;
+	// Отслеживаем изменения для умного скролла
+	const prevMessagesLengthRef = useRef(dialogInfo.messages.length);
+	const prevFirstMessageIdRef = useRef(dialogInfo.messages[0]?.message_id);
+
+	// Измеряем высоту контейнера
+	useEffect(() => {
+		const measureHeight = () => {
+			if (containerRef.current) {
+				setContainerHeight(containerRef.current.clientHeight);
+			}
+		};
+		measureHeight();
+		window.addEventListener("resize", measureHeight);
+		const observer = new ResizeObserver(measureHeight);
+		if (containerRef.current) observer.observe(containerRef.current);
+		return () => {
+			window.removeEventListener("resize", measureHeight);
+			observer.disconnect();
+		};
 	}, []);
 
-	// Функция выбора/снятия выбора сообщения
+	const forceScrollToBottom = useCallback(() => {
+		listRef.current?.scrollToBottom();
+	}, []);
+
+	// Скролл вниз при первом рендере (открытие диалога)
+	useEffect(() => {
+		if (containerHeight > 0 && dialogInfo.messages.length > 0 && !initialScrollDoneRef.current) {
+			// Небольшая задержка для стабилизации виртуального списка
+			const timer = setTimeout(() => {
+				forceScrollToBottom();
+				initialScrollDoneRef.current = true;
+			}, 50);
+			return () => clearTimeout(timer);
+		}
+	}, [containerHeight, dialogInfo.messages.length, forceScrollToBottom]);
+
 	const handleChooseMessage = useCallback((message: IMessage) => {
 		setSelectedMessages(prev => {
 			const isAlreadySelected = prev.some(m => m.message_id === message.message_id);
@@ -104,7 +85,6 @@ const DialogsMessages = ({
 			} else {
 				newSelected = [...prev, message];
 			}
-			// Если родитель передал колбэк, уведомляем его об изменении
 			onSelectedMessagesChange?.(newSelected);
 			return newSelected;
 		});
@@ -113,7 +93,6 @@ const DialogsMessages = ({
 	const handleDeleteButtonClick = async () => {
 		if (selectedMessages.length !== 0) {
 			const selectedMessagesIds = selectedMessages.map(msg => msg.message_id);
-
 			await deleteMessage(dialogInfo.dialog_id, selectedMessagesIds)
 				.then(() => {
 					setSelectedMessages([]);
@@ -125,48 +104,26 @@ const DialogsMessages = ({
 		}
 	};
 
-	const rowData = useMemo<IRowData>(() => {
-		return {
-			messages: dialogInfo.messages,
-			dialogInfo,
-			user,
-			selectedMessages,
-			handleDeleteMessage,
-			handleChangeMessage,
-			handleChooseMessage,
-		};
-	}, [dialogInfo, user, selectedMessages, handleDeleteMessage, handleChangeMessage, handleChooseMessage]);
-	
-	// Скролл вниз при добавлении новых сообщений
+	// Скролл вниз ТОЛЬКО когда новые сообщения добавлены в конец (не при подгрузке старых)
 	useEffect(() => {
-		if (dialogInfo.messages.length === 0) {
-			return;
+		const currentLength = dialogInfo.messages.length;
+		const currentFirstId = dialogInfo.messages[0]?.message_id;
+        
+		const isNewMessageAddedToEnd = 
+            currentLength > prevMessagesLengthRef.current && 
+            currentFirstId === prevFirstMessageIdRef.current;
+        
+		if (isNewMessageAddedToEnd) {
+			setTimeout(() => forceScrollToBottom(), 0);
 		}
+        
+		prevMessagesLengthRef.current = currentLength;
+		prevFirstMessageIdRef.current = currentFirstId;
+	}, [dialogInfo.messages, forceScrollToBottom]);
 
-		let raf1: number | null = null;
-		let raf2: number | null = null;
-		const timeoutId = window.setTimeout(() => {
-			forceScrollToBottom();
-
-			raf1 = window.requestAnimationFrame(() => {
-				forceScrollToBottom();
-				raf2 = window.requestAnimationFrame(() => {
-					forceScrollToBottom();
-				});
-			});
-		}, 0);
-
-		return () => {
-			window.clearTimeout(timeoutId);
-			if (raf1 !== null) window.cancelAnimationFrame(raf1);
-			if (raf2 !== null) window.cancelAnimationFrame(raf2);
-		};
-	}, [dialogInfo.dialog_id, dialogInfo.messages.length, forceScrollToBottom]);
-    
-	const handleScroll = useCallback(async () => {
-		const element = listRef.current?.element;
-		if (!element) return;
-		const { scrollTop, scrollHeight, clientHeight } = element;
+	const handleScroll = useCallback(async (event: React.UIEvent<HTMLDivElement>) => {
+		const target = event.currentTarget;
+		const { scrollTop, scrollHeight, clientHeight } = target;
 		const atBottom = scrollHeight - scrollTop - clientHeight < 5;
 		setIsScrollAtBottom(atBottom);
 
@@ -178,38 +135,56 @@ const DialogsMessages = ({
 		}
 	}, [handleGetNextMessages, isLoadingMore, dialogInfo.messages.length]);
 
+	const renderMessage = useCallback((message: IMessage) => {
+		const isSelected = selectedMessages.some(
+			selected => selected.message_id === message.message_id
+		);
+		const senderInfo = message.sender_id === user.id ? user : dialogInfo.opponent;
+		return (
+			<div style={ { paddingBottom: MESSAGE_GAP } }>
+				<DialogMessage
+					user={ user }
+					senderInfo={ senderInfo }
+					message={ message }
+					dialogInfo={ dialogInfo }
+					handleDeleteMessage={ handleDeleteMessage }
+					handleChangeMessage={ handleChangeMessage }
+					handleChooseMessage={ handleChooseMessage }
+					isSelected={ isSelected }
+				/>
+			</div>
+		);
+	}, [selectedMessages, user, dialogInfo, handleDeleteMessage, handleChangeMessage, handleChooseMessage]);
+
 	return (
-		<div className='messages-list'>
-			<List
-				onScroll={ handleScroll }
-				listRef={ listRef }
-				className='messages-list-virtualized'
-				rowCount={ dialogInfo.messages.length }
-				rowHeight={ rowHeightCache }
-				rowComponent={ MessageRow }
-				rowProps={ rowData }
-				overscanCount={ 4 }
-				style={ { height: "100%" } }
-			/>
-			{
-				selectedMessages.length !== 0 &&
-                    <div className="selected-messages-wrapper">
-                        Выбранных сообщений: { selectedMessages.length }
-                    	<Button 
-                    		className='deleting-button' 
-                    		onClick={ handleDeleteButtonClick } 
-                    		type='primary'
-                    	>
-                            Удалить
-                    	</Button>
-                    </div>
-			}
-			{   
-				!isScrollAtBottom &&
-                    <div onClick={ forceScrollToBottom } className="scroll-down-button">
-                    	<FaCircleChevronDown fontSize={ 30 } />
-                    </div>
-			}
+		<div className='messages-list' ref={ containerRef }>
+			{ containerHeight > 0 && (
+				<VirtualizedList
+					ref={ listRef }
+					items={ dialogInfo.messages }
+					height={ containerHeight }
+					renderItem={ renderMessage }
+					getKey={ (msg) => msg.message_id }
+					onScroll={ handleScroll }
+				/>
+			) }
+			{ selectedMessages.length !== 0 && (
+				<div className="selected-messages-wrapper">
+                    Выбранных сообщений: { selectedMessages.length }
+					<Button 
+						className='deleting-button' 
+						onClick={ handleDeleteButtonClick } 
+						type='primary'
+					>
+                        Удалить
+					</Button>
+				</div>
+			) }
+			{ !isScrollAtBottom && (
+				<div onClick={ forceScrollToBottom } className="scroll-down-button">
+					<FaCircleChevronDown fontSize={ 30 } />
+				</div>
+			) }
 		</div>
 	);
 };
