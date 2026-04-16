@@ -35,16 +35,12 @@ const DialogsMessages = ({
 	const [isLoadingMore, setIsLoadingMore] = useState(false);
 	const [containerHeight, setContainerHeight] = useState(0);
 	const containerRef = useRef<HTMLDivElement>(null);
-	const savedScrollTopRef = useRef<number | null>(null);
-	const savedScrollHeightRef = useRef<number | null>(null);
-	// Флаг для первоначального скролла (чтобы не вызывать лишний раз)
+    
 	const initialScrollDoneRef = useRef(false);
-
-	// Отслеживаем изменения для умного скролла
 	const prevMessagesLengthRef = useRef(dialogInfo.messages.length);
 	const prevFirstMessageIdRef = useRef(dialogInfo.messages[0]?.message_id);
 
-	// Измеряем высоту контейнера
+	// Измерение высоты контейнера
 	useEffect(() => {
 		const measureHeight = () => {
 			if (containerRef.current) {
@@ -65,10 +61,9 @@ const DialogsMessages = ({
 		listRef.current?.scrollToBottom();
 	}, []);
 
-	// Скролл вниз при первом рендере (открытие диалога)
+	// Первоначальный скролл вниз
 	useEffect(() => {
 		if (containerHeight > 0 && dialogInfo.messages.length > 0 && !initialScrollDoneRef.current) {
-			// Небольшая задержка для стабилизации виртуального списка
 			const timer = setTimeout(() => {
 				forceScrollToBottom();
 				initialScrollDoneRef.current = true;
@@ -105,11 +100,10 @@ const DialogsMessages = ({
 		}
 	};
 
-	// Скролл вниз ТОЛЬКО когда новые сообщения добавлены в конец (не при подгрузке старых)
+	// Автоскролл при добавлении новых сообщений в конец
 	useEffect(() => {
 		const currentLength = dialogInfo.messages.length;
 		const currentFirstId = dialogInfo.messages[0]?.message_id;
-        
 		const isNewMessageAddedToEnd = 
             currentLength > prevMessagesLengthRef.current && 
             currentFirstId === prevFirstMessageIdRef.current;
@@ -122,20 +116,7 @@ const DialogsMessages = ({
 		prevFirstMessageIdRef.current = currentFirstId;
 	}, [dialogInfo.messages, forceScrollToBottom]);
 
-	const adjustScrollAfterLoad = useCallback(() => {
-		if (savedScrollTopRef.current !== null && savedScrollHeightRef.current !== null) {
-			const container = listRef.current?.getScrollElement();
-			if (container) {
-				const newScrollHeight = container.scrollHeight;
-				const addedHeight = newScrollHeight - savedScrollHeightRef.current;
-				container.scrollTop = savedScrollTopRef.current + addedHeight;
-			}
-			savedScrollTopRef.current = null;
-			savedScrollHeightRef.current = null;
-		}
-		setIsLoadingMore(false);
-	}, []);
-
+	// Только подгрузка, без корректировки скролла
 	const handleScroll = useCallback(async (event: React.UIEvent<HTMLDivElement>) => {
 		const target = event.currentTarget;
 		const { scrollTop, scrollHeight, clientHeight } = target;
@@ -144,17 +125,11 @@ const DialogsMessages = ({
 
 		const atTop = scrollTop <= 5;
 		if (atTop && !isLoadingMore && dialogInfo.messages.length > 0) {
-			const container = listRef.current?.getScrollElement();
-			if (container) {
-				savedScrollTopRef.current = container.scrollTop;
-				savedScrollHeightRef.current = container.scrollHeight;
-			}
 			setIsLoadingMore(true);
 			await handleGetNextMessages();
-			// Даём время на обновление DOM и виртуального списка
-			setTimeout(adjustScrollAfterLoad, 0);
+			setIsLoadingMore(false);
 		}
-	}, [handleGetNextMessages, isLoadingMore, dialogInfo.messages.length, adjustScrollAfterLoad]);
+	}, [handleGetNextMessages, isLoadingMore, dialogInfo.messages.length]);
 
 	const renderMessage = useCallback((message: IMessage) => {
 		const isSelected = selectedMessages.some(
