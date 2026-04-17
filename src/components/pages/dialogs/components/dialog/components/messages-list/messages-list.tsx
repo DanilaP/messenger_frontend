@@ -124,6 +124,23 @@ const DialogsMessages = ({
 		prevFirstMessageIdRef.current = currentFirstId;
 	}, [dialogInfo.messages, forceScrollToBottom]);
 
+	// Измерение высоты контейнера
+	useEffect(() => {
+		const measureHeight = () => {
+			if (containerRef.current) {
+				setContainerHeight(containerRef.current.clientHeight);
+			}
+		};
+		measureHeight();
+		window.addEventListener("resize", measureHeight);
+		const observer = new ResizeObserver(measureHeight);
+		if (containerRef.current) observer.observe(containerRef.current);
+		return () => {
+			window.removeEventListener("resize", measureHeight);
+			observer.disconnect();
+		};
+	}, []);
+
 	// Первоначальный скролл вниз
 	useEffect(() => {
 		if (containerHeight > 0 && dialogInfo.messages.length > 0 && !initialScrollDoneRef.current) {
@@ -135,7 +152,6 @@ const DialogsMessages = ({
 		}
 	}, [containerHeight, dialogInfo.messages.length, forceScrollToBottom]);
 
-	
 	return (
 		<div className='messages-list' ref={ containerRef }>
 			{ containerHeight > 0 && (
