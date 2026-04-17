@@ -72,18 +72,26 @@ const DialogsMessages = ({
 		}
 	};
 
-	// Только подгрузка, без корректировки скролла
 	const handleScroll = useCallback(async (event: React.UIEvent<HTMLDivElement>) => {
 		const target = event.currentTarget;
 		const { scrollTop, scrollHeight, clientHeight } = target;
 		const atBottom = scrollHeight - scrollTop - clientHeight < 5;
 		setIsScrollAtBottom(atBottom);
 
-		const atTop = scrollTop <= 5;
+		const atTop = scrollTop === 0;
 		if (atTop && !isLoadingMore && dialogInfo.messages.length > 0) {
+			const oldScrollHeight = target.scrollHeight;
+			const oldScrollTop = target.scrollTop;
+
 			setIsLoadingMore(true);
 			await handleGetNextMessages();
 			setIsLoadingMore(false);
+
+			setTimeout(() => {
+				const newScrollHeight = target.scrollHeight;
+				const heightAdded = newScrollHeight - oldScrollHeight;
+				target.scrollTop = oldScrollTop + heightAdded;
+			}, 0);
 		}
 	}, [handleGetNextMessages, isLoadingMore, dialogInfo.messages.length]);
 
