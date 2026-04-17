@@ -13,6 +13,17 @@
         position: relative;
         min-width: 250px;
 
+        & .replayed-message {
+            display: flex;
+            flex-direction: column;
+            border-left: 4px solid var(--default-color);
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: rgba(4, 161, 224, 0.15);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
         & .text-content {
             display: flex;
             gap: 5px;

@@ -146,6 +146,19 @@ const DialogMessage = memo(({
 			>
 				<Dropdown menu={ { items, onClick: handleMenuClick } } trigger={ ["contextMenu"] }>
 					<div onClick={ handleMessageClick } className="message">
+						{
+							message.replayMessage &&
+								<div className="replayed-message">
+									<div className="sender-info">
+										{
+											message.replayMessage.senderId === user.id
+												? `${ user.name } ${ user.lastname }`
+												: `${ dialogInfo.opponent.name } ${ dialogInfo.opponent.surname }`
+										}
+									</div>
+									<div className="text">{ message.replayMessage.text }</div>
+								</div>
+						}
 						<div className={ `text-content ${ senderInfo.id === user.id ? `user-message` : `opponent-message` }` }>
 							<div className="avatar">
 								<img className='image' src = { senderInfo.avatar } />

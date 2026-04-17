@@ -23,7 +23,12 @@ export interface IMessage {
     date: string,
     isread: boolean,
     sender_id: number
-    files: IFile[]
+    files: IFile[],
+    replayMessage: {
+        id: number,
+        text: string,
+        senderId: number
+    } | null
 }
 
 export interface IDialog {
