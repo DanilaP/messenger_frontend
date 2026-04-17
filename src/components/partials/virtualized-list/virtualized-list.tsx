@@ -154,7 +154,7 @@ function VirtualizedListInner<T>(
 			className="list"
 			onScroll={ handleScroll }
 		>
-			<div style={ { height: totalHeight, position: "relative" } }>
+			<div style={ { height: totalHeight, position: "relative", paddingBottom: "10px" } }>
 				<div style={ { transform: `translateY(${offsetY}px)` } }>
 					{ visibleItems }
 				</div>
