@@ -17,6 +17,7 @@ const Dialogs = () => {
 	const user = useSelector((state: RootState) => state.user.user);
 	const [dialogsList, setDialogsList] = useState<IDialogListItem[]>([]);
 	const [dialogInfo, setDialogInfo] = useState<IDialog | null>(null);
+	const [currentReplayMessage, setCurrentReplayedMessage] = useState<IMessage | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const navigate = useNavigate();
 
@@ -67,7 +68,11 @@ const Dialogs = () => {
 			handleUpdateLastMessageBeforeChanging(message);
 		}
 	};
-    
+	
+	const handleChooseMessageForReplaying = (message: IMessage | null) => {
+		setCurrentReplayedMessage(message);
+	};
+
 	const handleUpdateLastMessageBeforeChanging = (message: IMessage) => {
 		setDialogsList(prev => {
 			const updatedList = prev.map(dialogListItem => {
@@ -216,11 +221,13 @@ const Dialogs = () => {
 						<Dialog 
 							user={ user } 
 							dialogInfo={ dialogInfo } 
+							currentReplayMessage={ currentReplayMessage }
 							isMobile={ isMobile }
 							handleChangeMessage={ handleChangeMessage }
 							handleSendMessage={ handleSendMessage } 
 							handleDeleteMessage={ handleDeleteMessage }
 							handleGetNextMessages={ handleGetNextMessages }
+							handleChooseMessageForReplaying={ handleChooseMessageForReplaying }
 						/>
 						: null
 					: null

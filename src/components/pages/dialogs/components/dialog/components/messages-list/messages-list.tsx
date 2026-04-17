@@ -16,6 +16,7 @@ interface IDialogsMessages {
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
     handleGetNextMessages: () => void,
     onSelectedMessagesChange?: (selectedMessages: IMessage[]) => void,
+	handleChooseMessageForReplaying: (message: IMessage) => void
 }
 
 const MESSAGE_GAP = 10;
@@ -27,6 +28,7 @@ const DialogsMessages = ({
 	handleChangeMessage,
 	handleGetNextMessages,
 	onSelectedMessagesChange,
+	handleChooseMessageForReplaying
 }: IDialogsMessages) => {
     
 	const listRef = useRef<VirtualizedListRef>(null);
@@ -107,14 +109,23 @@ const DialogsMessages = ({
 					senderInfo={ senderInfo }
 					message={ message }
 					dialogInfo={ dialogInfo }
+					isSelected={ isSelected }
 					handleDeleteMessage={ handleDeleteMessage }
 					handleChangeMessage={ handleChangeMessage }
 					handleChooseMessage={ handleChooseMessage }
-					isSelected={ isSelected }
+					handleChooseMessageForReplaying={ handleChooseMessageForReplaying }
 				/>
 			</div>
 		);
-	}, [selectedMessages, user, dialogInfo, handleDeleteMessage, handleChangeMessage, handleChooseMessage]);
+	}, [
+		selectedMessages, 
+		user, 
+		dialogInfo, 
+		handleDeleteMessage, 
+		handleChangeMessage, 
+		handleChooseMessage, 
+		handleChooseMessageForReplaying
+	]);
 
 	// Автоскролл при добавлении новых сообщений в конец
 	useEffect(() => {

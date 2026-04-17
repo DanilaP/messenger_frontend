@@ -11,21 +11,25 @@ import "./dialog.scss";
 interface IDialogProps {
     dialogInfo: IDialog | null,
     user: Partial<IUser>,
+	currentReplayMessage: IMessage | null,
     isMobile: boolean,
     handleSendMessage: (message: IMessage) => void,
     handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
-	handleGetNextMessages: () => void
+	handleGetNextMessages: () => void,
+	handleChooseMessageForReplaying: (message: IMessage | null) => void
 }
 
 const Dialog = memo(({ 
 	dialogInfo, 
 	user, 
+	currentReplayMessage,
 	isMobile,
 	handleSendMessage, 
 	handleDeleteMessage,
 	handleChangeMessage,
-	handleGetNextMessages
+	handleGetNextMessages,
+	handleChooseMessageForReplaying
 }: IDialogProps) => {
 
 	useEffect(() => {
@@ -53,8 +57,15 @@ const Dialog = memo(({
 				handleDeleteMessage={ handleDeleteMessage }
 				handleChangeMessage={ handleChangeMessage }
 				handleGetNextMessages={ handleGetNextMessages }
+				handleChooseMessageForReplaying={ handleChooseMessageForReplaying }
 			/>
-			<DialogFooter handleSendMessage = { handleSendMessage } dialogInfo={ dialogInfo } />
+			<DialogFooter 
+				user={ user } 
+				currentReplayMessage={ currentReplayMessage }
+				dialogInfo={ dialogInfo } 
+				handleSendMessage={ handleSendMessage } 
+				handleChooseMessageForReplaying={ handleChooseMessageForReplaying }
+			/>
 		</div>
 	);
 });

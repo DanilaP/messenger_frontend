@@ -4,6 +4,7 @@ import { deleteMessage, editMessage } from "../../../../../../../models/dialogs/
 import { Fragment, memo, useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { MdContentCopy } from "react-icons/md";
+import { IoMdShareAlt } from "react-icons/io";
 import { MdEdit } from "react-icons/md";
 import { CiCircleCheck } from "react-icons/ci";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
@@ -22,7 +23,8 @@ interface IMessageProps {
     isSelected: boolean,
     handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
-    handleChooseMessage: (message: IMessage) => void
+    handleChooseMessage: (message: IMessage) => void,
+	handleChooseMessageForReplaying: (message: IMessage) => void
 }
 
 const DialogMessage = memo(({ 
@@ -33,7 +35,8 @@ const DialogMessage = memo(({
 	isSelected,
 	handleDeleteMessage,
 	handleChangeMessage,
-	handleChooseMessage
+	handleChooseMessage,
+	handleChooseMessageForReplaying
 }: IMessageProps) => {
 
 	const [isModifyMessageModalOpen, setIsModifyMessageModalOpen] = useState<boolean>(false);
@@ -44,6 +47,11 @@ const DialogMessage = memo(({
 			label: "Копировать",
 			key: "3",
 			icon: <MdContentCopy />,
+		},
+		{
+			label: "Ответить",
+			key: "4",
+			icon: <IoMdShareAlt />,
 		},
 		...(senderInfo.id === user.id ? [
 			{
@@ -70,6 +78,9 @@ const DialogMessage = memo(({
 		}
 		if (key === "3") {
 			handleCopyMessageText();
+		}
+		if (key === "4") {
+			handleReplayMessageClick();
 		}
 	};
 
@@ -124,6 +135,10 @@ const DialogMessage = memo(({
 			});   
 			console.error(error);
 		}
+	};
+
+	const handleReplayMessageClick = () => {
+		handleChooseMessageForReplaying(message);
 	};
 
 	const handleMessageWrapperClick = (e: React.MouseEvent<HTMLDivElement>) => {

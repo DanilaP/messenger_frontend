@@ -1,6 +1,7 @@
 .dialog-footer {
     width: 70vw;
     display: flex;
+    flex-direction: column;
     padding: 10px;
     gap: 10px;
     box-sizing: border-box;
@@ -9,6 +10,44 @@
     position: absolute;
     bottom: 0;
     z-index: 5;
+
+    & .message-editor-footer-wrapper {
+        display: flex;
+        gap: 10px;
+    }
+
+    & .replayed-message-footer-wrapper {
+        & .replayed-message-footer-info {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            color: white;
+            border-left: 4px solid var(--default-color);
+            padding: 10px;
+            font-size: 12px;
+            gap: 10px;
+            box-sizing: border-box;
+            background-color: var(--default-color-second);
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 10;
+            position: relative;
+
+            & .close-button {
+                position: absolute;
+                right: 10px;
+                cursor: pointer;
+
+                &:hover {
+                    color: var(--default-color);
+                }
+            }
+
+            & .text {
+                opacity: 0.5;
+            }
+        }
+    }
 
     & .ant-input {
         border: none !important;
