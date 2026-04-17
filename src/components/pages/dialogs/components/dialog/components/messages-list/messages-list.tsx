@@ -135,23 +135,7 @@ const DialogsMessages = ({
 		}
 	}, [containerHeight, dialogInfo.messages.length, forceScrollToBottom]);
 
-	// Измерение высоты контейнера
-	useEffect(() => {
-		const measureHeight = () => {
-			if (containerRef.current) {
-				setContainerHeight(containerRef.current.clientHeight);
-			}
-		};
-		measureHeight();
-		window.addEventListener("resize", measureHeight);
-		const observer = new ResizeObserver(measureHeight);
-		if (containerRef.current) observer.observe(containerRef.current);
-		return () => {
-			window.removeEventListener("resize", measureHeight);
-			observer.disconnect();
-		};
-	}, []);
-
+	
 	return (
 		<div className='messages-list' ref={ containerRef }>
 			{ containerHeight > 0 && (
