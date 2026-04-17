@@ -40,37 +40,9 @@ const DialogsMessages = ({
 	const prevMessagesLengthRef = useRef(dialogInfo.messages.length);
 	const prevFirstMessageIdRef = useRef(dialogInfo.messages[0]?.message_id);
 
-	// Измерение высоты контейнера
-	useEffect(() => {
-		const measureHeight = () => {
-			if (containerRef.current) {
-				setContainerHeight(containerRef.current.clientHeight);
-			}
-		};
-		measureHeight();
-		window.addEventListener("resize", measureHeight);
-		const observer = new ResizeObserver(measureHeight);
-		if (containerRef.current) observer.observe(containerRef.current);
-		return () => {
-			window.removeEventListener("resize", measureHeight);
-			observer.disconnect();
-		};
-	}, []);
-
 	const forceScrollToBottom = useCallback(() => {
 		listRef.current?.scrollToBottom();
 	}, []);
-
-	// Первоначальный скролл вниз
-	useEffect(() => {
-		if (containerHeight > 0 && dialogInfo.messages.length > 0 && !initialScrollDoneRef.current) {
-			const timer = setTimeout(() => {
-				forceScrollToBottom();
-				initialScrollDoneRef.current = true;
-			}, 50);
-			return () => clearTimeout(timer);
-		}
-	}, [containerHeight, dialogInfo.messages.length, forceScrollToBottom]);
 
 	const handleChooseMessage = useCallback((message: IMessage) => {
 		setSelectedMessages(prev => {
@@ -99,22 +71,6 @@ const DialogsMessages = ({
 				});
 		}
 	};
-
-	// Автоскролл при добавлении новых сообщений в конец
-	useEffect(() => {
-		const currentLength = dialogInfo.messages.length;
-		const currentFirstId = dialogInfo.messages[0]?.message_id;
-		const isNewMessageAddedToEnd = 
-            currentLength > prevMessagesLengthRef.current && 
-            currentFirstId === prevFirstMessageIdRef.current;
-        
-		if (isNewMessageAddedToEnd) {
-			setTimeout(() => forceScrollToBottom(), 0);
-		}
-        
-		prevMessagesLengthRef.current = currentLength;
-		prevFirstMessageIdRef.current = currentFirstId;
-	}, [dialogInfo.messages, forceScrollToBottom]);
 
 	// Только подгрузка, без корректировки скролла
 	const handleScroll = useCallback(async (event: React.UIEvent<HTMLDivElement>) => {
@@ -151,6 +107,50 @@ const DialogsMessages = ({
 			</div>
 		);
 	}, [selectedMessages, user, dialogInfo, handleDeleteMessage, handleChangeMessage, handleChooseMessage]);
+
+	// Автоскролл при добавлении новых сообщений в конец
+	useEffect(() => {
+		const currentLength = dialogInfo.messages.length;
+		const currentFirstId = dialogInfo.messages[0]?.message_id;
+		const isNewMessageAddedToEnd = 
+            currentLength > prevMessagesLengthRef.current && 
+            currentFirstId === prevFirstMessageIdRef.current;
+        
+		if (isNewMessageAddedToEnd) {
+			setTimeout(() => forceScrollToBottom(), 0);
+		}
+        
+		prevMessagesLengthRef.current = currentLength;
+		prevFirstMessageIdRef.current = currentFirstId;
+	}, [dialogInfo.messages, forceScrollToBottom]);
+
+	// Первоначальный скролл вниз
+	useEffect(() => {
+		if (containerHeight > 0 && dialogInfo.messages.length > 0 && !initialScrollDoneRef.current) {
+			const timer = setTimeout(() => {
+				forceScrollToBottom();
+				initialScrollDoneRef.current = true;
+			}, 50);
+			return () => clearTimeout(timer);
+		}
+	}, [containerHeight, dialogInfo.messages.length, forceScrollToBottom]);
+
+	// Измерение высоты контейнера
+	useEffect(() => {
+		const measureHeight = () => {
+			if (containerRef.current) {
+				setContainerHeight(containerRef.current.clientHeight);
+			}
+		};
+		measureHeight();
+		window.addEventListener("resize", measureHeight);
+		const observer = new ResizeObserver(measureHeight);
+		if (containerRef.current) observer.observe(containerRef.current);
+		return () => {
+			window.removeEventListener("resize", measureHeight);
+			observer.disconnect();
+		};
+	}, []);
 
 	return (
 		<div className='messages-list' ref={ containerRef }>
