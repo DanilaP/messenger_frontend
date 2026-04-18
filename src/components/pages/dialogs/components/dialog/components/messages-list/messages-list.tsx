@@ -12,6 +12,7 @@ import "./messages-list.scss";
 interface IDialogsMessages {
     dialogInfo: IDialog,
     user: Partial<IUser>,
+	currentReplayMessage: IMessage | null,
     handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
     handleGetNextMessages: () => void,
@@ -24,6 +25,7 @@ const MESSAGE_GAP = 10;
 const DialogsMessages = ({ 
 	dialogInfo, 
 	user, 
+	currentReplayMessage,
 	handleDeleteMessage, 
 	handleChangeMessage,
 	handleGetNextMessages,
@@ -172,7 +174,11 @@ const DialogsMessages = ({
 	}, [containerHeight, dialogInfo.messages.length, forceScrollToBottom]);
 
 	return (
-		<div className='messages-list' ref={ containerRef }>
+		<div 
+			style={ { height: `${ currentReplayMessage ? `calc(100vh - 242px)` : `calc(100vh - 166px)` }` } } 
+			className='messages-list' 
+			ref={ containerRef }
+		>
 			{ containerHeight > 0 && (
 				<VirtualizedList
 					ref={ listRef }

@@ -54,6 +54,7 @@ const Dialog = memo(({
 			<DialogsMessages 
 				user={ user } 
 				dialogInfo={ dialogInfo } 
+				currentReplayMessage={ currentReplayMessage }
 				handleDeleteMessage={ handleDeleteMessage }
 				handleChangeMessage={ handleChangeMessage }
 				handleGetNextMessages={ handleGetNextMessages }
