@@ -1,6 +1,6 @@
 import { Dropdown, Modal, type MenuProps, type UploadFile } from "antd";
 import { message as messageAntd } from "antd";
-import { deleteMessage, editMessage } from "../../../../../../../models/dialogs/dialogs-api";
+import { deleteMessage, editMessage, scrollToMessage } from "../../../../../../../models/dialogs/dialogs-api";
 import { Fragment, memo, useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { MdContentCopy } from "react-icons/md";
@@ -8,7 +8,7 @@ import { IoMdShareAlt } from "react-icons/io";
 import { MdEdit } from "react-icons/md";
 import { CiCircleCheck } from "react-icons/ci";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
-import type { IDialog, IEditMessageResponse, IMessage, IOpponent } from "../../../../../../../models/dialogs/dialogs-interface";
+import type { IDialog, IEditMessageResponse, IMessage, IOpponent, IScrollToMessageResponse } from "../../../../../../../models/dialogs/dialogs-interface";
 import type { IFile } from "../../../../../../../interfaces/files";
 import type { IUser } from "../../../../../../../models/user/user-interface";
 import FileList from "../../../../../../partials/file-list/file-list";
@@ -24,7 +24,8 @@ interface IMessageProps {
     handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
     handleChooseMessage: (message: IMessage) => void,
-	handleChooseMessageForReplaying: (message: IMessage) => void
+	handleChooseMessageForReplaying: (message: IMessage) => void,
+	handleScrollToMessage: (messages: IMessage[]) => void
 }
 
 const DialogMessage = memo(({ 
@@ -36,7 +37,8 @@ const DialogMessage = memo(({
 	handleDeleteMessage,
 	handleChangeMessage,
 	handleChooseMessage,
-	handleChooseMessageForReplaying
+	handleChooseMessageForReplaying,
+	handleScrollToMessage
 }: IMessageProps) => {
 
 	const [isModifyMessageModalOpen, setIsModifyMessageModalOpen] = useState<boolean>(false);
@@ -141,6 +143,18 @@ const DialogMessage = memo(({
 		handleChooseMessageForReplaying(message);
 	};
 
+	const handleReplayingMessageClick = () => {
+		if (message.replayMessage) {
+			scrollToMessage(dialogInfo.dialog_id, message.replayMessage?.id)
+				.then((res: IScrollToMessageResponse) => {
+					handleScrollToMessage(res.data.messages);
+				})
+				.catch((error) => {
+					console.error(error);
+				});
+		}
+	};
+
 	const handleMessageWrapperClick = (e: React.MouseEvent<HTMLDivElement>) => {
 		if (message.sender_id === user.id) {
 			e.stopPropagation();
@@ -163,7 +177,7 @@ const DialogMessage = memo(({
 					<div onClick={ handleMessageClick } className="message">
 						{
 							message.replayMessage &&
-								<div className="replayed-message">
+								<div onClick={ handleReplayingMessageClick } className="replayed-message">
 									<div className="sender-info">
 										{
 											message.replayMessage.senderId === user.id

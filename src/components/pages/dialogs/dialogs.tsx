@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { getDialogInfo, getDialogsList } from "../../../models/dialogs/dialogs-api";
 import { parseCustomDate } from "../../../helpers/parsers/parsers";
 import { useNavigate, useParams } from "react-router";
-import { type IDialog, type IDialogListItem, type IMessage } from "../../../models/dialogs/dialogs-interface";
+import { type IDialog, type IDialogListItem, type IGetDialogResponse, type IMessage } from "../../../models/dialogs/dialogs-interface";
 import type { RootState } from "../../../stores/root/root";
 import type { IFile } from "../../../interfaces/files";
 import DialogsList from "./components/dialogs-list/dialogs-list";
@@ -71,6 +71,15 @@ const Dialogs = () => {
 	
 	const handleChooseMessageForReplaying = (message: IMessage | null) => {
 		setCurrentReplayedMessage(message);
+	};
+
+	const handleScrollToMessage = (messages: IMessage[]) => {
+		if (dialogInfo) {
+			setDialogInfo({
+				...dialogInfo,
+				messages: messages
+			});
+		}
 	};
 
 	const handleUpdateLastMessageBeforeChanging = (message: IMessage) => {
@@ -144,13 +153,22 @@ const Dialogs = () => {
 		return result;
 	};
 
-	const handleGetNextMessages = async () => {
-		const lastMessage = dialogInfo?.messages[0];
-		const dialogRes = await getDialogInfo(Number(id), lastMessage?.message_id);
-		if (dialogInfo) {
+	const handleGetNextMessages = async (mode: "prev" | "next") => {
+		let currentMessage = null;
+		if (mode === "prev") {
+			currentMessage = dialogInfo?.messages[0];
+		}
+		else if (mode === "next") {
+			currentMessage = dialogInfo?.messages[dialogInfo.messages.length - 1];
+		}
+		const dialogRes: IGetDialogResponse = await getDialogInfo(Number(id), currentMessage?.message_id, mode);
+		if (dialogInfo && dialogRes.data.dialog.messages.length !== 0) {
 			setDialogInfo({
 				...dialogInfo,
-				messages: [...dialogRes.data.dialog.messages, ...dialogInfo.messages],
+				messages: 
+					mode === "prev" 
+						? [...dialogRes.data.dialog.messages, ...dialogInfo.messages]
+						: [...dialogInfo.messages, ...dialogRes.data.dialog.messages]
 			});
 		}
 	};
@@ -228,6 +246,7 @@ const Dialogs = () => {
 							handleDeleteMessage={ handleDeleteMessage }
 							handleGetNextMessages={ handleGetNextMessages }
 							handleChooseMessageForReplaying={ handleChooseMessageForReplaying }
+							handleScrollToMessage={ handleScrollToMessage }
 						/>
 						: null
 					: null

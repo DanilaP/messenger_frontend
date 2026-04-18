@@ -5,8 +5,8 @@ export const getDialogsList = async () => {
 	return response;
 };
 
-export const getDialogInfo = async (dialogId: number, messageId?: number) => {
-	const response = $api.get(`/dialogs?id=${dialogId}${messageId ? `&messageId=${messageId}` : ``}`);
+export const getDialogInfo = async (dialogId: number, messageId?: number, mode?: "next" | "prev") => {
+	const response = $api.get(`/dialogs?id=${dialogId}${messageId ? `&messageId=${messageId}` : ``}${mode ? `&mode=${mode}` : ``}`);
 	return response;
 };
 
@@ -27,5 +27,10 @@ export const editMessage = async (formData: FormData) => {
 
 export const readMessages = async (dialogId: number, opponentId: number) => {
 	const response = $api.post("/dialogs/message/read", { dialogId, opponentId });
+	return response;
+};  
+
+export const scrollToMessage = async (dialogId: number, messageId: number) => {
+	const response = $api.post("/dialogs/message/scroll", { dialogId, messageId });
 	return response;
 };  

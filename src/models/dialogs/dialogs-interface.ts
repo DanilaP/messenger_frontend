@@ -72,3 +72,10 @@ export interface IEditMessageResponse {
         }
     }
 }
+
+export interface IScrollToMessageResponse {
+    data: {
+        message: string,
+        messages: IMessage[]
+    }
+}

@@ -15,9 +15,10 @@ interface IDialogsMessages {
 	currentReplayMessage: IMessage | null,
     handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
-    handleGetNextMessages: () => void,
+    handleGetNextMessages: (mode: "prev" | "next") => void,
     onSelectedMessagesChange?: (selectedMessages: IMessage[]) => void,
-	handleChooseMessageForReplaying: (message: IMessage) => void
+	handleChooseMessageForReplaying: (message: IMessage) => void,
+	handleScrollToMessage: (messages: IMessage[]) => void
 }
 
 const MESSAGE_GAP = 10;
@@ -30,7 +31,8 @@ const DialogsMessages = ({
 	handleChangeMessage,
 	handleGetNextMessages,
 	onSelectedMessagesChange,
-	handleChooseMessageForReplaying
+	handleChooseMessageForReplaying,
+	handleScrollToMessage
 }: IDialogsMessages) => {
     
 	const listRef = useRef<VirtualizedListRef>(null);
@@ -39,7 +41,8 @@ const DialogsMessages = ({
 	const [isLoadingMore, setIsLoadingMore] = useState(false);
 	const [containerHeight, setContainerHeight] = useState(0);
 	const containerRef = useRef<HTMLDivElement>(null);
-    
+	const isProcessingRef = useRef(false);
+
 	const initialScrollDoneRef = useRef(false);
 	const prevMessagesLengthRef = useRef(dialogInfo.messages.length);
 	const prevFirstMessageIdRef = useRef(dialogInfo.messages[0]?.message_id);
@@ -77,6 +80,8 @@ const DialogsMessages = ({
 	};
 
 	const handleScroll = useCallback(async (event: React.UIEvent<HTMLDivElement>) => {
+		if (isProcessingRef.current) return; // блокируем повторные вызовы
+
 		const target = event.currentTarget;
 		const { scrollTop, scrollHeight, clientHeight } = target;
 		const atBottom = scrollHeight - scrollTop - clientHeight < 5;
@@ -84,18 +89,27 @@ const DialogsMessages = ({
 
 		const atTop = scrollTop === 0;
 		if (atTop && !isLoadingMore && dialogInfo.messages.length > 0) {
+			isProcessingRef.current = true;
 			const oldScrollHeight = target.scrollHeight;
 			const oldScrollTop = target.scrollTop;
 
 			setIsLoadingMore(true);
-			await handleGetNextMessages();
+			await handleGetNextMessages("prev");
 			setIsLoadingMore(false);
 
 			setTimeout(() => {
 				const newScrollHeight = target.scrollHeight;
 				const heightAdded = newScrollHeight - oldScrollHeight;
 				target.scrollTop = oldScrollTop + heightAdded;
+				isProcessingRef.current = false;
 			}, 0);
+		}
+		else if (atBottom && !isLoadingMore && dialogInfo.messages.length > 0) {
+			isProcessingRef.current = true;
+			setIsLoadingMore(true);
+			await handleGetNextMessages("next");
+			setIsLoadingMore(false);
+			isProcessingRef.current = false;
 		}
 	}, [handleGetNextMessages, isLoadingMore, dialogInfo.messages.length]);
 
@@ -116,6 +130,7 @@ const DialogsMessages = ({
 					handleChangeMessage={ handleChangeMessage }
 					handleChooseMessage={ handleChooseMessage }
 					handleChooseMessageForReplaying={ handleChooseMessageForReplaying }
+					handleScrollToMessage={ handleScrollToMessage }
 				/>
 			</div>
 		);
@@ -126,7 +141,8 @@ const DialogsMessages = ({
 		handleDeleteMessage, 
 		handleChangeMessage, 
 		handleChooseMessage, 
-		handleChooseMessageForReplaying
+		handleChooseMessageForReplaying,
+		handleScrollToMessage
 	]);
 
 	// Автоскролл при добавлении новых сообщений в конец

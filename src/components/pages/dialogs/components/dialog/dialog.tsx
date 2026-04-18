@@ -16,8 +16,9 @@ interface IDialogProps {
     handleSendMessage: (message: IMessage) => void,
     handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
-	handleGetNextMessages: () => void,
-	handleChooseMessageForReplaying: (message: IMessage | null) => void
+	handleGetNextMessages: (mode: "prev" | "next") => void,
+	handleChooseMessageForReplaying: (message: IMessage | null) => void,
+	handleScrollToMessage: (messages: IMessage[]) => void
 }
 
 const Dialog = memo(({ 
@@ -29,7 +30,8 @@ const Dialog = memo(({
 	handleDeleteMessage,
 	handleChangeMessage,
 	handleGetNextMessages,
-	handleChooseMessageForReplaying
+	handleChooseMessageForReplaying,
+	handleScrollToMessage
 }: IDialogProps) => {
 
 	useEffect(() => {
@@ -59,6 +61,7 @@ const Dialog = memo(({
 				handleChangeMessage={ handleChangeMessage }
 				handleGetNextMessages={ handleGetNextMessages }
 				handleChooseMessageForReplaying={ handleChooseMessageForReplaying }
+				handleScrollToMessage={ handleScrollToMessage }
 			/>
 			<DialogFooter 
 				user={ user } 
