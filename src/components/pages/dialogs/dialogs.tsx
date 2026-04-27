@@ -86,15 +86,17 @@ const Dialogs = () => {
 		setDialogsList(prev => {
 			const updatedList = prev.map(dialogListItem => {
 				if (dialogListItem.dialog_id === dialogInfo?.dialog_id) {
-					if (dialogListItem.last_message.id === message.message_id) {
-						return {
-							...dialogListItem,
-							last_message: {
-								id: dialogListItem.last_message.id,
-								text: message.text !== "" ? message.text : "Файл",
-								date: message.date
-							}
-						};
+					if (dialogListItem.last_message) {
+						if (dialogListItem.last_message.id === message.message_id) {
+							return {
+								...dialogListItem,
+								last_message: {
+									id: dialogListItem.last_message.id,
+									text: message.text !== "" ? message.text : "Файл",
+									date: message.date
+								}
+							};
+						}
 					}
 					return dialogListItem;
 				}
@@ -110,11 +112,13 @@ const Dialogs = () => {
 				if (dialogListItem.dialog_id === dialogInfo?.dialog_id) {
 					return {
 						...dialogListItem,
-						last_message: {
-							id: dialogListItem.last_message.id,
-							text: message.text !== "" ? message.text : "Файл",
-							date: message.date
-						}
+						last_message: dialogListItem.last_message 
+							? {
+								id: dialogListItem.last_message.id,
+								text: message.text !== "" ? message.text : "Файл",
+								date: message.date
+							} 
+							: null
 					};
 				}
 				return dialogListItem;
@@ -124,17 +128,19 @@ const Dialogs = () => {
 	};
 
 	const handleUpdateLastMessageBeforeDeleting = (dialogInfo: IDialog) => {
-		const lastMessage = dialogInfo.messages.sort()[dialogInfo.messages.length - 1];
+		const lastMessage = dialogInfo.messages.sort()[dialogInfo.messages.length - 1] || null;
 		setDialogsList(prev => {
 			const updatedList = prev.map(dialogListItem => {
 				if (dialogListItem.dialog_id === dialogInfo?.dialog_id) {
 					return {
 						...dialogListItem,
-						last_message: {
-							id: dialogListItem.last_message.id,
-							text: lastMessage.text !== "" ? lastMessage.text : "Файл",
-							date: lastMessage.date
-						}
+						last_message: lastMessage 
+							? {
+								id: lastMessage.message_id,
+								text: lastMessage.text !== "" ? lastMessage.text : "Файл",
+								date: lastMessage.date
+							}
+							: null
 					};
 				}
 				return dialogListItem;
@@ -146,8 +152,8 @@ const Dialogs = () => {
 	const handleSortDialogsListByLastMessageDate = (currentDialogList: IDialogListItem[]) => {
 		const result = [...currentDialogList];
 		result.sort((a, b) => {
-			const dateA = parseCustomDate(a.last_message.date);
-			const dateB = parseCustomDate(b.last_message.date);
+			const dateA = parseCustomDate(a.last_message!.date);
+			const dateB = parseCustomDate(b.last_message!.date);
 			return dateB.getTime() - dateA.getTime();
 		});
 		return result;

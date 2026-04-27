@@ -13,7 +13,7 @@ export interface IDialogListItem {
         id: number,
         text: string,
         date: string
-    },
+    } | null,
     opponent: IOpponent
 }
 

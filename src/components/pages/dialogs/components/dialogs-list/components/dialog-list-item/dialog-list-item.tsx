@@ -14,11 +14,11 @@ const DialogListItemWrapper = ({ dialogListItem }: IDialogListItemProps) => {
 			<div className="dialog-info">
 				<div className="dialog-name">{ dialogListItem.opponent.name } { dialogListItem.opponent.surname }</div>
 				<div className="dialog-last-message">
-					{ dialogListItem.last_message.text }
+					{ dialogListItem.last_message?.text }
 				</div>
 			</div>
 			<div className="last-message-info">
-				<div className="time">{ dialogListItem.last_message.date }</div>
+				<div className="time">{ dialogListItem.last_message?.date }</div>
 			</div>
 		</div>
 	);
