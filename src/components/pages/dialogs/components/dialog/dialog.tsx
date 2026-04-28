@@ -13,12 +13,15 @@ interface IDialogProps {
     user: Partial<IUser>,
 	currentReplayMessage: IMessage | null,
     isMobile: boolean,
+	scrollToMessageRequest: { messageId: number; token: number } | null,
     handleSendMessage: (message: IMessage) => void,
     handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
 	handleGetNextMessages: (mode: "prev" | "next") => void,
 	handleChooseMessageForReplaying: (message: IMessage | null) => void,
-	handleScrollToMessage: (messages: IMessage[]) => void
+	handleScrollToMessage: (messages: IMessage[], targetMessageId: number) => void,
+	handleScrollToMessageHandled: () => void,
+	handleFetchDataBeforeScrollToBottom: () => Promise<void>
 }
 
 const Dialog = memo(({ 
@@ -26,12 +29,15 @@ const Dialog = memo(({
 	user, 
 	currentReplayMessage,
 	isMobile,
+	scrollToMessageRequest,
 	handleSendMessage, 
 	handleDeleteMessage,
 	handleChangeMessage,
 	handleGetNextMessages,
 	handleChooseMessageForReplaying,
-	handleScrollToMessage
+	handleScrollToMessage,
+	handleScrollToMessageHandled,
+	handleFetchDataBeforeScrollToBottom
 }: IDialogProps) => {
 
 	useEffect(() => {
@@ -57,11 +63,14 @@ const Dialog = memo(({
 				user={ user } 
 				dialogInfo={ dialogInfo } 
 				currentReplayMessage={ currentReplayMessage }
+				scrollToMessageRequest={ scrollToMessageRequest }
 				handleDeleteMessage={ handleDeleteMessage }
 				handleChangeMessage={ handleChangeMessage }
 				handleGetNextMessages={ handleGetNextMessages }
 				handleChooseMessageForReplaying={ handleChooseMessageForReplaying }
 				handleScrollToMessage={ handleScrollToMessage }
+				handleScrollToMessageHandled={ handleScrollToMessageHandled }
+				handleFetchDataBeforeScrollToBottom={ handleFetchDataBeforeScrollToBottom }
 			/>
 			<DialogFooter 
 				user={ user } 
