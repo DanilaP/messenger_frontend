@@ -25,7 +25,7 @@ interface IMessageProps {
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
     handleChooseMessage: (message: IMessage) => void,
 	handleChooseMessageForReplaying: (message: IMessage) => void,
-	handleScrollToMessage: (messages: IMessage[]) => void
+	handleScrollToMessage: (messages: IMessage[], targetMessageId: number) => void
 }
 
 const DialogMessage = memo(({ 
@@ -147,7 +147,7 @@ const DialogMessage = memo(({
 		if (message.replayMessage) {
 			scrollToMessage(dialogInfo.dialog_id, message.replayMessage?.id)
 				.then((res: IScrollToMessageResponse) => {
-					handleScrollToMessage(res.data.messages);
+					handleScrollToMessage(res.data.messages, message.replayMessage!.id);
 				})
 				.catch((error) => {
 					console.error(error);

@@ -13,9 +13,11 @@ interface IListProps<T> {
 export interface VirtualizedListRef {
     scrollToBottom: () => void;
     getScrollElement: () => HTMLDivElement | null;
+    scrollToItemByKey: (key: string | number, align?: "start" | "center" | "end") => boolean;
 }
 
 const ESTIMATED_ITEM_HEIGHT = 80;
+const DEFAULT_KEY_PREFIX = "__virtualized_item_";
 
 // Отдельная функция для правильной типизации forwardRef с дженериком
 function VirtualizedListInner<T>(
@@ -26,8 +28,24 @@ function VirtualizedListInner<T>(
     
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [scrollTop, setScrollTop] = useState(0);
-	const [heights, setHeights] = useState<number[]>([]);
-	const itemRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+	const [heightsByKey, setHeightsByKey] = useState<Record<string, number>>({});
+	const itemRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+	const itemKeys = useMemo(
+		() => items.map((item, index) => String(getKey ? getKey(item, index) : `${DEFAULT_KEY_PREFIX}${index}`)),
+		[items, getKey]
+	);
+	const heights = useMemo(
+		() => itemKeys.map((key) => heightsByKey[key] ?? ESTIMATED_ITEM_HEIGHT),
+		[itemKeys, heightsByKey]
+	);
+
+	const getItemOffsetByIndex = useCallback((index: number) => {
+		let offset = 0;
+		for (let i = 0; i < index; i++) {
+			offset += heights[i] ?? ESTIMATED_ITEM_HEIGHT;
+		}
+		return offset;
+	}, [heights]);
 
 	useImperativeHandle(ref, () => ({
 		scrollToBottom: () => {
@@ -36,40 +54,43 @@ function VirtualizedListInner<T>(
 			}
 		},
 		getScrollElement: () => containerRef.current,
-	}));
-
-	useEffect(() => {
-		setHeights(prev => {
-			const newHeights = [...prev];
-			if (items.length > newHeights.length) {
-				for (let i = newHeights.length; i < items.length; i++) {
-					newHeights[i] = ESTIMATED_ITEM_HEIGHT;
-				}
+		scrollToItemByKey: (key: string | number, align: "start" | "center" | "end" = "center") => {
+			if (!containerRef.current) return false;
+			const normalizedKey = String(key);
+			const itemIndex = itemKeys.findIndex((itemKey) => itemKey === normalizedKey);
+			if (itemIndex === -1) return false;
+			const itemOffset = getItemOffsetByIndex(itemIndex);
+			const itemHeight = heights[itemIndex] ?? ESTIMATED_ITEM_HEIGHT;
+			let nextScrollTop = itemOffset;
+			if (align === "center") {
+				nextScrollTop = itemOffset - (height / 2) + (itemHeight / 2);
 			}
-			if (items.length < newHeights.length) {
-				newHeights.length = items.length;
+			if (align === "end") {
+				nextScrollTop = itemOffset - height + itemHeight;
 			}
-			return newHeights;
-		});
-	}, [items.length]);
+			containerRef.current.scrollTop = Math.max(0, nextScrollTop);
+			return true;
+		},
+	}), [itemKeys, getItemOffsetByIndex, heights, height]);
 
-	const measureHeight = useCallback((index: number) => {
-		const element = itemRefs.current.get(index);
+	const measureHeight = useCallback((key: string) => {
+		const element = itemRefs.current.get(key);
 		if (element) {
 			const height = element.getBoundingClientRect().height;
-			if (heights[index] !== height) {
-				setHeights(prev => {
-					const newHeights = [...prev];
-					newHeights[index] = height;
-					return newHeights;
+			if (heightsByKey[key] !== height) {
+				setHeightsByKey(prev => {
+					return {
+						...prev,
+						[key]: height
+					};
 				});
 			}
 		}
-	}, [heights]);
+	}, [heightsByKey]);
 
 	useEffect(() => {
-		const indexes = Array.from(itemRefs.current.keys());
-		indexes.forEach(index => measureHeight(index));
+		const keys = Array.from(itemRefs.current.keys());
+		keys.forEach((key) => measureHeight(key));
 	}, [items, measureHeight, scrollTop]);
 
 	const totalHeight = useMemo(() => {
@@ -77,7 +98,7 @@ function VirtualizedListInner<T>(
 	}, [heights]);
 
 	const getVisibleRange = useCallback(() => {
-		if (!containerRef.current) return { start: 0, end: 0 };
+		if (heights.length === 0 || height <= 0) return { start: 0, end: 0 };
 		let offset = 0;
 		let startIndex = 0;
 		for (let i = 0; i < heights.length; i++) {
@@ -127,15 +148,15 @@ function VirtualizedListInner<T>(
 		const result: ReactNode[] = [];
 		for (let i = start; i <= end && i < items.length; i++) {
 			const item = items[i];
-			const key = getKey ? getKey(item, i) : i;
+			const key = itemKeys[i];
 			result.push(
 				<div
 					key={ key }
 					ref={ el => {
 						if (el) {
-							itemRefs.current.set(i, el);
+							itemRefs.current.set(key, el);
 						} else {
-							itemRefs.current.delete(i);
+							itemRefs.current.delete(key);
 						}
 					} }
 					className="list-item-wrapper"
@@ -145,7 +166,7 @@ function VirtualizedListInner<T>(
 			);
 		}
 		return result;
-	}, [start, end, items, renderItem, getKey]);
+	}, [start, end, items, renderItem, itemKeys]);
 
 	return (
 		<div

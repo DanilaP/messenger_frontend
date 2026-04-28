@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getDialogInfo, getDialogsList } from "../../../models/dialogs/dialogs-api";
 import { parseCustomDate } from "../../../helpers/parsers/parsers";
 import { useNavigate, useParams } from "react-router";
@@ -18,8 +18,10 @@ const Dialogs = () => {
 	const [dialogsList, setDialogsList] = useState<IDialogListItem[]>([]);
 	const [dialogInfo, setDialogInfo] = useState<IDialog | null>(null);
 	const [currentReplayMessage, setCurrentReplayedMessage] = useState<IMessage | null>(null);
+	const [scrollToMessageRequest, setScrollToMessageRequest] = useState<{ messageId: number; token: number } | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const navigate = useNavigate();
+	const scrollRequestTokenRef = useRef(0);
 
 	const [isMobile, setIsMobile] = useState<boolean>(false);
 
@@ -73,13 +75,23 @@ const Dialogs = () => {
 		setCurrentReplayedMessage(message);
 	};
 
-	const handleScrollToMessage = (messages: IMessage[]) => {
-		if (dialogInfo) {
-			setDialogInfo({
-				...dialogInfo,
-				messages: messages
-			});
-		}
+	const handleScrollToMessage = (messages: IMessage[], targetMessageId: number) => {
+		setDialogInfo(prev => {
+			if (!prev) return prev;
+			return {
+				...prev,
+				messages
+			};
+		});
+		scrollRequestTokenRef.current += 1;
+		setScrollToMessageRequest({
+			messageId: targetMessageId,
+			token: scrollRequestTokenRef.current
+		});
+	};
+
+	const handleScrollToMessageHandled = () => {
+		setScrollToMessageRequest(null);
 	};
 
 	const handleUpdateLastMessageBeforeChanging = (message: IMessage) => {
@@ -160,24 +172,40 @@ const Dialogs = () => {
 	};
 
 	const handleGetNextMessages = async (mode: "prev" | "next") => {
+		if (!dialogInfo) return;
 		let currentMessage = null;
 		if (mode === "prev") {
-			currentMessage = dialogInfo?.messages[0];
+			currentMessage = dialogInfo.messages[0];
 		}
 		else if (mode === "next") {
-			currentMessage = dialogInfo?.messages[dialogInfo.messages.length - 1];
+			currentMessage = dialogInfo.messages[dialogInfo.messages.length - 1];
 		}
 		const dialogRes: IGetDialogResponse = await getDialogInfo(Number(id), currentMessage?.message_id, mode);
-		if (dialogInfo && dialogRes.data.dialog.messages.length !== 0) {
-			setDialogInfo({
-				...dialogInfo,
-				messages: 
-					mode === "prev" 
-						? [...dialogRes.data.dialog.messages, ...dialogInfo.messages]
-						: [...dialogInfo.messages, ...dialogRes.data.dialog.messages]
+		if (dialogRes.data.dialog.messages.length !== 0) {
+			setDialogInfo(prev => {
+				if (!prev) return prev;
+				return {
+					...prev,
+					messages: 
+						mode === "prev" 
+							? [...dialogRes.data.dialog.messages, ...prev.messages]
+							: [...prev.messages, ...dialogRes.data.dialog.messages]
+				};
 			});
 		}
 	};
+
+	const handleFetchDataBeforeScrollToBottom = useCallback(async () => {
+		const dialogRes: IGetDialogResponse = await getDialogInfo(Number(id));
+		if (dialogRes.data.dialog.messages.length !== 0) {
+			if (dialogInfo) {
+				setDialogInfo({
+					...dialogInfo,
+					messages: dialogRes.data.dialog.messages
+				});
+			}
+		}
+	}, [dialogInfo, id]);
 
 	const handleChangeDialog = (dialogId: number) => {
 		navigate(`/main/dialogs/${dialogId}`);
@@ -247,12 +275,15 @@ const Dialogs = () => {
 							dialogInfo={ dialogInfo } 
 							currentReplayMessage={ currentReplayMessage }
 							isMobile={ isMobile }
+							scrollToMessageRequest={ scrollToMessageRequest }
 							handleChangeMessage={ handleChangeMessage }
 							handleSendMessage={ handleSendMessage } 
 							handleDeleteMessage={ handleDeleteMessage }
 							handleGetNextMessages={ handleGetNextMessages }
 							handleChooseMessageForReplaying={ handleChooseMessageForReplaying }
 							handleScrollToMessage={ handleScrollToMessage }
+							handleScrollToMessageHandled={ handleScrollToMessageHandled }
+							handleFetchDataBeforeScrollToBottom={ handleFetchDataBeforeScrollToBottom }
 						/>
 						: null
 					: null

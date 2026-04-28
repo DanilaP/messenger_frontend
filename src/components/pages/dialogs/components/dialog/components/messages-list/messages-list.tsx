@@ -13,12 +13,15 @@ interface IDialogsMessages {
     dialogInfo: IDialog,
     user: Partial<IUser>,
 	currentReplayMessage: IMessage | null,
+	scrollToMessageRequest: { messageId: number; token: number } | null,
     handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
     handleGetNextMessages: (mode: "prev" | "next") => void,
     onSelectedMessagesChange?: (selectedMessages: IMessage[]) => void,
 	handleChooseMessageForReplaying: (message: IMessage) => void,
-	handleScrollToMessage: (messages: IMessage[]) => void
+	handleScrollToMessage: (messages: IMessage[], targetMessageId: number) => void,
+	handleScrollToMessageHandled: () => void,
+	handleFetchDataBeforeScrollToBottom: () => Promise<void>,
 }
 
 const MESSAGE_GAP = 10;
@@ -27,28 +30,51 @@ const DialogsMessages = ({
 	dialogInfo, 
 	user, 
 	currentReplayMessage,
+	scrollToMessageRequest,
 	handleDeleteMessage, 
 	handleChangeMessage,
 	handleGetNextMessages,
 	onSelectedMessagesChange,
 	handleChooseMessageForReplaying,
-	handleScrollToMessage
+	handleScrollToMessage,
+	handleScrollToMessageHandled,
+	handleFetchDataBeforeScrollToBottom
 }: IDialogsMessages) => {
     
 	const listRef = useRef<VirtualizedListRef>(null);
 	const [selectedMessages, setSelectedMessages] = useState<IMessage[]>([]);
 	const [isScrollAtBottom, setIsScrollAtBottom] = useState(true);
-	const [isLoadingMore, setIsLoadingMore] = useState(false);
 	const [containerHeight, setContainerHeight] = useState(0);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const isProcessingRef = useRef(false);
+	const restoreTopTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+	const activeScrollRequestTokenRef = useRef<number | null>(null);
+	const bottomLoadLockRef = useRef(false);
+	const isLoadingMoreRef = useRef(false);
+	const isLoadingNextBatchRef = useRef(false);
 
 	const initialScrollDoneRef = useRef(false);
 	const prevMessagesLengthRef = useRef(dialogInfo.messages.length);
 	const prevFirstMessageIdRef = useRef(dialogInfo.messages[0]?.message_id);
 
-	const forceScrollToBottom = useCallback(() => {
+	const scrollToBottom = useCallback(() => {
 		listRef.current?.scrollToBottom();
+	}, []);
+
+	const handleScrollDownButtonClick = useCallback(async () => {
+		if (isLoadingMoreRef.current) return;
+		isLoadingMoreRef.current = true;
+		try {
+			await handleFetchDataBeforeScrollToBottom();
+			scrollToBottom();
+		} finally {
+			isLoadingMoreRef.current = false;
+		}
+	}, [handleFetchDataBeforeScrollToBottom, scrollToBottom]);
+
+	const clearRestoreTopTimers = useCallback(() => {
+		restoreTopTimersRef.current.forEach((id) => clearTimeout(id));
+		restoreTopTimersRef.current = [];
 	}, []);
 
 	const handleChooseMessage = useCallback((message: IMessage) => {
@@ -80,38 +106,56 @@ const DialogsMessages = ({
 	};
 
 	const handleScroll = useCallback(async (event: React.UIEvent<HTMLDivElement>) => {
-		if (isProcessingRef.current) return; // блокируем повторные вызовы
+		if (isProcessingRef.current) return;
+		if (activeScrollRequestTokenRef.current !== null) return;
 
 		const target = event.currentTarget;
 		const { scrollTop, scrollHeight, clientHeight } = target;
 		const atBottom = scrollHeight - scrollTop - clientHeight < 5;
 		setIsScrollAtBottom(atBottom);
+		if (!atBottom) {
+			bottomLoadLockRef.current = false;
+		}
 
 		const atTop = scrollTop === 0;
-		if (atTop && !isLoadingMore && dialogInfo.messages.length > 0) {
+		if (atTop && !isLoadingMoreRef.current && dialogInfo.messages.length > 0) {
+			clearRestoreTopTimers();
 			isProcessingRef.current = true;
 			const oldScrollHeight = target.scrollHeight;
 			const oldScrollTop = target.scrollTop;
 
-			setIsLoadingMore(true);
+			isLoadingMoreRef.current = true;
 			await handleGetNextMessages("prev");
-			setIsLoadingMore(false);
+			isLoadingMoreRef.current = false;
 
-			setTimeout(() => {
-				const newScrollHeight = target.scrollHeight;
+			const restoreScrollPosition = () => {
+				const scrollElement = listRef.current?.getScrollElement();
+				if (!scrollElement) return;
+				const newScrollHeight = scrollElement.scrollHeight;
 				const heightAdded = newScrollHeight - oldScrollHeight;
-				target.scrollTop = oldScrollTop + heightAdded;
+				scrollElement.scrollTop = oldScrollTop + Math.max(0, heightAdded);
+			};
+
+			requestAnimationFrame(() => {
+				restoreScrollPosition();
+				[24, 64, 140].forEach((delay) => {
+					const timerId = setTimeout(restoreScrollPosition, delay);
+					restoreTopTimersRef.current.push(timerId);
+				});
 				isProcessingRef.current = false;
-			}, 0);
+			});
 		}
-		else if (atBottom && !isLoadingMore && dialogInfo.messages.length > 0) {
+		else if (atBottom && !isLoadingMoreRef.current && dialogInfo.messages.length > 0) {
+			if (bottomLoadLockRef.current) return;
+			bottomLoadLockRef.current = true;
 			isProcessingRef.current = true;
-			setIsLoadingMore(true);
+			isLoadingMoreRef.current = true;
+			isLoadingNextBatchRef.current = true;
 			await handleGetNextMessages("next");
-			setIsLoadingMore(false);
+			isLoadingMoreRef.current = false;
 			isProcessingRef.current = false;
 		}
-	}, [handleGetNextMessages, isLoadingMore, dialogInfo.messages.length]);
+	}, [handleGetNextMessages, dialogInfo.messages.length, clearRestoreTopTimers]);
 
 	const renderMessage = useCallback((message: IMessage) => {
 		const isSelected = selectedMessages.some(
@@ -145,6 +189,39 @@ const DialogsMessages = ({
 		handleScrollToMessage
 	]);
 
+	useEffect(() => {
+		if (!scrollToMessageRequest || dialogInfo.messages.length === 0) return;
+		let cancelled = false;
+		let attempts = 0;
+		activeScrollRequestTokenRef.current = scrollToMessageRequest.token;
+		isProcessingRef.current = true;
+		clearRestoreTopTimers();
+
+		const runScroll = () => {
+			if (cancelled) return;
+			if (activeScrollRequestTokenRef.current !== scrollToMessageRequest.token) return;
+			const isScrolled = listRef.current?.scrollToItemByKey(scrollToMessageRequest.messageId, "start") ?? false;
+			attempts += 1;
+			if (isScrolled || attempts >= 8) {
+				activeScrollRequestTokenRef.current = null;
+				isProcessingRef.current = false;
+				handleScrollToMessageHandled();
+				return;
+			}
+			const timerId = setTimeout(runScroll, 40);
+			restoreTopTimersRef.current.push(timerId);
+		};
+
+		requestAnimationFrame(runScroll);
+		return () => {
+			cancelled = true;
+			if (activeScrollRequestTokenRef.current === scrollToMessageRequest.token) {
+				activeScrollRequestTokenRef.current = null;
+				isProcessingRef.current = false;
+			}
+		};
+	}, [scrollToMessageRequest, dialogInfo.messages, handleScrollToMessageHandled, clearRestoreTopTimers]);
+
 	// Автоскролл при добавлении новых сообщений в конец
 	useEffect(() => {
 		const currentLength = dialogInfo.messages.length;
@@ -152,14 +229,16 @@ const DialogsMessages = ({
 		const isNewMessageAddedToEnd = 
             currentLength > prevMessagesLengthRef.current && 
             currentFirstId === prevFirstMessageIdRef.current;
+		const shouldAutoScrollToBottom = isNewMessageAddedToEnd && !isLoadingNextBatchRef.current;
         
-		if (isNewMessageAddedToEnd) {
-			setTimeout(() => forceScrollToBottom(), 0);
+		if (shouldAutoScrollToBottom) {
+			setTimeout(() => scrollToBottom(), 0);
 		}
+		isLoadingNextBatchRef.current = false;
         
 		prevMessagesLengthRef.current = currentLength;
 		prevFirstMessageIdRef.current = currentFirstId;
-	}, [dialogInfo.messages, forceScrollToBottom]);
+	}, [dialogInfo.messages, scrollToBottom]);
 
 	// Измерение высоты контейнера
 	useEffect(() => {
@@ -182,12 +261,16 @@ const DialogsMessages = ({
 	useEffect(() => {
 		if (containerHeight > 0 && dialogInfo.messages.length > 0 && !initialScrollDoneRef.current) {
 			const timer = setTimeout(() => {
-				forceScrollToBottom();
+				scrollToBottom();
 				initialScrollDoneRef.current = true;
 			}, 50);
 			return () => clearTimeout(timer);
 		}
-	}, [containerHeight, dialogInfo.messages.length, forceScrollToBottom]);
+	}, [containerHeight, dialogInfo.messages.length, scrollToBottom]);
+
+	useEffect(() => {
+		return () => clearRestoreTopTimers();
+	}, [clearRestoreTopTimers]);
 
 	return (
 		<div 
@@ -218,7 +301,7 @@ const DialogsMessages = ({
 				</div>
 			) }
 			{ !isScrollAtBottom && (
-				<div onClick={ forceScrollToBottom } className="scroll-down-button">
+				<div onClick={ handleScrollDownButtonClick } className="scroll-down-button">
 					<FaCircleChevronDown fontSize={ 30 } />
 				</div>
 			) }
