@@ -27,18 +27,26 @@ const MessageEditor = ({
 
 	const handleUploadChange: UploadProps["onChange"] = ({ fileList }) => {
 		setModifiedFileList(fileList);
+		handleClearOldFileList();
 	};
 
 	const handleRemoveFile = (file: UploadFile) => {
 		setModifiedFileList(prev => prev.filter(item => item.uid !== file.uid));
 	};
 
+	const handleClearOldFileList = () => {
+		setModifiedMessage({
+			...modifiedMessage,
+			files: []
+		});
+	};
+
 	const beforeUpload = () => false;
 
 	return (
 		<div className='message-editor'>
-			<div className="files-number">Загружено файлов: { message.files.length }</div>
-			<FileList files={ message.files } />
+			<div className="files-number">Загружено файлов: { modifiedMessage.files.length }</div>
+			<FileList files={ modifiedMessage.files } />
 			<Input 
 				defaultValue={ message.text }
 				onChange={
