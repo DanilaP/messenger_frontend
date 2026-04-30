@@ -3,12 +3,14 @@ import "./item.scss";
 
 interface IMenuItemProps {
     title: string,
+	subtitle: string,
     icon: ReactElement,
     handleClick: () => void
 }
 
 const MenuItem = ({ 
-	title, 
+	title,
+	subtitle, 
 	icon,
 	handleClick 
 }: IMenuItemProps) => {
@@ -17,7 +19,10 @@ const MenuItem = ({
 			<div className="icon">
 				{ icon }
 			</div>
-			<div className="text">{ title }</div>
+			<div className="info">
+				<div className="text">{ title }</div>
+				<div className="subtitle">{ subtitle }</div>
+			</div>
 		</div>
 	);
 };

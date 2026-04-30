@@ -6,8 +6,19 @@
     cursor: pointer;
     font-size: 15px;
 
-    .icon {
+    & .icon {
         display: flex;
         align-items: center;
+        font-size: 30px;
+    }
+
+    & .info {
+        & .title {
+            font-size: 14px;
+        }
+        
+        & .subtitle {
+            font-size: 12px;
+        }
     }
 }
