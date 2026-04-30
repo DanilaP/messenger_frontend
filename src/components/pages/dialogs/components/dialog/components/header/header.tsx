@@ -1,6 +1,6 @@
-import { MdSearch } from "react-icons/md";
+import { IoSearchOutline } from "react-icons/io5";
 import { memo } from "react";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import { RxDotsVertical } from "react-icons/rx";
 import { Dropdown, type MenuProps } from "antd";
 import { MdAttachFile, MdDelete  } from "react-icons/md";
 import type { IOpponent } from "../../../../../../../models/dialogs/dialogs-interface";
@@ -43,9 +43,9 @@ const DialogHeader = memo(({ opponent }: IDialogHeaderProps) => {
 			</div>
 			<div className="dialog-name">{ opponent.name } { opponent.surname }</div>
 			<div className="dialog-settings">
-				<MdSearch className="icon" />
+				<IoSearchOutline className="icon" />
 				<Dropdown menu={ { items, onClick: handleMenuClick } } trigger={ ["click"] }>
-					<BsThreeDotsVertical className="icon" />
+					<RxDotsVertical className="icon" />
 				</Dropdown>
 			</div>
 		</div>

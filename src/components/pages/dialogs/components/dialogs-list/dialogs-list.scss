@@ -6,6 +6,20 @@
     border-right: 1px solid var(--border-color);
     background-color: var(--default-color-second);
     overflow-y: auto;
+    padding-top: 15px;
+}
+
+.dialogs-list-search {
+    position: relative;
+    
+    & .ant-input-affix-wrapper {
+        border-radius: 80px;
+
+        & .ant-input {
+            height: 30px;
+            border-radius: 80px;
+        }
+    }
 }
 
 .dialogs-list-wrapper {

@@ -1,4 +1,6 @@
 import { memo } from "react";
+import { Input } from "antd";
+import { IoSearchOutline } from "react-icons/io5";
 import type { IDialogListItem } from "../../../../../models/dialogs/dialogs-interface";
 import DialogListItemWrapper from "./components/dialog-list-item/dialog-list-item";
 import "./dialogs-list.scss";
@@ -19,8 +21,24 @@ const DialogsList = memo(({
 		handleChangeDialog(dialogId);
 	};
 
+	const handleSearch = () => {
+
+	};
+
 	return (
 		<div className={ isMobile ? "dialogs-list-wrapper-mobile" : "dialogs-list-wrapper" }>
+			<div className="dialogs-list-search">
+				<Input
+					placeholder="Поиск"
+					onPressEnter={ (e) => console.log("Enter нажат, значение:", e.currentTarget.value) }
+					suffix={ 
+						<IoSearchOutline 
+							onClick={ handleSearch } 
+							fontSize={ 20 }
+						/> 
+					}
+				/>
+			</div>
 			{
 				dialogsList.map(dialogListItem => {
 					return (

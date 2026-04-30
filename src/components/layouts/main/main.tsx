@@ -1,5 +1,5 @@
 import * as React from "react";
-import { GiHamburgerMenu } from "react-icons/gi";
+import { RxHamburgerMenu } from "react-icons/rx";
 import { useState } from "react";
 import LeftMenu from "../../partials/left-menu/left-menu";
 import "./main.scss";
@@ -20,7 +20,7 @@ export default function MainLayout (props: MainLayoutProps) {
 	return (
 		<div className='main-wrapper'>
 			<div className="main-header">
-				<GiHamburgerMenu 
+				<RxHamburgerMenu 
 					onClick={ handleChangeMenuVisibility } 
 					className='left-menu-icon' 
 					fontSize={ 30 } 
