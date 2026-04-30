@@ -2,9 +2,9 @@ import { IoMdExit } from "react-icons/io";
 import { useNavigate } from "react-router";
 import { logout } from "../../../models/user/user-api";
 import { useSelector } from "react-redux";
-import { RiAccountCircle2Fill } from "react-icons/ri";
+import { RiAccountCircle2Fill, RiFolderChartFill } from "react-icons/ri";
 import { IoNotificationsCircle } from "react-icons/io5";
-import { MdFolder, MdOutlineLanguage } from "react-icons/md";
+import { MdOutlineLanguage } from "react-icons/md";
 import { HiMiniChatBubbleLeftEllipsis } from "react-icons/hi2";
 import type { RootState } from "../../../stores/root/root";
 import MenuItem from "./components/item/item";
@@ -57,7 +57,7 @@ const LeftMenu = ({ handleCloseMenu }: ILeftMenuProps) => {
 		{
 			title: "Данные и память",
 			subtitle: "Файлы из ваших чатов и групп",
-			icon: <MdFolder color="9406d6" />,
+			icon: <RiFolderChartFill color="9406d6" />,
 			handleClick: handleDialogsClick
 		},
 		{
