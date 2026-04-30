@@ -1,0 +1,45 @@
+@mixin profile-input-styles {
+    background-color: transparent;
+    border: 0px;
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 0px;
+    padding-left: 0px;
+
+    &:hover, &:focus {
+        border: 0px;
+        border-bottom: 1px solid var(--border-color);
+        background-color: transparent;
+        box-shadow: none;
+    }
+}
+
+.profile {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    & .ant-input {
+        @include profile-input-styles;
+    }
+
+    & .ant-input-affix-wrapper {
+        @include profile-input-styles;
+
+        & .ant-input {
+            @include profile-input-styles;
+            border: 0px;
+
+            &:hover, &:focus {
+                border: none;
+                box-shadow: none;
+            }
+        }
+
+        &:focus-within {
+            box-shadow: none;
+            border: 0px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: transparent;
+        }
+    }
+}

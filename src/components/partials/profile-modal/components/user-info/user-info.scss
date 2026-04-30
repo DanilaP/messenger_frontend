@@ -1,0 +1,29 @@
+.user-info {
+    display: flex;
+    gap: 30px;
+
+    & .avatar {
+        display: flex;
+        align-items: center;
+
+        & .image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+        }
+    }
+
+    & .additional-info {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        & .user-info-item {
+            & .input-name {
+                font-size: 12px;
+                color: var(--default-color);
+            }
+        }
+    }
+}

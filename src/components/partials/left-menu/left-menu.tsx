@@ -1,4 +1,3 @@
-import { IoMdExit } from "react-icons/io";
 import { useNavigate } from "react-router";
 import { logout } from "../../../models/user/user-api";
 import { useSelector } from "react-redux";
@@ -6,16 +5,31 @@ import { RiAccountCircle2Fill, RiFolderChartFill } from "react-icons/ri";
 import { IoNotificationsCircle } from "react-icons/io5";
 import { MdOutlineLanguage } from "react-icons/md";
 import { HiMiniChatBubbleLeftEllipsis } from "react-icons/hi2";
+import { useState, type ReactNode } from "react";
+import { Modal } from "antd";
 import type { RootState } from "../../../stores/root/root";
 import MenuItem from "./components/item/item";
+import MenuFooter from "./components/menu-footer/menu-footer";
+import ProfileModal from "../profile-modal/profile-modal";
 import "./left-menu.scss";
 
 interface ILeftMenuProps {
     handleCloseMenu: () => void
 }
 
+interface IMenuModal {
+	open: boolean,
+	component: ReactNode | null,
+	title: string
+}
+
 const LeftMenu = ({ handleCloseMenu }: ILeftMenuProps) => {
 
+	const [modalInfo, setModalInfo] = useState<IMenuModal>({
+		open: false,
+		component: null,
+		title: ""
+	});
 	const user = useSelector((state: RootState) => state.user.user);
 	const navigate = useNavigate();
 
@@ -35,12 +49,20 @@ const LeftMenu = ({ handleCloseMenu }: ILeftMenuProps) => {
 		navigate("/main/dialogs/initial");
 	};
 
+	const handleProfileClick = () => {
+		setModalInfo({
+			open: !modalInfo.open,
+			component: <ProfileModal />,
+			title: "Профиль"
+		});
+	};
+
 	const menuItems = [
 		{
 			title: "Аккаунт",
 			subtitle: "Аватар, имя пользователя, о себе",
 			icon: <RiAccountCircle2Fill color="var(--default-color)" />,
-			handleClick: handleDialogsClick
+			handleClick: handleProfileClick
 		},
 		{
 			title: "Диалоги",
@@ -84,20 +106,19 @@ const LeftMenu = ({ handleCloseMenu }: ILeftMenuProps) => {
 						);
 					})
 				}
-				<div className="menu-footer">
-					<div className="avatar-wrapper">
-						<img className="image" src={ user?.avatar } />
-					</div>
-					<div className="user-info">
-						<div className="user-name">
-							<div className="name">{ user?.name }</div>
-							<div className="surname">{ user?.surname }</div>
-						</div>
-					</div>
-					<div onClick={ handleExitClick } className="exit-icon-wrapper">
-						<IoMdExit fontSize={ 30 } />
-					</div>
-				</div>
+				{
+					user && <MenuFooter user={ user } handleExitClick={ handleExitClick } />
+				}
+				<Modal
+					destroyOnHidden
+					footer={ null }
+					open={ modalInfo.open }
+					onCancel={ handleProfileClick }
+					centered
+				>
+					{ modalInfo.component }
+				</Modal>
+				
 			</div>
 		</div>
 	);

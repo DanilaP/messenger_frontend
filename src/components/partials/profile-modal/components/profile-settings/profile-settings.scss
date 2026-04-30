@@ -1,0 +1,20 @@
+.profile-settings {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    gap: 10px;
+
+    & .settings-title {
+        color: grey;
+        font-weight: 600;
+    }
+
+    & .profile-setting-item {
+        & .input-name {
+            font-size: 12px;
+            color: var(--default-color);
+        }
+    }
+}  
