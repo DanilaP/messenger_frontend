@@ -2,6 +2,7 @@
     background-color: var(--default-color-second);
     color: var(--text-color);
     border: 1px solid var(--border-color);
+    border-radius: 20px;
 
     &::placeholder {
         color: var(--text-color);
@@ -23,6 +24,7 @@
 .ant-btn {
     background-color: var(--default-color);
     color: var(--text-color);
+    border-radius: 20px;
 }
 
 .ant-input, .ant-input-affix-wrapper {
