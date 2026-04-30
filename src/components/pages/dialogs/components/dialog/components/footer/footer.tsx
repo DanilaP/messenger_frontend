@@ -127,7 +127,7 @@ const DialogFooter = memo(({
 				{
 					<EmojiPicker handleChangeValue={ handleAddEmojiToMessageText } />
 				}
-				<Button onClick={ handleSendButtonClick } type='primary'>Отправить</Button>
+				<Button className="send-message-button" onClick={ handleSendButtonClick } type='primary'>Отправить</Button>
 			</div>
 		</div>
 	);

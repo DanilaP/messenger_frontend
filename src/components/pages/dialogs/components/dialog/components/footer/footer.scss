@@ -1,5 +1,5 @@
 .dialog-footer {
-    width: 70vw;
+    width: 75vw;
     display: flex;
     flex-direction: column;
     padding: 10px;
@@ -54,7 +54,18 @@
     }
 
     & .ant-input {
-        border: none !important;
+        border-radius: 20px;
+        border: none;
+        background-color: var(--bg-color-block);
+
+        &:hover, &:focus {
+            background-color: var(--bg-color-block);
+            border: none;
+        }
+    }
+
+    & .send-message-button {
+        border-radius: 20px;
     }
 }
 
