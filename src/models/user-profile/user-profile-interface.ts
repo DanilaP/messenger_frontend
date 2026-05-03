@@ -15,3 +15,10 @@ export interface IGetUserProfileInfoResponse {
         user: IUserProfileInfo
     }
 }
+
+export interface IChangeUserAvatarResponse {
+    data: {
+        message: string,
+        avatar: string
+    }
+}

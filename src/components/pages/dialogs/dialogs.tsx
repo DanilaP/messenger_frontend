@@ -240,9 +240,8 @@ const Dialogs = () => {
 
 	useEffect(() => {
 		const handleResize = () => {
-			setIsMobile(window.innerWidth <= 610);
+			setIsMobile(window.outerWidth <= 1100);
 		};
-
 		window.addEventListener("resize", handleResize);
 		handleResize();
 

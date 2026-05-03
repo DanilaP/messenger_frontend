@@ -4,3 +4,8 @@ export const getUserProfileInfo = async () => {
 	const response = $api.get("/profile");
 	return response;
 };
+
+export const changeUserAvatar = async (formData: FormData) => {
+	const response = $api.post("/profile/change-avatar", formData);
+	return response;
+};
