@@ -25,6 +25,10 @@
     background-color: var(--default-color);
     color: var(--text-color);
     border-radius: 20px;
+    
+    &:hover, &:focus {
+        border: none;
+    }
 }
 
 .ant-input, .ant-input-affix-wrapper {

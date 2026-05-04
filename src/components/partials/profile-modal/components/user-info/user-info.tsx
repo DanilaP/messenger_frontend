@@ -7,7 +7,6 @@ import type { IChangeUserAvatarResponse, IUserProfileInfo } from "../../../../..
 import Cropper from "../../../cropper/cropper";
 import "./user-info.scss";
 
-
 export interface IUserInfoProps {
     userInfo: IUserProfileInfo;
 }
