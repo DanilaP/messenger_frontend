@@ -17,10 +17,13 @@
     }
 }
 
+//FormItem
 .ant-form-item .ant-form-item-label >label {
     color: var(--text-color) !important;
 }
+//FormItem
 
+//Button
 .ant-btn {
     background-color: var(--default-color);
     color: var(--text-color);
@@ -31,6 +34,17 @@
     }
 }
 
+.ant-btn.ant-btn-color-default.ant-btn-variant-outlined {
+    border: none;
+
+    &:hover {
+        background-color: var(--default-color);
+        color: var(--text-color);
+    }
+}
+//Button
+
+//Input
 .ant-input, .ant-input-affix-wrapper {
     @include input-styles;
 }
@@ -46,7 +60,9 @@
 .ant-input-outlined.ant-input-status-error:not(.ant-input-disabled) {
     @include input-styles;
 }
+//Input
 
+//Modal
 .ant-modal .ant-modal-container {
     background-color: var(--bg-color-block);
     color: var(--text-color);
@@ -55,7 +71,9 @@
         color: var(--text-color);
     }
 }
+//Modal
 
+//Upload
 .ant-upload-list-item-container {
     color: var(--text-color);
 }
@@ -67,16 +85,9 @@
 .ant-upload-wrapper .ant-upload-list .ant-upload-list-item .ant-upload-list-item-actions .anticon {
     color: var(--text-color);
 }
+//Upload
 
-.ant-btn.ant-btn-color-default.ant-btn-variant-outlined {
-    border: none;
-
-    &:hover {
-        background-color: var(--default-color);
-        color: var(--text-color);
-    }
-}
-
+//Dropdown
 .ant-dropdown .ant-dropdown-menu {
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -88,7 +99,9 @@
         background-color: var(--bg-color-block);
     }
 }
+//Dropdown
 
+//Popover
 .ant-popover .ant-popover-container {
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -96,3 +109,51 @@
     scrollbar-width: thin;
     border: 1px solid var(--border-color);
 }
+//Popover
+
+//DatePicker
+.ant-picker, .ant-picker-outlined {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 0px;
+    color: var(--text-color);
+    outline: none;
+    padding-left: 0px;
+
+    & .ant-picker-suffix {
+        color: var(--text-color);
+    }
+
+    & .ant-picker-clear {
+        color: var(--text-color);
+
+        &:hover {
+            color: var(--text-color);
+        }
+    }
+
+    & .ant-picker-input {
+        & input {
+            &::placeholder {
+                color: var(--text-color);
+            }
+        }
+    }
+
+    & .ant-picker-input-placeholder > input {
+        color: var(--text-color);
+    }
+
+    &:hover, &:focus, &:focus-within {   
+        background-color: transparent;
+        border-color: var(--border-color);
+        color: var(--text-color);
+        outline: none;
+
+        & .ant-picker-suffix {
+            color: var(--text-color) !important;
+        }
+    }
+}
+//DatePicker

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getUserProfileInfo } from "../../../models/user-profile/user-profile-api";
+import { changeUserProfileInfo, getUserProfileInfo } from "../../../models/user-profile/user-profile-api";
 import type { IGetUserProfileInfoResponse, IUserProfileInfo } from "../../../models/user-profile/user-profile-interface";
 import UserInfo from "./components/user-info/user-info";
 import ProfileSettings from "./components/profile-settings/profile-settings";
@@ -10,11 +10,26 @@ const ProfileModal = () => {
 
 	const [userProfileInfo, setUserProfileInfo] = useState<IUserProfileInfo>();
 
+	const handleModifyUserInfoField = async (fieldName: string, fieldValue: string | number) => {
+		if (userProfileInfo) {
+			changeUserProfileInfo(fieldName, fieldValue)
+				.then((res) => {
+					setUserProfileInfo({
+						...userProfileInfo,
+						[fieldName]: fieldValue
+					});
+					console.log(res);
+				})
+				.catch(error => {
+					console.error(error);
+				});
+		}
+	};
+
 	useEffect(() => {
 		getUserProfileInfo()
 			.then((res: IGetUserProfileInfoResponse) => {
 				setUserProfileInfo(res.data.user);
-				console.log(res);
 			})
 			.catch((error: unknown) => {
 				console.error(error);
@@ -24,8 +39,14 @@ const ProfileModal = () => {
 	if (userProfileInfo) {
 		return (
 			<div className='profile'>
-				<UserInfo userInfo={ userProfileInfo } />
-				<ProfileSettings userInfo={ userProfileInfo } />
+				<UserInfo 
+					handleModifyUserInfoField={ handleModifyUserInfoField }
+					userInfo={ userProfileInfo } 
+				/>
+				<ProfileSettings 
+					handleModifyUserInfoField={ handleModifyUserInfoField }
+					userInfo={ userProfileInfo } 
+				/>
 				<Publications />
 			</div>
 		);

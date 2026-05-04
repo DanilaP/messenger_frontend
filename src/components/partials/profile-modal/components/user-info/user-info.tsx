@@ -1,17 +1,23 @@
-import { Input, Upload } from "antd";
+import { DatePicker, Input, Upload, type DatePickerProps } from "antd";
 import { changeUserAvatar } from "../../../../../models/user-profile/user-profile-api";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { rootStore, type RootState } from "../../../../../stores/root/root";
 import type { IChangeUserAvatarResponse, IUserProfileInfo } from "../../../../../models/user-profile/user-profile-interface";
 import Cropper from "../../../cropper/cropper";
+import dayjs from "dayjs";
 import "./user-info.scss";
 
 export interface IUserInfoProps {
     userInfo: IUserProfileInfo;
+	handleModifyUserInfoField: (fieldName: string, fieldValue: string | number) => void
 }
 
-const UserInfo = ({ userInfo }: IUserInfoProps) => {
+const UserInfo = ({ 
+	userInfo, 
+	handleModifyUserInfoField 
+}: IUserInfoProps) => {
+	
 	const [avatarUrl, setAvatarUrl] = useState<string>(userInfo.avatar);
 	const [cropModalOpen, setCropModalOpen] = useState(false);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -43,6 +49,14 @@ const UserInfo = ({ userInfo }: IUserInfoProps) => {
 		setSelectedFile(null);
 	};
 
+	const handleFieldChange = (fieldName: string, fieldValue: string | number) => {
+		handleModifyUserInfoField(fieldName, fieldValue);
+	};
+
+	const handleDatePickerChange: DatePickerProps["onChange"] = (date, dateString) => {
+		console.log(date, dateString);
+	};
+
 	return (
 		<div className="user-info">
 			<div className="avatar">
@@ -60,11 +74,19 @@ const UserInfo = ({ userInfo }: IUserInfoProps) => {
 			<div className="additional-info">
 				<div className="user-info-item">
 					<label className="input-name">Имя пользователя: </label>
-					<Input prefix="@" defaultValue={ userInfo.username } />
+					<Input 
+						onChange={ (e) => handleFieldChange("username", e.target.value) } 
+						prefix="@" 
+						defaultValue={ userInfo.username } 
+					/>
 				</div>
 				<div className="user-info-item">
 					<label className="input-name">Дата рождения: </label>
-					<Input defaultValue={ userInfo.date_of_birth } />
+					<DatePicker 
+						placeholder="Выберите дату"
+						defaultValue={ dayjs(userInfo.date_of_birth, "DD.MM.YYYY") }
+						onChange={ handleDatePickerChange } 
+					/>
 				</div>
 			</div>
 			<Cropper
