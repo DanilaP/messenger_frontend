@@ -4,13 +4,14 @@ import type { IGetUserProfileInfoResponse, IUserProfileInfo } from "../../../mod
 import UserInfo from "./components/user-info/user-info";
 import ProfileSettings from "./components/profile-settings/profile-settings";
 import Publications from "./components/publications/publications";
+import useDebouncedCallback from "../../../hooks/use-debounced-callback";
 import "./profile-modal.scss";
 
 const ProfileModal = () => {
 
 	const [userProfileInfo, setUserProfileInfo] = useState<IUserProfileInfo>();
 
-	const handleModifyUserInfoField = async (fieldName: string, fieldValue: string | number) => {
+	const handleModifyUserInfoField = useDebouncedCallback((fieldName: string, fieldValue: string | number) => {
 		if (userProfileInfo) {
 			changeUserProfileInfo(fieldName, fieldValue)
 				.then((res) => {
@@ -24,7 +25,7 @@ const ProfileModal = () => {
 					console.error(error);
 				});
 		}
-	};
+	}, 300);
 
 	useEffect(() => {
 		getUserProfileInfo()

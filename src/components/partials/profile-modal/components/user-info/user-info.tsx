@@ -53,8 +53,11 @@ const UserInfo = ({
 		handleModifyUserInfoField(fieldName, fieldValue);
 	};
 
-	const handleDatePickerChange: DatePickerProps["onChange"] = (date, dateString) => {
-		console.log(date, dateString);
+	const handleDatePickerChange: DatePickerProps["onChange"] = (_, dateString) => {
+		if (dateString) {
+			const stringifiedDate = dateString.toString();
+			handleFieldChange("dateOfBirth", stringifiedDate);
+		}
 	};
 
 	return (
@@ -83,6 +86,7 @@ const UserInfo = ({
 				<div className="user-info-item">
 					<label className="input-name">Дата рождения: </label>
 					<DatePicker 
+						format="DD.MM.YYYY"
 						placeholder="Выберите дату"
 						defaultValue={ dayjs(userInfo.date_of_birth, "DD.MM.YYYY") }
 						onChange={ handleDatePickerChange } 
