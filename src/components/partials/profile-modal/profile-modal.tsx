@@ -14,12 +14,11 @@ const ProfileModal = () => {
 	const handleModifyUserInfoField = useDebouncedCallback((fieldName: string, fieldValue: string | number) => {
 		if (userProfileInfo) {
 			changeUserProfileInfo(fieldName, fieldValue)
-				.then((res) => {
+				.then(() => {
 					setUserProfileInfo({
 						...userProfileInfo,
 						[fieldName]: fieldValue
 					});
-					console.log(res);
 				})
 				.catch(error => {
 					console.error(error);
