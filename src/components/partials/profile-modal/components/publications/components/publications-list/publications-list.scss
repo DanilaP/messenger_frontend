@@ -1,0 +1,18 @@
+.publications-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    &-title {
+        font-weight: 600;
+    }
+
+    &-subtitle {
+        color: grey;
+        text-align: center;
+    }
+}

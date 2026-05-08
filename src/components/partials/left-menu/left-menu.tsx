@@ -52,7 +52,7 @@ const LeftMenu = ({ handleCloseMenu }: ILeftMenuProps) => {
 	const handleProfileClick = () => {
 		setModalInfo({
 			open: !modalInfo.open,
-			component: <ProfileModal />,
+			component: user?.id && <ProfileModal userId={ user.id } />,
 			title: "Профиль"
 		});
 	};

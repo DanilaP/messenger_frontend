@@ -1,7 +1,14 @@
 import { useState } from "react";
+import type { IPublication } from "../../../../../models/publication/publication-interface";
+import PublicationsHeader from "./components/publications-header/publications-header";
+import PublicationsList from "./components/publications-list/publications-list";
 import "./publications.scss";
 
-const Publications = () => {
+interface IPublicationsProps {
+	publications: IPublication[]
+}
+
+const Publications = ({ publications }: IPublicationsProps) => {
 
 	const [currentTitle, setCurrentTitle] = useState<string>("Публикации");
 
@@ -11,26 +18,13 @@ const Publications = () => {
 
 	return (
 		<div className="publications">
-			<div className="title">
-				<div 
-					onClick={ () => handleTitleClick("Публикации") } 
-					className={ `publications-title ${ currentTitle === "Публикации" ? `active` : `` }` }
-				>
-                    Публикации
-				</div>
-				<div 
-					onClick={ () => handleTitleClick("Архивные публикации") } 
-					className={ `publications-title ${ currentTitle === "Архивные публикации" ? `active` : `` }` }
-				>
-                    Архив публикаций
-				</div>
-			</div>
-			<div className="publications-list">
-				<div className="publications-list-title">Публикаций пока нет...</div>
-				<div className="publications-list-subtitle">
-                    Публикуйте фотографии и видео в своём профиле
-				</div>
-			</div>
+			<PublicationsHeader 
+				currentTitle={ currentTitle }
+				handleTitleClick={ handleTitleClick } 
+			/>
+			<PublicationsList 
+				publications={ publications } 
+			/>
 		</div>
 	);
 };
