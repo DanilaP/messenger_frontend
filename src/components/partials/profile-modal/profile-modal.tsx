@@ -44,7 +44,7 @@ const ProfileModal = ({ userId }: IProfileModalProps) => {
 			});
 	}, []);
 
-	if (userProfileInfo) {
+	if (userProfileInfo && publications) {
 		return (
 			<div className='profile'>
 				<UserInfo 

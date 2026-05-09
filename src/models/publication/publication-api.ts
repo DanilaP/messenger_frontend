@@ -1,7 +1,7 @@
 import $api from "../../configs/axios";
 
 export const getPublications = async (userId: number) => {
-	const result = await $api.get(`/publications?userId=${userId}`);
+	const result = await $api.get(`/publications/?userId=${userId}`);
 	return result;
 };
 

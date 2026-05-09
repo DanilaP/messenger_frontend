@@ -9,7 +9,7 @@ export interface IPublication {
     userId: number,
     text: string,
     date: string,
-    file: IPublicationFile[]
+    file: IPublicationFile
 }
 
 export interface IGetPublicationsResponse {

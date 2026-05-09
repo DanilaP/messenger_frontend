@@ -22,6 +22,9 @@ const Publications = ({ publications }: IPublicationsProps) => {
 				currentTitle={ currentTitle }
 				handleTitleClick={ handleTitleClick } 
 			/>
+			<div className="publications-info">
+				Всего публикаций: { publications.length }
+			</div>
 			<PublicationsList 
 				publications={ publications } 
 			/>
