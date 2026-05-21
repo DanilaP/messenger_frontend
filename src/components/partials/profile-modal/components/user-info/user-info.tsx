@@ -1,19 +1,21 @@
 import { DatePicker, Input, Upload, type DatePickerProps } from "antd";
 import { changeUserAvatar } from "../../../../../models/user-profile/user-profile-api";
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { rootStore, type RootState } from "../../../../../stores/root/root";
+import { rootStore } from "../../../../../stores/root/root";
+import type { IUser } from "../../../../../models/user/user-interface";
 import type { IChangeUserAvatarResponse, IUserProfileInfo } from "../../../../../models/user-profile/user-profile-interface";
 import Cropper from "../../../cropper/cropper";
 import dayjs from "dayjs";
 import "./user-info.scss";
 
 export interface IUserInfoProps {
+	user: IUser;
     userInfo: IUserProfileInfo;
 	handleModifyUserInfoField: (fieldName: string, fieldValue: string | number) => void
 }
 
 const UserInfo = ({ 
+	user,
 	userInfo, 
 	handleModifyUserInfoField 
 }: IUserInfoProps) => {
@@ -21,7 +23,7 @@ const UserInfo = ({
 	const [avatarUrl, setAvatarUrl] = useState<string>(userInfo.avatar);
 	const [cropModalOpen, setCropModalOpen] = useState(false);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
-	const user = useSelector((state: RootState) => state.user.user);
+	const isModificationEnabled: boolean = user.id === userInfo.id;
 
 	const handleBeforeUpload = (file: File) => {
 		setSelectedFile(file);
@@ -64,6 +66,7 @@ const UserInfo = ({
 		<div className="user-info">
 			<div className="avatar">
 				<Upload
+					disabled={ !isModificationEnabled }
 					showUploadList={ false }
 					beforeUpload={ handleBeforeUpload }
 					accept="image/*"
@@ -78,6 +81,7 @@ const UserInfo = ({
 				<div className="user-info-item">
 					<label className="input-name">Имя пользователя: </label>
 					<Input 
+						disabled={ !isModificationEnabled }
 						onChange={ (e) => handleFieldChange("username", e.target.value) } 
 						prefix="@" 
 						defaultValue={ userInfo.username } 
@@ -86,6 +90,7 @@ const UserInfo = ({
 				<div className="user-info-item">
 					<label className="input-name">Дата рождения: </label>
 					<DatePicker 
+						disabled={ !isModificationEnabled }
 						format="DD.MM.YYYY"
 						placeholder="Выберите дату"
 						defaultValue={ dayjs(userInfo.date_of_birth, "DD.MM.YYYY") }

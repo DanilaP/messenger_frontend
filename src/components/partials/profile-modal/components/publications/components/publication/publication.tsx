@@ -6,7 +6,6 @@ interface IPublicationProps {
 }
 
 const Publication = ({ publication }: IPublicationProps) => {
-	console.log(publication);
 	return (
 		<div className="publication">
 			<div

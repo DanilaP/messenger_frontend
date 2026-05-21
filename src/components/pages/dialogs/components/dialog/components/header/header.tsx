@@ -7,10 +7,14 @@ import type { IOpponent } from "../../../../../../../models/dialogs/dialogs-inte
 import "./header.scss";
 
 interface IDialogHeaderProps {
-    opponent: IOpponent
+    opponent: IOpponent,
+	handleChangeProfileModalVisibility: () => void,
 }
 
-const DialogHeader = memo(({ opponent }: IDialogHeaderProps) => {
+const DialogHeader = memo(({
+	opponent,
+	handleChangeProfileModalVisibility
+}: IDialogHeaderProps) => {
 
 	const items: MenuProps["items"] = [
 		{
@@ -38,7 +42,7 @@ const DialogHeader = memo(({ opponent }: IDialogHeaderProps) => {
 
 	return (
 		<div className='dialog-header'>
-			<div className="dialog-image-wrapper">
+			<div onClick={ handleChangeProfileModalVisibility } className="dialog-image-wrapper">
 				<img src={ opponent.avatar } className='dialog-image'/>
 			</div>
 			<div className="dialog-name">{ opponent.name } { opponent.surname }</div>

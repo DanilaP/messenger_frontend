@@ -3,27 +3,30 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { getDialogInfo, getDialogsList } from "../../../models/dialogs/dialogs-api";
 import { parseCustomDate } from "../../../helpers/parsers/parsers";
 import { useNavigate, useParams } from "react-router";
-import { type IDialog, type IDialogListItem, type IGetDialogResponse, type IMessage } from "../../../models/dialogs/dialogs-interface";
+import { Modal } from "antd";
+import type { IDialog, IDialogListItem, IGetDialogResponse, IMessage } from "../../../models/dialogs/dialogs-interface";
 import type { RootState } from "../../../stores/root/root";
 import type { IFile } from "../../../interfaces/files";
 import DialogsList from "./components/dialogs-list/dialogs-list";
 import Dialog from "./components/dialog/dialog";
 import Loader from "../../partials/loader/loader";
+import ProfileModal from "../../partials/profile-modal/profile-modal";
 import "./dialogs.scss";
 
 const Dialogs = () => {
     
 	const { id } = useParams<{ id: string }>();
-	const user = useSelector((state: RootState) => state.user.user);
 	const [dialogsList, setDialogsList] = useState<IDialogListItem[]>([]);
 	const [dialogInfo, setDialogInfo] = useState<IDialog | null>(null);
 	const [currentReplayMessage, setCurrentReplayedMessage] = useState<IMessage | null>(null);
 	const [scrollToMessageRequest, setScrollToMessageRequest] = useState<{ messageId: number; token: number } | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const navigate = useNavigate();
-	const scrollRequestTokenRef = useRef(0);
-
 	const [isMobile, setIsMobile] = useState<boolean>(false);
+	const [userProfileModalInfo, setUserProfileModalInfo] = useState<{ open: boolean}>({ open: false });
+
+	const user = useSelector((state: RootState) => state.user.user);
+	const scrollRequestTokenRef = useRef(0);
+	const navigate = useNavigate();
 
 	const handleSendMessage = (message: IMessage) => {
 		if (dialogInfo) {
@@ -211,6 +214,13 @@ const Dialogs = () => {
 		navigate(`/main/dialogs/${dialogId}`);
 	};
 
+	const handleChangeProfileModalVisibility = () => {
+		setUserProfileModalInfo({
+			...userProfileModalInfo,
+			open: !userProfileModalInfo.open
+		});
+	};
+
 	useEffect(() => {
 		const fetchData = async () => {
 			setIsLoading(false);
@@ -275,6 +285,7 @@ const Dialogs = () => {
 							currentReplayMessage={ currentReplayMessage }
 							isMobile={ isMobile }
 							scrollToMessageRequest={ scrollToMessageRequest }
+							handleChangeProfileModalVisibility={ handleChangeProfileModalVisibility }
 							handleChangeMessage={ handleChangeMessage }
 							handleSendMessage={ handleSendMessage } 
 							handleDeleteMessage={ handleDeleteMessage }
@@ -286,6 +297,18 @@ const Dialogs = () => {
 						/>
 						: null
 					: null
+			}
+			{ 
+				dialogInfo &&
+					<Modal
+						destroyOnHidden
+						footer={ null }
+						open={ userProfileModalInfo.open }
+						onCancel={ handleChangeProfileModalVisibility }
+						centered
+					>
+						<ProfileModal userId={ dialogInfo.opponent.id } />
+					</Modal>
 			}
 		</div>
 	);

@@ -1,11 +1,11 @@
 .publications-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-direction: column;
     width: 100%;
     gap: 10px;
     padding-top: 10px;
     padding-bottom: 20px;
-    height: 200px;
+    height: 190px;
     overflow-y: auto;
 
     scrollbar-color: var(--text-color) transparent;
@@ -35,4 +35,10 @@
         color: grey;
         text-align: center;
     }
+}
+
+.empty-publication-list-banner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

@@ -14,6 +14,7 @@ interface IDialogProps {
 	currentReplayMessage: IMessage | null,
     isMobile: boolean,
 	scrollToMessageRequest: { messageId: number; token: number } | null,
+	handleChangeProfileModalVisibility: () => void,
     handleSendMessage: (message: IMessage) => void,
     handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
@@ -30,6 +31,7 @@ const Dialog = memo(({
 	currentReplayMessage,
 	isMobile,
 	scrollToMessageRequest,
+	handleChangeProfileModalVisibility,
 	handleSendMessage, 
 	handleDeleteMessage,
 	handleChangeMessage,
@@ -58,7 +60,10 @@ const Dialog = memo(({
 	}
 	return (
 		<div className={ isMobile ? "dialog-wrapper-mobile" : "dialog-wrapper" }>
-			<DialogHeader opponent={ dialogInfo.opponent } />
+			<DialogHeader 
+				opponent={ dialogInfo.opponent } 
+				handleChangeProfileModalVisibility={ handleChangeProfileModalVisibility }
+			/>
 			<DialogsMessages 
 				user={ user } 
 				dialogInfo={ dialogInfo } 
