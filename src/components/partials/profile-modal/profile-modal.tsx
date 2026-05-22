@@ -16,7 +16,7 @@ interface IProfileModalProps {
 }
 
 const ProfileModal = ({ userId }: IProfileModalProps) => {
-	console.log(userId);
+	
 	const user = useSelector((state: RootState) => state.user.user);
 	const [userProfileInfo, setUserProfileInfo] = useState<IUserProfileInfo>();
 	const [publications, setPublications] = useState<IPublication[]>([]);
@@ -62,6 +62,8 @@ const ProfileModal = ({ userId }: IProfileModalProps) => {
 				/>
 				<Publications 
 					publications={ publications } 
+					user={ user }
+					userProfileInfo={ userProfileInfo }
 				/>
 			</div>
 		);
