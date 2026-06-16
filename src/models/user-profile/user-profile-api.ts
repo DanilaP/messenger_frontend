@@ -14,3 +14,8 @@ export const changeUserProfileInfo = async (fieldName: string, fieldValue: strin
 	const response = $api.patch("/profile", { [fieldName]: fieldValue });
 	return response;
 };
+
+export const getUserProfileInfoById = async (id: number) => {
+	const response = $api.get(`/profile?id=${ id }`);
+	return response;
+};

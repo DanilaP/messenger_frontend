@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { changeUserProfileInfo, getUserProfileInfo } from "../../../models/user-profile/user-profile-api";
+import { changeUserProfileInfo, getUserProfileInfoById } from "../../../models/user-profile/user-profile-api";
 import { getPublications } from "../../../models/publication/publication-api";
 import { useSelector } from "react-redux";
 import type { IGetUserProfileInfoResponse, IUserProfileInfo } from "../../../models/user-profile/user-profile-interface";
@@ -37,7 +37,7 @@ const ProfileModal = ({ userId }: IProfileModalProps) => {
 	}, 300);
 
 	useEffect(() => {
-		Promise.all([getUserProfileInfo(), getPublications(userId)])
+		Promise.all([getUserProfileInfoById(userId), getPublications(userId)])
 			.then(([profileRes, publicationsRes]: [IGetUserProfileInfoResponse, IGetPublicationsResponse]) => {
 				setUserProfileInfo(profileRes.data.user);
 				setPublications(publicationsRes.data.publications);

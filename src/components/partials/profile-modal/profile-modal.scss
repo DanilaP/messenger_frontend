@@ -4,6 +4,8 @@
     border-bottom: 1px solid var(--border-color);
     border-radius: 0px;
     padding-left: 0px;
+    color: var(--text-color);
+    cursor: pointer;
 
     &:hover, &:focus {
         border: 0px;
@@ -17,6 +19,16 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    
+    & .ant-picker { 
+        cursor: pointer;
+        & .ant-picker-input {
+            & input {
+                cursor: pointer;
+                color: var(--text-color);
+            }
+        }
+    }
 
     & .ant-input {
         @include profile-input-styles;
@@ -28,6 +40,7 @@
         & .ant-input {
             @include profile-input-styles;
             border: 0px;
+            cursor: pointer !important;
 
             &:hover, &:focus {
                 border: none;
