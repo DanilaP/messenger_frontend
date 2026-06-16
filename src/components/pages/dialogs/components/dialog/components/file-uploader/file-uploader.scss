@@ -14,3 +14,15 @@
     flex-direction: column;
     gap: 10px;
 }
+
+.ant-upload-wrapper {
+    & .ant-upload {
+        & .ant-btn {
+            border: none;
+
+            &:hover, &:focus {
+                border: none;
+            }
+        }
+    }
+}
