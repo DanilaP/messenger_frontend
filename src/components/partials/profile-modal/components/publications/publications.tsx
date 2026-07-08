@@ -18,7 +18,7 @@ const Publications = ({
 	userProfileInfo
 }: IPublicationsProps) => {
 
-	const [isModificationAllowed, setIsModificationAllowed] = useState<boolean>(user.id === userProfileInfo.id);
+	const [isModificationAllowed, _setIsModificationAllowed] = useState<boolean>(user.id === userProfileInfo.id);
 	const [currentTitle, setCurrentTitle] = useState<string>("Публикации");
 
 	const handleTitleClick = (title: string) => {

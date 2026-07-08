@@ -60,7 +60,7 @@ function App() {
 		socket.onmessage = function(event) {
 			const parsedData = JSON.parse(event.data);
 			rootStore.dispatch({ type: "WS_MESSAGE", payload: event.data });
-
+			//Отображаем уведомление о пришедшем сообщении
 			if (locationPathRef.current !== `/main/dialogs/${parsedData.dialogId}`) {
 				messageApi.open({
 					type: "info",
@@ -68,7 +68,10 @@ function App() {
 					className: "custom-message-position",
 					icon: <></>
 				});
-				console.log(event.data);
+			}
+			//Получаем id online-пользователей
+			if (parsedData.type === "connected_clients") {
+				rootStore.dispatch({ type: "SET_CONNECTED_CLIENTS", payload: parsedData.clientIds });
 			}
 		};
 
