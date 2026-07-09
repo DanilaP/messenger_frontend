@@ -144,10 +144,10 @@ const DialogMessage = memo(({
 	};
 
 	const handleReplayingMessageClick = () => {
-		if (message.replayMessage) {
-			scrollToMessage(dialogInfo.dialog_id, message.replayMessage?.id)
+		if (message.repliedMessage) {
+			scrollToMessage(dialogInfo.dialog_id, message.repliedMessage?.id)
 				.then((res: IScrollToMessageResponse) => {
-					handleScrollToMessage(res.data.messages, message.replayMessage!.id);
+					handleScrollToMessage(res.data.messages, message.repliedMessage!.id);
 				})
 				.catch((error) => {
 					console.error(error);
@@ -176,16 +176,16 @@ const DialogMessage = memo(({
 				<Dropdown menu={ { items, onClick: handleMenuClick } } trigger={ ["contextMenu"] }>
 					<div onClick={ handleMessageClick } className="message">
 						{
-							message.replayMessage &&
+							message.repliedMessage &&
 								<div onClick={ handleReplayingMessageClick } className="replayed-message">
 									<div className="sender-info">
 										{
-											message.replayMessage.senderId === user.id
+											message.repliedMessage.senderId === user.id
 												? `${ user.name } ${ user.lastname }`
 												: `${ dialogInfo.opponent.name } ${ dialogInfo.opponent.surname }`
 										}
 									</div>
-									<div className="text">{ message.replayMessage.text }</div>
+									<div className="text">{ message.repliedMessage.text }</div>
 								</div>
 						}
 						<div className={ `text-content ${ senderInfo.id === user.id ? `user-message` : `opponent-message` }` }>

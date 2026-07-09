@@ -24,7 +24,7 @@ export interface IMessage {
     isread: boolean,
     sender_id: number
     files: IFile[],
-    replayMessage: {
+    repliedMessage: {
         id: number,
         text: string,
         senderId: number
