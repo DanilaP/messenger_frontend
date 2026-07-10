@@ -12,13 +12,13 @@ import "./messages-list.scss";
 interface IDialogsMessages {
     dialogInfo: IDialog,
     user: Partial<IUser>,
-	currentReplayMessage: IMessage | null,
+	currentReplyMessage: IMessage | null,
 	scrollToMessageRequest: { messageId: number; token: number } | null,
     handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
     handleGetNextMessages: (mode: "prev" | "next") => void,
     onSelectedMessagesChange?: (selectedMessages: IMessage[]) => void,
-	handleChooseMessageForReplaying: (message: IMessage) => void,
+	handleChooseMessageForReplying: (message: IMessage) => void,
 	handleScrollToMessage: (messages: IMessage[], targetMessageId: number) => void,
 	handleScrollToMessageHandled: () => void,
 	handleFetchDataBeforeScrollToBottom: () => Promise<void>,
@@ -29,13 +29,13 @@ const MESSAGE_GAP = 10;
 const DialogsMessages = ({ 
 	dialogInfo, 
 	user, 
-	currentReplayMessage,
+	currentReplyMessage,
 	scrollToMessageRequest,
 	handleDeleteMessage, 
 	handleChangeMessage,
 	handleGetNextMessages,
 	onSelectedMessagesChange,
-	handleChooseMessageForReplaying,
+	handleChooseMessageForReplying,
 	handleScrollToMessage,
 	handleScrollToMessageHandled,
 	handleFetchDataBeforeScrollToBottom
@@ -173,7 +173,7 @@ const DialogsMessages = ({
 					handleDeleteMessage={ handleDeleteMessage }
 					handleChangeMessage={ handleChangeMessage }
 					handleChooseMessage={ handleChooseMessage }
-					handleChooseMessageForReplaying={ handleChooseMessageForReplaying }
+					handleChooseMessageForReplying={ handleChooseMessageForReplying }
 					handleScrollToMessage={ handleScrollToMessage }
 				/>
 			</div>
@@ -185,7 +185,7 @@ const DialogsMessages = ({
 		handleDeleteMessage, 
 		handleChangeMessage, 
 		handleChooseMessage, 
-		handleChooseMessageForReplaying,
+		handleChooseMessageForReplying,
 		handleScrollToMessage
 	]);
 
@@ -274,7 +274,7 @@ const DialogsMessages = ({
 
 	return (
 		<div 
-			style={ { height: `${ currentReplayMessage ? `calc(100vh - 242px)` : `calc(100vh - 166px)` }` } } 
+			style={ { height: `${ currentReplyMessage ? `calc(100vh - 242px)` : `calc(100vh - 166px)` }` } } 
 			className='messages-list' 
 			ref={ containerRef }
 		>

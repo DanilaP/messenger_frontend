@@ -11,7 +11,7 @@ import "./dialog.scss";
 interface IDialogProps {
     dialogInfo: IDialog | null,
     user: Partial<IUser>,
-	currentReplayMessage: IMessage | null,
+	currentReplyMessage: IMessage | null,
     isMobile: boolean,
 	scrollToMessageRequest: { messageId: number; token: number } | null,
 	handleChangeProfileModalVisibility: () => void,
@@ -19,7 +19,7 @@ interface IDialogProps {
     handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
 	handleGetNextMessages: (mode: "prev" | "next") => void,
-	handleChooseMessageForReplaying: (message: IMessage | null) => void,
+	handleChooseMessageForReplying: (message: IMessage | null) => void,
 	handleScrollToMessage: (messages: IMessage[], targetMessageId: number) => void,
 	handleScrollToMessageHandled: () => void,
 	handleFetchDataBeforeScrollToBottom: () => Promise<void>
@@ -28,7 +28,7 @@ interface IDialogProps {
 const Dialog = memo(({ 
 	dialogInfo, 
 	user, 
-	currentReplayMessage,
+	currentReplyMessage,
 	isMobile,
 	scrollToMessageRequest,
 	handleChangeProfileModalVisibility,
@@ -36,7 +36,7 @@ const Dialog = memo(({
 	handleDeleteMessage,
 	handleChangeMessage,
 	handleGetNextMessages,
-	handleChooseMessageForReplaying,
+	handleChooseMessageForReplying,
 	handleScrollToMessage,
 	handleScrollToMessageHandled,
 	handleFetchDataBeforeScrollToBottom
@@ -67,22 +67,22 @@ const Dialog = memo(({
 			<DialogsMessages 
 				user={ user } 
 				dialogInfo={ dialogInfo } 
-				currentReplayMessage={ currentReplayMessage }
+				currentReplyMessage={ currentReplyMessage }
 				scrollToMessageRequest={ scrollToMessageRequest }
 				handleDeleteMessage={ handleDeleteMessage }
 				handleChangeMessage={ handleChangeMessage }
 				handleGetNextMessages={ handleGetNextMessages }
-				handleChooseMessageForReplaying={ handleChooseMessageForReplaying }
+				handleChooseMessageForReplying={ handleChooseMessageForReplying }
 				handleScrollToMessage={ handleScrollToMessage }
 				handleScrollToMessageHandled={ handleScrollToMessageHandled }
 				handleFetchDataBeforeScrollToBottom={ handleFetchDataBeforeScrollToBottom }
 			/>
 			<DialogFooter 
 				user={ user } 
-				currentReplayMessage={ currentReplayMessage }
+				currentReplyMessage={ currentReplyMessage }
 				dialogInfo={ dialogInfo } 
 				handleSendMessage={ handleSendMessage } 
-				handleChooseMessageForReplaying={ handleChooseMessageForReplaying }
+				handleChooseMessageForReplying={ handleChooseMessageForReplying }
 			/>
 		</div>
 	);

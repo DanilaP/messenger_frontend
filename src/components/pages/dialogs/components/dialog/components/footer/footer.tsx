@@ -12,17 +12,17 @@ import "./footer.scss";
 interface IDialogFooterProps {
 	user: Partial<IUser>,
     dialogInfo: IDialog,
-	currentReplayMessage: IMessage | null,
+	currentReplyMessage: IMessage | null,
     handleSendMessage: (message: IMessage) => void,
-	handleChooseMessageForReplaying: (message: IMessage | null) => void
+	handleChooseMessageForReplying: (message: IMessage | null) => void
 }
 
 const DialogFooter = memo(({ 
 	user,
 	dialogInfo, 
-	currentReplayMessage,
+	currentReplyMessage,
 	handleSendMessage,
-	handleChooseMessageForReplaying
+	handleChooseMessageForReplying
 }: IDialogFooterProps) => {
 
 	const [messageText, setMessageText] = useState<string>("");
@@ -32,14 +32,14 @@ const DialogFooter = memo(({
 			const formData = new FormData();
 			formData.append("opponentId", dialogInfo.opponent.id.toString());
 			formData.append("text", messageText);
-			if (currentReplayMessage) {
-				formData.append("replyMessageId", currentReplayMessage.message_id.toString());
+			if (currentReplyMessage) {
+				formData.append("replyMessageId", currentReplyMessage.message_id.toString());
 			}
 			await sendMessage(formData)
 				.then((res: ISendMessageResponse) => {
 					handleClearMessageText();
 					handleSendMessage(res.data.createdMessage);
-					handleChooseMessageForReplaying(null);
+					handleChooseMessageForReplying(null);
 				})
 				.catch((error: unknown) => {
 					console.error(error);
@@ -52,8 +52,8 @@ const DialogFooter = memo(({
 			const formData = new FormData();
 			formData.append("opponentId", dialogInfo.opponent.id.toString());
 			formData.append("text", text);
-			if (currentReplayMessage) {
-				formData.append("replyMessageId", currentReplayMessage.message_id.toString());
+			if (currentReplyMessage) {
+				formData.append("replyMessageId", currentReplyMessage.message_id.toString());
 			}
 			files.forEach(file => {
 				if (file.originFileObj) {
@@ -64,7 +64,7 @@ const DialogFooter = memo(({
 			await sendMessage(formData)
 				.then((res: ISendMessageResponse) => {
 					handleSendMessage(res.data.createdMessage);
-					handleChooseMessageForReplaying(null);
+					handleChooseMessageForReplying(null);
 				})
 				.catch((error: unknown) => {
 					console.error(error);
@@ -81,30 +81,30 @@ const DialogFooter = memo(({
 		setMessageText(modifiedMessageText);
 	};
 
-	const handleClearCurrentReplayingMessage = () => {
-		handleChooseMessageForReplaying(null);
+	const handleClearCurrentReplyingMessage = () => {
+		handleChooseMessageForReplying(null);
 	};
 
 	return (
 		<div className='dialog-footer'>
 			{
-				currentReplayMessage &&
-					<div className="replayed-message-footer-wrapper">
-						<div className="replayed-message-footer-info">
+				currentReplyMessage &&
+					<div className="replied-message-footer-wrapper">
+						<div className="replied-message-footer-info">
 							<div className="icon">
 								<IoMdShareAlt fontSize={ 30 } />
 							</div>
 							<div className="message-info">
 								<div className="sender-info">
 									{
-										currentReplayMessage.sender_id === user.id
+										currentReplyMessage.sender_id === user.id
 											? `${ user.name } ${ user.lastname }`
 											: `${ dialogInfo.opponent.name } ${ dialogInfo.opponent.surname }`
 									}
 								</div>
-								<div className="text">{ currentReplayMessage.text }</div>
+								<div className="text">{ currentReplyMessage.text }</div>
 							</div>
-							<div onClick={ handleClearCurrentReplayingMessage } className="close-button">
+							<div onClick={ handleClearCurrentReplyingMessage } className="close-button">
 								<IoMdClose fontSize={ 30 } />
 							</div>
 						</div>

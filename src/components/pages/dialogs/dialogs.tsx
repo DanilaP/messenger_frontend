@@ -18,7 +18,7 @@ const Dialogs = () => {
 	const { id } = useParams<{ id: string }>();
 	const [dialogsList, setDialogsList] = useState<IDialogListItem[]>([]);
 	const [dialogInfo, setDialogInfo] = useState<IDialog | null>(null);
-	const [currentReplayMessage, setCurrentReplayedMessage] = useState<IMessage | null>(null);
+	const [currentReplyMessage, setCurrentReplyedMessage] = useState<IMessage | null>(null);
 	const [scrollToMessageRequest, setScrollToMessageRequest] = useState<{ messageId: number; token: number } | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isMobile, setIsMobile] = useState<boolean>(false);
@@ -74,8 +74,8 @@ const Dialogs = () => {
 		}
 	};
 	
-	const handleChooseMessageForReplaying = (message: IMessage | null) => {
-		setCurrentReplayedMessage(message);
+	const handleChooseMessageForReplying = (message: IMessage | null) => {
+		setCurrentReplyedMessage(message);
 	};
 
 	const handleScrollToMessage = (messages: IMessage[], targetMessageId: number) => {
@@ -258,6 +258,10 @@ const Dialogs = () => {
 		return () => window.removeEventListener("resize", handleResize);
 	}, []);
 
+	useEffect(() => {
+		console.log(dialogInfo?.messages);
+	}, [dialogInfo]);
+
 	if (!isLoading) {
 		return (
 			<Loader />
@@ -282,7 +286,7 @@ const Dialogs = () => {
 						<Dialog 
 							user={ user } 
 							dialogInfo={ dialogInfo } 
-							currentReplayMessage={ currentReplayMessage }
+							currentReplyMessage={ currentReplyMessage }
 							isMobile={ isMobile }
 							scrollToMessageRequest={ scrollToMessageRequest }
 							handleChangeProfileModalVisibility={ handleChangeProfileModalVisibility }
@@ -290,7 +294,7 @@ const Dialogs = () => {
 							handleSendMessage={ handleSendMessage } 
 							handleDeleteMessage={ handleDeleteMessage }
 							handleGetNextMessages={ handleGetNextMessages }
-							handleChooseMessageForReplaying={ handleChooseMessageForReplaying }
+							handleChooseMessageForReplying={ handleChooseMessageForReplying }
 							handleScrollToMessage={ handleScrollToMessage }
 							handleScrollToMessageHandled={ handleScrollToMessageHandled }
 							handleFetchDataBeforeScrollToBottom={ handleFetchDataBeforeScrollToBottom }

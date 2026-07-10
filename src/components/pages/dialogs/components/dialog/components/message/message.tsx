@@ -24,7 +24,7 @@ interface IMessageProps {
     handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
     handleChooseMessage: (message: IMessage) => void,
-	handleChooseMessageForReplaying: (message: IMessage) => void,
+	handleChooseMessageForReplying: (message: IMessage) => void,
 	handleScrollToMessage: (messages: IMessage[], targetMessageId: number) => void
 }
 
@@ -37,7 +37,7 @@ const DialogMessage = memo(({
 	handleDeleteMessage,
 	handleChangeMessage,
 	handleChooseMessage,
-	handleChooseMessageForReplaying,
+	handleChooseMessageForReplying,
 	handleScrollToMessage
 }: IMessageProps) => {
 
@@ -82,7 +82,7 @@ const DialogMessage = memo(({
 			handleCopyMessageText();
 		}
 		if (key === "4") {
-			handleReplayMessageClick();
+			handleReplyMessageClick();
 		}
 	};
 
@@ -139,11 +139,11 @@ const DialogMessage = memo(({
 		}
 	};
 
-	const handleReplayMessageClick = () => {
-		handleChooseMessageForReplaying(message);
+	const handleReplyMessageClick = () => {
+		handleChooseMessageForReplying(message);
 	};
 
-	const handleReplayingMessageClick = () => {
+	const handleReplyingMessageClick = () => {
 		if (message.repliedMessage) {
 			scrollToMessage(dialogInfo.dialog_id, message.repliedMessage?.id)
 				.then((res: IScrollToMessageResponse) => {
@@ -177,7 +177,7 @@ const DialogMessage = memo(({
 					<div onClick={ handleMessageClick } className="message">
 						{
 							message.repliedMessage &&
-								<div onClick={ handleReplayingMessageClick } className="replayed-message">
+								<div onClick={ handleReplyingMessageClick } className="replied-message">
 									<div className="sender-info">
 										{
 											message.repliedMessage.senderId === user.id
