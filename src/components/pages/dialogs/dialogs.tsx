@@ -23,6 +23,7 @@ const Dialogs = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isMobile, setIsMobile] = useState<boolean>(false);
 	const [userProfileModalInfo, setUserProfileModalInfo] = useState<{ open: boolean}>({ open: false });
+	const [isDialogListUpdatingAllowed, setIsDialogListUpdatingAllowed] = useState<boolean>(true);
 
 	const user = useSelector((state: RootState) => state.user.user);
 	const scrollRequestTokenRef = useRef(0);
@@ -185,20 +186,23 @@ const Dialogs = () => {
 		}
 		const dialogRes: IGetDialogResponse = await getDialogInfo(Number(id), currentMessage?.message_id, mode);
 		if (dialogRes.data.dialog.messages.length !== 0) {
-			setDialogInfo(prev => {
-				if (!prev) return prev;
-				return {
-					...prev,
-					messages: 
-						mode === "prev" 
-							? [...dialogRes.data.dialog.messages, ...prev.messages]
-							: [...prev.messages, ...dialogRes.data.dialog.messages]
-				};
-			});
+			if (isDialogListUpdatingAllowed) {
+				setDialogInfo(prev => {
+					if (!prev) return prev;
+					return {
+						...prev,
+						messages: 
+							mode === "prev" 
+								? [...dialogRes.data.dialog.messages, ...prev.messages]
+								: [...prev.messages, ...dialogRes.data.dialog.messages]
+					};
+				});
+			}
 		}
 	};
 
 	const handleFetchDataBeforeScrollToBottom = useCallback(async () => {
+		setIsDialogListUpdatingAllowed(false);
 		const dialogRes: IGetDialogResponse = await getDialogInfo(Number(id));
 		if (dialogRes.data.dialog.messages.length !== 0) {
 			if (dialogInfo) {
@@ -206,6 +210,7 @@ const Dialogs = () => {
 					...dialogInfo,
 					messages: dialogRes.data.dialog.messages
 				});
+				setIsDialogListUpdatingAllowed(true);
 			}
 		}
 	}, [dialogInfo, id]);
@@ -230,12 +235,14 @@ const Dialogs = () => {
 				setDialogsList(handleSortDialogsListByLastMessageDate(dialogsRes.data.dialogs));
 
 				if (id) {
-					const dialogRes = await getDialogInfo(Number(id));
-					setDialogInfo({
-						dialog_id: dialogRes.data.dialog.id,
-						messages: dialogRes.data.dialog.messages,
-						opponent: dialogRes.data.dialog.opponent,
-					});
+					if (isDialogListUpdatingAllowed) {
+						const dialogRes = await getDialogInfo(Number(id));
+						setDialogInfo({
+							dialog_id: dialogRes.data.dialog.id,
+							messages: dialogRes.data.dialog.messages,
+							opponent: dialogRes.data.dialog.opponent,
+						});
+					}
 				}
 			} 
 			catch {
@@ -257,10 +264,6 @@ const Dialogs = () => {
 
 		return () => window.removeEventListener("resize", handleResize);
 	}, []);
-
-	useEffect(() => {
-		console.log(dialogInfo?.messages);
-	}, [dialogInfo]);
 
 	if (!isLoading) {
 		return (
