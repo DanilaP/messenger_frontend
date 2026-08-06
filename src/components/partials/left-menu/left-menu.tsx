@@ -1,9 +1,7 @@
 import { useNavigate } from "react-router";
 import { logout } from "../../../models/user/user-api";
 import { useSelector } from "react-redux";
-import { RiAccountCircle2Fill, RiFolderChartFill } from "react-icons/ri";
-import { IoNotificationsCircle } from "react-icons/io5";
-import { MdOutlineLanguage } from "react-icons/md";
+import { RiAccountCircle2Fill } from "react-icons/ri";
 import { HiMiniChatBubbleLeftEllipsis } from "react-icons/hi2";
 import { useState, type ReactNode } from "react";
 import { Modal } from "antd";
@@ -69,25 +67,7 @@ const LeftMenu = ({ handleCloseMenu }: ILeftMenuProps) => {
 			subtitle: "Ваши сообщения, чаты и группы",
 			icon: <HiMiniChatBubbleLeftEllipsis color="06d633" />,
 			handleClick: handleDialogsClick
-		},
-		{
-			title: "Уведомления",
-			subtitle: "Звуки, звонки, счетчик сообщений",
-			icon: <IoNotificationsCircle color="bad606" />,
-			handleClick: handleDialogsClick
-		},
-		{
-			title: "Данные и память",
-			subtitle: "Файлы из ваших чатов и групп",
-			icon: <RiFolderChartFill color="9406d6" />,
-			handleClick: handleDialogsClick
-		},
-		{
-			title: "Язык",
-			subtitle: "Смена языка интерфейса",
-			icon: <MdOutlineLanguage color="06bed6" />,
-			handleClick: handleDialogsClick
-		},
+		}
 	];
 
 	return (

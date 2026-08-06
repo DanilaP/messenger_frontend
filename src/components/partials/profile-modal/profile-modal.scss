@@ -22,6 +22,8 @@
     
     & .ant-picker { 
         cursor: pointer;
+        border-color: var(--border-color);
+
         & .ant-picker-input {
             & input {
                 cursor: pointer;
@@ -55,4 +57,15 @@
             background-color: transparent;
         }
     }
+
+    & .ant-input-disabled {
+        background-color: transparent !important;
+        border-color: var(--border-color) !important;
+    }
+
+    & .ant-picker-disabled {
+        background-color: transparent !important;
+        border-color: var(--border-color) !important;
+    }
+
 }
