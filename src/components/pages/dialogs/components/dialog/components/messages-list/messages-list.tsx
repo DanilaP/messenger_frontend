@@ -2,6 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "antd";
 import { deleteMessage } from "../../../../../../../models/dialogs/dialogs-api";
 import { FaCircleChevronDown } from "react-icons/fa6";
+import { FaDeleteLeft } from "react-icons/fa6";
+import { IoIosShareAlt } from "react-icons/io";
+import { RxCross1 } from "react-icons/rx";
 import type { IFile } from "../../../../../../../interfaces/files";
 import type { IDialog, IMessage } from "../../../../../../../models/dialogs/dialogs-interface";
 import type { IUser } from "../../../../../../../models/user/user-interface";
@@ -157,6 +160,10 @@ const DialogsMessages = ({
 		}
 	}, [handleGetNextMessages, dialogInfo.messages.length, clearRestoreTopTimers]);
 
+	const clearSelectedMessages = () => {
+		setSelectedMessages([]);
+	};
+
 	const renderMessage = useCallback((message: IMessage) => {
 		const isSelected = selectedMessages.some(
 			selected => selected.message_id === message.message_id
@@ -290,13 +297,28 @@ const DialogsMessages = ({
 			) }
 			{ selectedMessages.length !== 0 && (
 				<div className="selected-messages-wrapper">
-                    Выбранных сообщений: { selectedMessages.length }
+					<RxCross1 
+						onClick={ clearSelectedMessages }
+						className="delete-cross"
+						fontSize={ 20 } 
+					/>
+					<div className="messages-count">
+						Сообщений: { selectedMessages.length }
+					</div>
 					<Button 
 						className='deleting-button' 
 						onClick={ handleDeleteButtonClick } 
 						type='primary'
 					>
                         Удалить
+						<FaDeleteLeft fontSize={ 20 } />
+					</Button>
+					<Button 
+						className='mail-button' 
+						type='primary'
+					>
+                        Переслать
+						<IoIosShareAlt fontSize={ 20 } />
 					</Button>
 				</div>
 			) }
