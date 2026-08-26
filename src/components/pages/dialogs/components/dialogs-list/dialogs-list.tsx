@@ -43,8 +43,8 @@ const DialogsList = memo(({
 				dialogsList.map(dialogListItem => {
 					return (
 						<div 
-							key={ dialogListItem.dialog_id }
-							onClick={ () => handleDialogListItemClick(dialogListItem.dialog_id) } 
+							key={ dialogListItem.id }
+							onClick={ () => handleDialogListItemClick(dialogListItem.id) } 
 							className="dialog-list-item-wrapper-main"
 						>
 							<DialogListItemWrapper  

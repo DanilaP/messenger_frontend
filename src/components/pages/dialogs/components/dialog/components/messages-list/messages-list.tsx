@@ -58,7 +58,7 @@ const DialogsMessages = ({
 
 	const initialScrollDoneRef = useRef(false);
 	const prevMessagesLengthRef = useRef(dialogInfo.messages.length);
-	const prevFirstMessageIdRef = useRef(dialogInfo.messages[0]?.message_id);
+	const prevFirstMessageIdRef = useRef(dialogInfo.messages[0]?.id);
 
 	const scrollToBottom = useCallback(() => {
 		listRef.current?.scrollToBottom();
@@ -82,10 +82,10 @@ const DialogsMessages = ({
 
 	const handleChooseMessage = useCallback((message: IMessage) => {
 		setSelectedMessages(prev => {
-			const isAlreadySelected = prev.some(m => m.message_id === message.message_id);
+			const isAlreadySelected = prev.some(m => m.id === message.id);
 			let newSelected: IMessage[];
 			if (isAlreadySelected) {
-				newSelected = prev.filter(m => m.message_id !== message.message_id);
+				newSelected = prev.filter(m => m.id !== message.id);
 			} else {
 				newSelected = [...prev, message];
 			}
@@ -96,8 +96,8 @@ const DialogsMessages = ({
 
 	const handleDeleteButtonClick = async () => {
 		if (selectedMessages.length !== 0) {
-			const selectedMessagesIds = selectedMessages.map(msg => msg.message_id);
-			await deleteMessage(dialogInfo.dialog_id, selectedMessagesIds)
+			const selectedMessagesIds = selectedMessages.map(msg => msg.id);
+			await deleteMessage(dialogInfo.id, selectedMessagesIds)
 				.then(() => {
 					setSelectedMessages([]);
 					handleDeleteMessage(selectedMessagesIds);
@@ -166,9 +166,9 @@ const DialogsMessages = ({
 
 	const renderMessage = useCallback((message: IMessage) => {
 		const isSelected = selectedMessages.some(
-			selected => selected.message_id === message.message_id
+			selected => selected.id === message.id
 		);
-		const senderInfo = message.sender_id === user.id ? user : dialogInfo.opponent;
+		const senderInfo = message.senderId === user.id ? user : dialogInfo.opponent;
 		return (
 			<div style={ { paddingBottom: MESSAGE_GAP } }>
 				<DialogMessage
@@ -232,7 +232,7 @@ const DialogsMessages = ({
 	// Автоскролл при добавлении новых сообщений в конец
 	useEffect(() => {
 		const currentLength = dialogInfo.messages.length;
-		const currentFirstId = dialogInfo.messages[0]?.message_id;
+		const currentFirstId = dialogInfo.messages[0]?.id;
 		const isNewMessageAddedToEnd = 
             currentLength > prevMessagesLengthRef.current && 
             currentFirstId === prevFirstMessageIdRef.current;
@@ -291,7 +291,7 @@ const DialogsMessages = ({
 					items={ dialogInfo.messages }
 					height={ containerHeight }
 					renderItem={ renderMessage }
-					getKey={ (msg) => msg.message_id }
+					getKey={ (msg) => msg.id }
 					onScroll={ handleScroll }
 				/>
 			) }

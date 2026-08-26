@@ -8,8 +8,8 @@ export interface IOpponent {
 }
 
 export interface IDialogListItem {
-    dialog_id: number,
-    last_message: {
+    id: number,
+    lastMessage: {
         id: number,
         text: string,
         date: string
@@ -18,11 +18,11 @@ export interface IDialogListItem {
 }
 
 export interface IMessage {
-    message_id: number,
+    id: number,
     text: string,
     date: string,
-    isread: boolean,
-    sender_id: number
+    isRead: boolean,
+    senderId: number
     files: IFile[],
     repliedMessage: {
         id: number,
@@ -32,7 +32,7 @@ export interface IMessage {
 }
 
 export interface IDialog {
-    dialog_id: number,
+    id: number,
     messages: IMessage[],
     opponent: IOpponent
 }

@@ -44,7 +44,7 @@ const Dialogs = () => {
 			const updatedDialogInfo = {
 				...dialogInfo,
 				messages: dialogInfo.messages.filter(message => {
-					if (messagesIds.find(id => message.message_id === id)) {
+					if (messagesIds.find(id => message.id === id)) {
 						return false;
 					}
 					return true;
@@ -60,7 +60,7 @@ const Dialogs = () => {
 			const updatedDialogInfo = {
 				...dialogInfo,
 				messages: dialogInfo.messages.map(msg => {
-					if (msg.message_id === message.message_id) {
+					if (msg.id === message.id) {
 						return {
 							...msg,
 							text: message.text,
@@ -71,7 +71,7 @@ const Dialogs = () => {
 				})
 			};
 			setDialogInfo(updatedDialogInfo);
-			handleUpdateLastMessageBeforeChanging(message);
+			handleUpdateLastMessageBeforeChanging(message, updatedDialogInfo);
 		}
 	};
 	
@@ -98,16 +98,17 @@ const Dialogs = () => {
 		setScrollToMessageRequest(null);
 	};
 
-	const handleUpdateLastMessageBeforeChanging = (message: IMessage) => {
+	const handleUpdateLastMessageBeforeChanging = (message: IMessage, updatedDialogInfo: IDialog) => {
+		const lastDialogMessage = updatedDialogInfo.messages[updatedDialogInfo.messages.length - 1];
 		setDialogsList(prev => {
 			const updatedList = prev.map(dialogListItem => {
-				if (dialogListItem.dialog_id === dialogInfo?.dialog_id) {
-					if (dialogListItem.last_message) {
-						if (dialogListItem.last_message.id === message.message_id) {
+				if (dialogListItem.id === dialogInfo?.id) {
+					if (lastDialogMessage) {
+						if (lastDialogMessage.id === message.id) {
 							return {
 								...dialogListItem,
-								last_message: {
-									id: dialogListItem.last_message.id,
+								lastMessage: {
+									id: lastDialogMessage.id,
 									text: message.text !== "" ? message.text : "Файл",
 									date: message.date
 								}
@@ -125,12 +126,12 @@ const Dialogs = () => {
 	const handleUpdateLastMessageBeforeSending = (message: IMessage) => {
 		setDialogsList(prev => {
 			const updatedList = prev.map(dialogListItem => {
-				if (dialogListItem.dialog_id === dialogInfo?.dialog_id) {
+				if (dialogListItem.id === dialogInfo?.id) {
 					return {
 						...dialogListItem,
-						last_message: dialogListItem.last_message 
+						lastMessage: dialogListItem.lastMessage 
 							? {
-								id: dialogListItem.last_message.id,
+								id: dialogListItem.lastMessage.id,
 								text: message.text !== "" ? message.text : "Файл",
 								date: message.date
 							} 
@@ -147,12 +148,12 @@ const Dialogs = () => {
 		const lastMessage = dialogInfo.messages.sort()[dialogInfo.messages.length - 1] || null;
 		setDialogsList(prev => {
 			const updatedList = prev.map(dialogListItem => {
-				if (dialogListItem.dialog_id === dialogInfo?.dialog_id) {
+				if (dialogListItem.id === dialogInfo?.id) {
 					return {
 						...dialogListItem,
-						last_message: lastMessage 
+						lastMessage: lastMessage 
 							? {
-								id: lastMessage.message_id,
+								id: lastMessage.id,
 								text: lastMessage.text !== "" ? lastMessage.text : "Файл",
 								date: lastMessage.date
 							}
@@ -168,8 +169,8 @@ const Dialogs = () => {
 	const handleSortDialogsListByLastMessageDate = (currentDialogList: IDialogListItem[]) => {
 		const result = [...currentDialogList];
 		result.sort((a, b) => {
-			const dateA = parseCustomDate(a.last_message!.date);
-			const dateB = parseCustomDate(b.last_message!.date);
+			const dateA = parseCustomDate(a.lastMessage!.date);
+			const dateB = parseCustomDate(b.lastMessage!.date);
 			return dateB.getTime() - dateA.getTime();
 		});
 		return result;
@@ -184,7 +185,7 @@ const Dialogs = () => {
 		else if (mode === "next") {
 			currentMessage = dialogInfo.messages[dialogInfo.messages.length - 1];
 		}
-		const dialogRes: IGetDialogResponse = await getDialogInfo(Number(id), currentMessage?.message_id, mode);
+		const dialogRes: IGetDialogResponse = await getDialogInfo(Number(id), currentMessage?.id, mode);
 		if (dialogRes.data.dialog.messages.length !== 0) {
 			if (isDialogListUpdatingAllowed) {
 				setDialogInfo(prev => {
@@ -238,7 +239,7 @@ const Dialogs = () => {
 					if (isDialogListUpdatingAllowed) {
 						const dialogRes = await getDialogInfo(Number(id));
 						setDialogInfo({
-							dialog_id: dialogRes.data.dialog.id,
+							id: dialogRes.data.dialog.id,
 							messages: dialogRes.data.dialog.messages,
 							opponent: dialogRes.data.dialog.opponent,
 						});

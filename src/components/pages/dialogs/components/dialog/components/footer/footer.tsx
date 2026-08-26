@@ -33,7 +33,7 @@ const DialogFooter = memo(({
 			formData.append("opponentId", dialogInfo.opponent.id.toString());
 			formData.append("text", messageText);
 			if (currentReplyMessage) {
-				formData.append("replyMessageId", currentReplyMessage.message_id.toString());
+				formData.append("replyMessageId", currentReplyMessage.id.toString());
 			}
 			await sendMessage(formData)
 				.then((res: ISendMessageResponse) => {
@@ -53,7 +53,7 @@ const DialogFooter = memo(({
 			formData.append("opponentId", dialogInfo.opponent.id.toString());
 			formData.append("text", text);
 			if (currentReplyMessage) {
-				formData.append("replyMessageId", currentReplyMessage.message_id.toString());
+				formData.append("replyMessageId", currentReplyMessage.id.toString());
 			}
 			files.forEach(file => {
 				if (file.originFileObj) {
@@ -97,7 +97,7 @@ const DialogFooter = memo(({
 							<div className="message-info">
 								<div className="sender-info">
 									{
-										currentReplyMessage.sender_id === user.id
+										currentReplyMessage.senderId === user.id
 											? `${ user.name } ${ user.lastname }`
 											: `${ dialogInfo.opponent.name } ${ dialogInfo.opponent.surname }`
 									}

@@ -87,9 +87,9 @@ const DialogMessage = memo(({
 	};
 
 	const deleteMessageFromDialog = async () => {
-		await deleteMessage(dialogInfo.dialog_id, [message.message_id])
+		await deleteMessage(dialogInfo.id, [message.id])
 			.then(() => {
-				handleDeleteMessage([message.message_id]);
+				handleDeleteMessage([message.id]);
 			})
 			.catch((error: unknown) => {
 				console.error(error);
@@ -102,8 +102,8 @@ const DialogMessage = memo(({
 
 	const changeMessage = async (modifiedMessage: IMessage, files: UploadFile[]) => {
 		const formData = new FormData();
-		formData.append("dialogId", dialogInfo.dialog_id.toString());
-		formData.append("messageId", modifiedMessage.message_id.toString());
+		formData.append("dialogId", dialogInfo.id.toString());
+		formData.append("messageId", modifiedMessage.id.toString());
 		formData.append("text", modifiedMessage.text);
 
 		files.forEach(file => {
@@ -145,7 +145,7 @@ const DialogMessage = memo(({
 
 	const handleReplyingMessageClick = () => {
 		if (message.repliedMessage) {
-			scrollToMessage(dialogInfo.dialog_id, message.repliedMessage?.id)
+			scrollToMessage(dialogInfo.id, message.repliedMessage?.id)
 				.then((res: IScrollToMessageResponse) => {
 					handleScrollToMessage(res.data.messages, message.repliedMessage!.id);
 				})
@@ -156,7 +156,7 @@ const DialogMessage = memo(({
 	};
 
 	const handleMessageWrapperClick = (e: React.MouseEvent<HTMLDivElement>) => {
-		if (message.sender_id === user.id) {
+		if (message.senderId === user.id) {
 			e.stopPropagation();
 			handleChooseMessage(message);
 		}
@@ -165,7 +165,7 @@ const DialogMessage = memo(({
 	const handleMessageClick = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.stopPropagation();
 	};
-
+	
 	return (
 		<Fragment>
 			{ contextHolder } 
@@ -199,7 +199,7 @@ const DialogMessage = memo(({
 						{ 
 							senderInfo.id === user.id &&
                                 <div className="read-status">
-                                	<IoCheckmarkDoneOutline color={ `${ message.isread ? `var(--default-color)` : `` }` } />
+                                	<IoCheckmarkDoneOutline color={ `${ message.isRead ? `var(--default-color)` : `` }` } />
                                 </div>
 						}
 					</div>

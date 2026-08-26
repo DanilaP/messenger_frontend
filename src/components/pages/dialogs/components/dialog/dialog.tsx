@@ -44,7 +44,7 @@ const Dialog = memo(({
 
 	useEffect(() => {
 		if (dialogInfo) {
-			readMessages(dialogInfo?.dialog_id, dialogInfo?.opponent.id)
+			readMessages(dialogInfo?.id, dialogInfo?.opponent.id)
 				.catch((error) => {
 					console.error(error);
 				});
