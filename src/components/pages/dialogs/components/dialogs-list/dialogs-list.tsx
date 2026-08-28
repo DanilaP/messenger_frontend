@@ -3,6 +3,7 @@ import { Input } from "antd";
 import { IoSearchOutline } from "react-icons/io5";
 import type { IChatsAndDialogsList } from "../../dialogs";
 import DialogListItemWrapper from "./components/dialog-list-item/dialog-list-item";
+import EmptyDialogsList from "./components/empty-dialogs-list/empty-dialogs-list";
 import "./dialogs-list.scss";
 
 interface IDialogsListProps {
@@ -40,19 +41,22 @@ const DialogsList = memo(({
 				/>
 			</div>
 			{
-				dialogsList.map(dialogListItem => {
-					return (
-						<div 
-							key={ dialogListItem.id }
-							onClick={ () => handleDialogListItemClick(dialogListItem.id) } 
-							className="dialog-list-item-wrapper-main"
-						>
-							<DialogListItemWrapper  
-								dialogListItem = { dialogListItem } 
-							/>
-						</div>
-					);
-				})
+				dialogsList.length !== 0 
+					?
+					dialogsList.map(dialogListItem => {
+						return (
+							<div 
+								key={ dialogListItem.id }
+								onClick={ () => handleDialogListItemClick(dialogListItem.id) } 
+								className="dialog-list-item-wrapper-main"
+							>
+								<DialogListItemWrapper  
+									dialogListItem = { dialogListItem } 
+								/>
+							</div>
+						);
+					})
+					: <EmptyDialogsList />
 			}
 		</div>
 	);
