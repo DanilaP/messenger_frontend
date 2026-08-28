@@ -9,12 +9,14 @@ export interface IOpponent {
 
 export interface IDialogListItem {
     id: number,
+    type: "dialog",
+    name: string,
+    image: string,
     lastMessage: {
         id: number,
         text: string,
         date: string
-    } | null,
-    opponent: IOpponent
+    } | null
 }
 
 export interface IMessage {
@@ -40,7 +42,15 @@ export interface IDialog {
 export interface IGetDialogsListResponse {
     data: {
         message: string,
-        dialogs: IDialogListItem[]
+        dialogs: {
+            id: number,
+            lastMessage: {
+                id: number,
+                text: string,
+                date: string
+            } | null
+            opponent: IOpponent
+        }[]
     }
 }
 

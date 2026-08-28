@@ -1,6 +1,7 @@
+import type { IGetDialogsListResponse } from "./dialogs-interface";
 import $api from "../../configs/axios";
 
-export const getDialogsList = async () => {
+export const getDialogsList = async (): Promise<IGetDialogsListResponse> => {
 	const response = $api.get("/dialogs");
 	return response;
 };

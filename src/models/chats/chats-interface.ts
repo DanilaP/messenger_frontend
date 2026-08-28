@@ -2,13 +2,14 @@ import type { IFile } from "../../interfaces/files";
 
 export interface IBasicChatInfo {
     id: number,
+    type: "chat",
     name: string,
     image: string,
     lastMessage: {
         id: number,
         text: string,
         date: string
-    }
+    } | null
 }
 
 export interface IChat extends Partial<IBasicChatInfo> {
@@ -36,4 +37,11 @@ export interface IChatMessageSender {
     name: string,
     surname: string,
     avatar: string
+}
+
+export interface IGetChatsListResponse {
+    data: {
+        message: string,
+        chats: IBasicChatInfo[]
+    }
 }

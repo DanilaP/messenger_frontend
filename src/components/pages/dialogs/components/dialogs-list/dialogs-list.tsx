@@ -1,12 +1,12 @@
 import { memo } from "react";
 import { Input } from "antd";
 import { IoSearchOutline } from "react-icons/io5";
-import type { IDialogListItem } from "../../../../../models/dialogs/dialogs-interface";
+import type { IChatsAndDialogsList } from "../../dialogs";
 import DialogListItemWrapper from "./components/dialog-list-item/dialog-list-item";
 import "./dialogs-list.scss";
 
 interface IDialogsListProps {
-    dialogsList: IDialogListItem[],
+    dialogsList: IChatsAndDialogsList[],
     isMobile: boolean,
     handleChangeDialog: (dialogId: number) => void
 }

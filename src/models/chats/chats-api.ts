@@ -1,3 +1,4 @@
+import type { IGetChatsListResponse } from "./chats-interface";
 import $api from "../../configs/axios";
 
 interface IChatInfoForCreation {
@@ -5,7 +6,7 @@ interface IChatInfoForCreation {
     description: string
 }
 
-export const getChatsList = async () => {
+export const getChatsList = async (): Promise<IGetChatsListResponse> => {
 	const response = $api.get("/chats");
 	return response;
 };

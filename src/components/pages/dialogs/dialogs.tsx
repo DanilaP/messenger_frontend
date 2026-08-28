@@ -4,7 +4,8 @@ import { getDialogInfo, getDialogsList } from "../../../models/dialogs/dialogs-a
 import { parseCustomDate } from "../../../helpers/parsers/parsers";
 import { useNavigate, useParams } from "react-router";
 import { Modal } from "antd";
-import type { IDialog, IDialogListItem, IGetDialogResponse, IMessage } from "../../../models/dialogs/dialogs-interface";
+import { getChatsList } from "../../../models/chats/chats-api";
+import type { IDialog, IGetDialogResponse, IMessage } from "../../../models/dialogs/dialogs-interface";
 import type { RootState } from "../../../stores/root/root";
 import type { IFile } from "../../../interfaces/files";
 import DialogsList from "./components/dialogs-list/dialogs-list";
@@ -13,10 +14,22 @@ import Loader from "../../partials/loader/loader";
 import ProfileModal from "../../partials/profile-modal/profile-modal";
 import "./dialogs.scss";
 
+export interface IChatsAndDialogsList {
+	id: number,
+	type: "dialog" | "chat",
+	name: string, 
+	image: string, 
+	lastMessage: {
+		id: number,
+		text: string,
+		date: string
+	} | null
+}
+
 const Dialogs = () => {
     
 	const { id } = useParams<{ id: string }>();
-	const [dialogsList, setDialogsList] = useState<IDialogListItem[]>([]);
+	const [dialogsList, setDialogsList] = useState<IChatsAndDialogsList[]>([]);
 	const [dialogInfo, setDialogInfo] = useState<IDialog | null>(null);
 	const [currentReplyMessage, setCurrentReplyedMessage] = useState<IMessage | null>(null);
 	const [scrollToMessageRequest, setScrollToMessageRequest] = useState<{ messageId: number; token: number } | null>(null);
@@ -166,7 +179,7 @@ const Dialogs = () => {
 		});
 	};
 
-	const handleSortDialogsListByLastMessageDate = (currentDialogList: IDialogListItem[]) => {
+	const handleSortDialogsListByLastMessageDate = (currentDialogList: IChatsAndDialogsList[]) => {
 		const result = [...currentDialogList];
 		result.sort((a, b) => {
 			const dateA = parseCustomDate(a.lastMessage!.date);
@@ -232,8 +245,27 @@ const Dialogs = () => {
 			setIsLoading(false);
 
 			try {
-				const dialogsRes = await getDialogsList();
-				setDialogsList(handleSortDialogsListByLastMessageDate(dialogsRes.data.dialogs));
+				const [chatsRes, dialogsRes] = await Promise.all([
+					getChatsList(),
+					getDialogsList()
+				]);
+				const modifiedDialogsRes: IChatsAndDialogsList[] = dialogsRes.data.dialogs.map(dialog => {
+					return {
+						id: dialog.id,
+						name: `${dialog.opponent.name} ${dialog.opponent.surname}`,
+						image: dialog.opponent.avatar,
+						lastMessage: dialog.lastMessage,
+						type: "dialog"
+					};
+				});
+				const modifiedChatsRes: IChatsAndDialogsList[] = chatsRes.data.chats.map(chat => {
+					return {
+						...chat,
+						type: "chat"
+					};
+				});
+				const finalDialogsAndChatsList = [...modifiedDialogsRes, ...modifiedChatsRes];
+				setDialogsList(handleSortDialogsListByLastMessageDate(finalDialogsAndChatsList));
 
 				if (id) {
 					if (isDialogListUpdatingAllowed) {
@@ -278,8 +310,8 @@ const Dialogs = () => {
 					?
 					<DialogsList 
 						dialogsList={ dialogsList } 
-						handleChangeDialog={ handleChangeDialog }
 						isMobile={ isMobile }
+						handleChangeDialog={ handleChangeDialog }
 					/>
 					: null
 			}
@@ -309,11 +341,11 @@ const Dialogs = () => {
 			{ 
 				dialogInfo &&
 					<Modal
+						centered
 						destroyOnHidden
 						footer={ null }
 						open={ userProfileModalInfo.open }
 						onCancel={ handleChangeProfileModalVisibility }
-						centered
 					>
 						<ProfileModal userId={ dialogInfo.opponent.id } />
 					</Modal>

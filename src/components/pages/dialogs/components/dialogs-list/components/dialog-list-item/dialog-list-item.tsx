@@ -1,18 +1,18 @@
-import type { IDialogListItem } from "../../../../../../../models/dialogs/dialogs-interface";
+import type { IChatsAndDialogsList } from "../../../../dialogs";
 import "./dialog-list-item.scss";
 
 interface IDialogListItemProps {
-    dialogListItem: IDialogListItem
+    dialogListItem: IChatsAndDialogsList
 }
 
 const DialogListItemWrapper = ({ dialogListItem }: IDialogListItemProps) => {
 	return (
 		<div className='dialog-list-item-wrapper'>
 			<div className="dialog-avatar-wrapper">
-				<img className='image' src = { dialogListItem.opponent.avatar }/>
+				<img className='image' src = { dialogListItem.image }/>
 			</div>
 			<div className="dialog-info">
-				<div className="dialog-name">{ dialogListItem.opponent.name } { dialogListItem.opponent.surname }</div>
+				<div className="dialog-name">{ dialogListItem.name }</div>
 				<div className="dialog-last-message">
 					{ dialogListItem.lastMessage?.text }
 				</div>
