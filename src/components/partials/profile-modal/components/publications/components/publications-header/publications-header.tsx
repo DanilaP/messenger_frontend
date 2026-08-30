@@ -17,12 +17,6 @@ const PublicationsHeader = ({
 			>
                     Публикации
 			</div>
-			<div 
-				onClick={ () => handleTitleClick("Архивные публикации") } 
-				className={ `publications-title ${ currentTitle === "Архивные публикации" ? `active` : `` }` }
-			>
-                    Архив публикаций
-			</div>
 		</div>
 	);
 };
