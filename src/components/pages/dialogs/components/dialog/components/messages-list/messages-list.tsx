@@ -168,7 +168,7 @@ const DialogsMessages = ({
 		const isSelected = selectedMessages.some(
 			selected => selected.id === message.id
 		);
-		const senderInfo = message.senderId === user.id ? user : dialogInfo.opponent;
+		const senderInfo = message.sender.id === user.id ? user : dialogInfo.opponent;
 		return (
 			<div style={ { paddingBottom: MESSAGE_GAP } }>
 				<DialogMessage

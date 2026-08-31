@@ -24,5 +24,11 @@ export const routes = [
 		component: MainLayout,
 		children: Dialogs,
 		authRequired: true,
+	},
+	{
+		path: "/main/chats/:id",
+		component: MainLayout,
+		children: Dialogs,
+		authRequired: true,
 	}
 ];

@@ -12,7 +12,10 @@ export interface IBasicChatInfo {
     } | null
 }
 
-export interface IChat extends Partial<IBasicChatInfo> {
+export interface IChat {
+    id: number,
+    name: string,
+    image: string,
     messages: IChatMessage[]
 }
 

@@ -9,7 +9,7 @@ import "./dialogs-list.scss";
 interface IDialogsListProps {
     dialogsList: IChatsAndDialogsList[],
     isMobile: boolean,
-    handleChangeDialog: (dialogId: number) => void
+    handleChangeDialog: (dialogId: number, type: "chat" | "dialog") => void
 }
 
 const DialogsList = memo(({ 
@@ -18,8 +18,8 @@ const DialogsList = memo(({
 	handleChangeDialog
 }: IDialogsListProps) => {
 
-	const handleDialogListItemClick = (dialogId: number) => {
-		handleChangeDialog(dialogId);
+	const handleDialogListItemClick = (dialogId: number, type: "chat" | "dialog") => {
+		handleChangeDialog(dialogId, type);
 	};
 
 	const handleSearch = () => {
@@ -47,7 +47,7 @@ const DialogsList = memo(({
 						return (
 							<div 
 								key={ dialogListItem.id }
-								onClick={ () => handleDialogListItemClick(dialogListItem.id) } 
+								onClick={ () => handleDialogListItemClick(dialogListItem.id, dialogListItem.type) } 
 								className="dialog-list-item-wrapper-main"
 							>
 								<DialogListItemWrapper  

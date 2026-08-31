@@ -2,12 +2,13 @@ import { useSelector } from "react-redux";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getDialogInfo, getDialogsList } from "../../../models/dialogs/dialogs-api";
 import { parseCustomDate } from "../../../helpers/parsers/parsers";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { Modal } from "antd";
-import { getChatsList } from "../../../models/chats/chats-api";
+import { getChatInfoById, getChatsList } from "../../../models/chats/chats-api";
 import type { IDialog, IGetDialogResponse, IMessage } from "../../../models/dialogs/dialogs-interface";
 import type { RootState } from "../../../stores/root/root";
 import type { IFile } from "../../../interfaces/files";
+import type { IChat } from "../../../models/chats/chats-interface";
 import DialogsList from "./components/dialogs-list/dialogs-list";
 import Dialog from "./components/dialog/dialog";
 import Loader from "../../partials/loader/loader";
@@ -29,8 +30,11 @@ export interface IChatsAndDialogsList {
 const Dialogs = () => {
     
 	const { id } = useParams<{ id: string }>();
+	const location = useLocation();
+	const currentType = useRef<string>(null);
 	const [dialogsList, setDialogsList] = useState<IChatsAndDialogsList[]>([]);
 	const [dialogInfo, setDialogInfo] = useState<IDialog | null>(null);
+	const [chatInfo, setChatInfo] = useState<IChat | null>(null);
 	const [currentReplyMessage, setCurrentReplyedMessage] = useState<IMessage | null>(null);
 	const [scrollToMessageRequest, setScrollToMessageRequest] = useState<{ messageId: number; token: number } | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -229,8 +233,13 @@ const Dialogs = () => {
 		}
 	}, [dialogInfo, id]);
 
-	const handleChangeDialog = (dialogId: number) => {
-		navigate(`/main/dialogs/${dialogId}`);
+	const handleChangeDialog = (dialogId: number, type: "chat" | "dialog") => {
+		if (type === "chat") {
+			navigate(`/main/chats/${dialogId}`);
+		}
+		else if (type === "dialog") {
+			navigate(`/main/dialogs/${dialogId}`);
+		}
 	};
 
 	const handleChangeProfileModalVisibility = () => {
@@ -241,6 +250,14 @@ const Dialogs = () => {
 	};
 
 	useEffect(() => {
+
+		if (location.pathname.includes("/main/dialogs")) {
+			currentType.current = "dialog";
+		}
+		else if (location.pathname.includes("/main/chats")) {
+			currentType.current = "chat";
+		}
+
 		const fetchData = async () => {
 			setIsLoading(false);
 
@@ -269,12 +286,18 @@ const Dialogs = () => {
 
 				if (id) {
 					if (isDialogListUpdatingAllowed) {
-						const dialogRes = await getDialogInfo(Number(id));
-						setDialogInfo({
-							id: dialogRes.data.dialog.id,
-							messages: dialogRes.data.dialog.messages,
-							opponent: dialogRes.data.dialog.opponent,
-						});
+						if (currentType.current === "dialog") {
+							const dialogRes = await getDialogInfo(Number(id));
+							setDialogInfo({
+								id: dialogRes.data.dialog.id,
+								messages: dialogRes.data.dialog.messages,
+								opponent: dialogRes.data.dialog.opponent,
+							});
+						}
+						else if (currentType.current === "chat") {
+							const chatRes = await getChatInfoById(Number(id));
+							setChatInfo(chatRes.data);
+						}
 					}
 				}
 			} 

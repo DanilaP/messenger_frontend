@@ -24,13 +24,20 @@ export interface IMessage {
     text: string,
     date: string,
     isRead: boolean,
-    senderId: number
+    sender: IDialogMessageSender
     files: IFile[],
     repliedMessage: {
         id: number,
         text: string,
         senderId: number
     } | null
+}
+
+export interface IDialogMessageSender {
+    id: number,
+    name: string,
+    surname: string,
+    avatar: string
 }
 
 export interface IDialog {
