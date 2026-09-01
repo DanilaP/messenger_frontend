@@ -1,0 +1,76 @@
+.dialog-footer {
+    width: 75vw;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+    box-sizing: border-box;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+    position: absolute;
+    bottom: 0;
+    z-index: 5;
+
+    & .message-editor-footer-wrapper {
+        display: flex;
+        gap: 10px;
+    }
+
+    & .replied-message-footer-wrapper {
+        & .replied-message-footer-info {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            color: white;
+            border-left: 4px solid var(--default-color);
+            padding: 10px;
+            font-size: 12px;
+            gap: 10px;
+            box-sizing: border-box;
+            background-color: var(--default-color-second);
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 10;
+            position: relative;
+
+            & .close-button {
+                position: absolute;
+                right: 10px;
+                cursor: pointer;
+
+                &:hover {
+                    color: var(--default-color);
+                }
+            }
+
+            & .text {
+                width: 200px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                opacity: 0.5;
+            }
+        }
+    }
+
+    & .ant-input {
+        border-radius: 20px;
+        border: none;
+        background-color: var(--bg-color-block);
+
+        &:hover, &:focus {
+            background-color: var(--bg-color-block);
+            border: none;
+        }
+    }
+
+    & .send-message-button {
+        border-radius: 20px;
+    }
+}
+
+@media screen and (max-width: 1100px) {
+    .dialog-footer {
+        width: 100vw;
+    }
+}

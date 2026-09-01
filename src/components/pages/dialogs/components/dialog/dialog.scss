@@ -1,0 +1,26 @@
+.dialog-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.dialog-wrapper-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+
+    & .message {
+        padding: 30px 50px 30px 50px;
+        border: 1px solid var(--border-color);
+        background-color: var(--default-color-second);
+        opacity: 0.75;
+    }
+}
+
+.dialog-wrapper-mobile {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+}

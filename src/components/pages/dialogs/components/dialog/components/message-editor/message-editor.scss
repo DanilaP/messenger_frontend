@@ -1,0 +1,13 @@
+.message-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    & .ant-upload {
+        & .ant-btn {
+            &:hover, &:focus {
+                border: none;
+            }
+        }
+    }
+}

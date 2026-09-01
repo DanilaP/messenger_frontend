@@ -1,0 +1,33 @@
+.left-menu-wrapper {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(20px);
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    color: var(--text-color);
+    z-index: 5;
+
+    & .menu {
+        position: relative;
+        box-sizing: border-box;
+        padding: 50px 20px 0px 20px;
+        width: 25vw;
+        background-color: var(--default-color-second);
+        border-right: 1px solid var(--border-color);
+        font-size: 17px;
+        z-index: 6;
+    }
+}
+
+@media screen and (max-width: 1100px) {
+    .left-menu-wrapper {
+        background-color: var(--bg-color);
+        
+        & .menu {
+            width: 100vw;
+        }
+    }
+}

@@ -1,0 +1,7 @@
+.custom-message-position {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    left: auto;
+    transform: none;
+}

@@ -1,0 +1,39 @@
+.file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    color: var(--text-color);
+
+    & .file {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-weight: 600;
+        cursor: pointer;
+
+        & .icon {
+            display: flex;
+            align-items: center;
+            font-size: 60px;
+        }
+
+        & .file-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        &:hover {
+            & .name {
+                color: var(--default-color);
+            }
+        }
+    }
+
+    &-image {
+        width: 60px;
+        height: 60px;
+        background-size: cover;
+        border-radius: 8px;
+    }
+}

@@ -1,0 +1,77 @@
+@mixin profile-input-styles {
+    background-color: transparent;
+    border: 0px;
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 0px;
+    padding-left: 0px;
+    color: var(--text-color);
+    cursor: pointer;
+
+    &:hover, &:focus {
+        border: 0px;
+        border-bottom: 1px solid var(--border-color);
+        background-color: transparent;
+        box-shadow: none;
+    }
+}
+
+.profile {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;  
+    overflow-y: auto;
+    padding: 10px;
+    
+    scrollbar-color: transparent transparent;
+    scrollbar-width: thin;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+
+    & .ant-picker { 
+        cursor: pointer;
+        border-color: var(--border-color);
+
+        & .ant-picker-input {
+            & input {
+                cursor: pointer;
+                color: var(--text-color);
+            }
+        }
+    }
+
+    & .ant-input {
+        @include profile-input-styles;
+    }
+
+    & .ant-input-affix-wrapper {
+        @include profile-input-styles;
+
+        & .ant-input {
+            @include profile-input-styles;
+            border: 0px;
+            cursor: pointer !important;
+
+            &:hover, &:focus {
+                border: none;
+                box-shadow: none;
+            }
+        }
+
+        &:focus-within {
+            box-shadow: none;
+            border: 0px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: transparent;
+        }
+    }
+
+    & .ant-input-disabled {
+        background-color: transparent !important;
+        border-color: var(--border-color) !important;
+    }
+
+    & .ant-picker-disabled {
+        background-color: transparent !important;
+        border-color: var(--border-color) !important;
+    }
+
+}

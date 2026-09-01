@@ -1,0 +1,12 @@
+.ant-modal-footer {
+    & .ant-btn-variant-outlined {
+        &:hover {
+            background-color: #4096ff !important;
+        }
+    }
+    & .ant-btn-variant-outlined {
+        &:hover, &:focus {
+            border: none !important;
+        }
+    }
+}

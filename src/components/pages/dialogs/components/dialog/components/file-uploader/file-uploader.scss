@@ -1,0 +1,28 @@
+.file-uploader {
+    display: flex;
+    align-items: center;
+    color: var(--text-color);
+    background-color: var(--bg-color-block);
+    padding: 0px 10px 0px 10px;
+    border-radius: 20px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.file-uploader-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ant-upload-wrapper {
+    & .ant-upload {
+        & .ant-btn {
+            border: none;
+
+            &:hover, &:focus {
+                border: none;
+            }
+        }
+    }
+}

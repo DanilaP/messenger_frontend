@@ -1,0 +1,107 @@
+import { useNavigate } from "react-router";
+import { logout } from "../../../models/user/user-api";
+import { useSelector } from "react-redux";
+import { RiAccountCircle2Fill } from "react-icons/ri";
+import { HiMiniChatBubbleLeftEllipsis } from "react-icons/hi2";
+import { useState, type ReactNode } from "react";
+import { Modal } from "antd";
+import type { RootState } from "../../../stores/root/root";
+import MenuItem from "./components/item/item";
+import MenuFooter from "./components/menu-footer/menu-footer";
+import ProfileModal from "../profile-modal/profile-modal";
+import "./left-menu.scss";
+
+interface ILeftMenuProps {
+    handleCloseMenu: () => void
+}
+
+interface IMenuModal {
+	open: boolean,
+	component: ReactNode | null,
+	title: string
+}
+
+const LeftMenu = ({ handleCloseMenu }: ILeftMenuProps) => {
+
+	const [modalInfo, setModalInfo] = useState<IMenuModal>({
+		open: false,
+		component: null,
+		title: ""
+	});
+	const user = useSelector((state: RootState) => state.user.user);
+	const navigate = useNavigate();
+
+	const handleExitClick = () => {
+		logout()
+			.then(() => {
+				handleCloseMenu();
+				navigate("/auth/signin");
+			})
+			.catch((error: unknown) => {
+				console.error(error);
+			});
+	};
+
+	const handleDialogsClick = () => {
+		handleCloseMenu();
+		navigate("/main/dialogs/initial");
+	};
+
+	const handleProfileClick = () => {
+		setModalInfo({
+			open: !modalInfo.open,
+			component: user?.id && <ProfileModal userId={ user.id } />,
+			title: "Профиль"
+		});
+	};
+
+	const menuItems = [
+		{
+			title: "Аккаунт",
+			subtitle: "Аватар, имя пользователя, о себе",
+			icon: <RiAccountCircle2Fill color="var(--default-color)" />,
+			handleClick: handleProfileClick
+		},
+		{
+			title: "Диалоги",
+			subtitle: "Ваши сообщения, чаты и группы",
+			icon: <HiMiniChatBubbleLeftEllipsis color="06d633" />,
+			handleClick: handleDialogsClick
+		}
+	];
+
+	return (
+		<div className='left-menu-wrapper'>
+			<div className="menu">
+				{
+					menuItems.map((item, index) => {
+						return (
+							<MenuItem 
+								key={ index }
+								title={ item.title }
+								subtitle={ item.subtitle }
+								icon={ item.icon }
+								handleClick={ item.handleClick }
+							/>
+						);
+					})
+				}
+				{
+					user && <MenuFooter user={ user } handleExitClick={ handleExitClick } />
+				}
+				<Modal
+					destroyOnHidden
+					footer={ null }
+					open={ modalInfo.open }
+					onCancel={ handleProfileClick }
+					centered
+				>
+					{ modalInfo.component }
+				</Modal>
+				
+			</div>
+		</div>
+	);
+};
+
+export default LeftMenu;

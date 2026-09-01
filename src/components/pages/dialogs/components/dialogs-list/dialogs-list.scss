@@ -1,0 +1,33 @@
+@mixin dialogs-list-base {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 20px;
+    border-right: 1px solid var(--border-color);
+    background-color: var(--default-color-second);
+    overflow-y: auto;
+    padding-top: 15px;
+}
+
+.dialogs-list-search {
+    position: relative;
+    
+    & .ant-input-affix-wrapper {
+        border-radius: 80px;
+
+        & .ant-input {
+            height: 30px;
+            border-radius: 80px;
+        }
+    }
+}
+
+.dialogs-list-wrapper {
+    @include dialogs-list-base;
+}
+
+.dialogs-list-wrapper-mobile {
+    @include dialogs-list-base;
+    width: 100vw;
+    height: 100vh;
+}

@@ -1,0 +1,33 @@
+.main-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--bg-color);
+    
+    .main-header {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        padding: 5px 20px 5px 20px;
+        background-color: var(--default-color-second);
+        color: var(--text-color);
+        width: 100vw;
+        border-bottom: 1px solid var(--border-color);
+        box-sizing: border-box;
+        
+        .left-menu-icon {
+            z-index: 15;
+            cursor: pointer;
+        }
+    }
+}
+
+@media screen and (max-width: 610px) {
+    .main-wrapper {
+        & .main-header {
+            padding: 5px 10px 5px 10px;
+        }
+    }
+}

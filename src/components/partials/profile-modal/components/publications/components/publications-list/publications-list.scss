@@ -1,0 +1,48 @@
+.publications-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    gap: 10px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    height: 190px;
+    //overflow-y: auto;
+
+    //scrollbar-color: var(--text-color) transparent;
+    //scrollbar-width: thin;
+    //-ms-overflow-style: -ms-autohiding-scrollbar;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--text-color);
+        border-radius: 8px;
+    }
+
+    &-title {
+        font-weight: 600;
+    }
+
+    &-subtitle {
+        color: grey;
+        text-align: center;
+    }
+}
+
+.empty-publication-list-banner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.flex-cont {
+    display: flex;
+    justify-content: center;
+}
