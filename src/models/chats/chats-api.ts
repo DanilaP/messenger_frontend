@@ -11,8 +11,8 @@ export const getChatsList = async (): Promise<IGetChatsListResponse> => {
 	return response;
 };
 
-export const getChatInfoById = async (chatId: number) => {
-	const response = $api.get(`/chats?chatId=${chatId}`);
+export const getChatInfoById = async (chatId: number, mode?: "prev" | "next", messageId?: number) => {
+	const response = $api.get(`/chats?id=${chatId}${messageId ? `&targetMessageId=${messageId}` : ``}${mode ? `&mode=${mode}` : ``}`);
 	return response;
 };
 
