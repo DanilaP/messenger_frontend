@@ -58,7 +58,7 @@ const UserInfo = ({
 	const handleDatePickerChange: DatePickerProps["onChange"] = (_, dateString) => {
 		if (dateString) {
 			const stringifiedDate = dateString.toString();
-			handleFieldChange("dateOfBirth", stringifiedDate);
+			handleFieldChange("date_of_birth", stringifiedDate);
 		}
 	};
 
@@ -93,7 +93,7 @@ const UserInfo = ({
 						disabled={ !isModificationEnabled }
 						format="DD.MM.YYYY"
 						placeholder="Выберите дату"
-						defaultValue={ dayjs(userInfo.date_of_birth, "DD.MM.YYYY") }
+						defaultValue={ userInfo.date_of_birth ? dayjs(userInfo.date_of_birth, "DD.MM.YYYY") : null }
 						onChange={ handleDatePickerChange } 
 					/>
 				</div>
