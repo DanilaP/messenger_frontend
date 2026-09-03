@@ -1,5 +1,6 @@
 @mixin input-styles {
     background-color: var(--default-color-second);
+    background: var(--default-color-second);
     color: var(--text-color);
     border: 1px solid var(--border-color);
     border-radius: 20px;
@@ -11,6 +12,7 @@
     &:hover,
     &:focus,
     &:focus-within {
+        background: var(--default-color-second);
         background-color: var(--default-color-second);
         color: var(--text-color);
         border: 1px solid var(--border-color);
@@ -20,6 +22,11 @@
 //FormItem
 .ant-form-item .ant-form-item-label >label {
     color: var(--text-color) !important;
+}
+.ant-form-item .ant-input-suffix {
+    svg {
+        color: white;
+    }
 }
 //FormItem
 
@@ -55,6 +62,10 @@
     &:hover {
         color: var(--text-color);
     }
+}
+
+.ant-input-outlined {
+    @include input-styles;
 }
 
 .ant-input-outlined.ant-input-status-error:not(.ant-input-disabled) {

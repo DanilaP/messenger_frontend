@@ -5,3 +5,9 @@
     left: auto;
     transform: none;
 }
+
+body #root form {
+    input:-internal-autofill-selected {
+        background-color: var(--default-color-second) !important;
+    }
+}
