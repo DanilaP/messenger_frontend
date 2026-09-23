@@ -28,7 +28,7 @@ const FileList = ({ files }: IFileListProps) => {
 		if (fileType.includes("pdf")) {
 			return <FaFilePdf color='red' />;
 		}
-		if (fileType.includes("image")) {
+		if (fileType.includes("image") || fileType.includes("application/octet-stream")) {
 			return <img className='file-list-image' src = { url } />;
 		}
 	};
@@ -40,7 +40,7 @@ const FileList = ({ files }: IFileListProps) => {
 					return (
 						<div key={ file.url } className="file">
 							<div className="icon">
-								{ returnFileIcon(file.type, file.url) }
+								{ returnFileIcon(file.type, `${import.meta.env.VITE_APP_SERVER_API}${file.url}`) }
 							</div>
 							<div className="file-info">
 								<div className="name">{ file.name }</div>

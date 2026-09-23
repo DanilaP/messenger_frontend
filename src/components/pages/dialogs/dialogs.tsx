@@ -186,9 +186,13 @@ const Dialogs = () => {
 	const handleSortDialogsListByLastMessageDate = (currentDialogList: IChatsAndDialogsList[]) => {
 		const result = [...currentDialogList];
 		result.sort((a, b) => {
-			const dateA = parseCustomDate(a.lastMessage!.date);
-			const dateB = parseCustomDate(b.lastMessage!.date);
-			return dateB.getTime() - dateA.getTime();
+			let dateA, dateB = null;
+			if (a.lastMessage?.date && b.lastMessage?.date) {
+				dateA = parseCustomDate(a.lastMessage.date);
+				dateB = parseCustomDate(b.lastMessage.date);
+			}
+			if (dateA && dateB) return dateB.getTime() - dateA.getTime();
+			return 1;
 		});
 		return result;
 	};
@@ -241,7 +245,6 @@ const Dialogs = () => {
 			navigate(`/main/dialogs/${dialogId}`);
 		}
 	};
-
 	const handleChangeProfileModalVisibility = () => {
 		setUserProfileModalInfo({
 			...userProfileModalInfo,
@@ -282,7 +285,8 @@ const Dialogs = () => {
 					};
 				});
 				const finalDialogsAndChatsList = [...modifiedDialogsRes, ...modifiedChatsRes];
-				setDialogsList(handleSortDialogsListByLastMessageDate(finalDialogsAndChatsList));
+				const sortedData = handleSortDialogsListByLastMessageDate(finalDialogsAndChatsList);
+				setDialogsList(sortedData);
 
 				if (id) {
 					if (isDialogListUpdatingAllowed) {

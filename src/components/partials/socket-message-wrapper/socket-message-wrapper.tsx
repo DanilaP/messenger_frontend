@@ -25,7 +25,7 @@ const SocketMessageWrapper = ({ data }: ISocketMessageWrapperProps) => {
 		return (
 			<div onClick={ navigateToDialog } className='socket-message-wrapper'>
 				<div className="sender-info">
-					<img className='avatar-image' src = { data.senderInfo.avatar } />
+					<img className='avatar-image' src = { `${import.meta.env.VITE_APP_SERVER_API}${data.senderInfo.avatar}` } />
 					<div className="name">{ data.senderInfo.name } { data.senderInfo.surname }</div>
 				</div>
 				<div className="text">{ data.message.text }</div>

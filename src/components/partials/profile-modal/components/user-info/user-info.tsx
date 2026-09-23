@@ -72,7 +72,7 @@ const UserInfo = ({
 					accept="image/*"
 				>
 					<div  
-						style={ { backgroundImage: `url("${avatarUrl}")` } }
+						style={ { backgroundImage: `url("${import.meta.env.VITE_APP_SERVER_API}${avatarUrl}")` } }
 						className="image"
 					/>
 				</Upload>

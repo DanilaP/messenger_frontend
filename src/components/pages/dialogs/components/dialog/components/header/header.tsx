@@ -43,7 +43,7 @@ const DialogHeader = memo(({
 	return (
 		<div className='dialog-header'>
 			<div onClick={ handleChangeProfileModalVisibility } className="dialog-image-wrapper">
-				<img src={ opponent.avatar } className='dialog-image'/>
+				<img src={ `${import.meta.env.VITE_APP_SERVER_API}${opponent.avatar}` } className='dialog-image'/>
 			</div>
 			<div className="dialog-name">{ opponent.name } { opponent.surname }</div>
 			<div className="dialog-settings">

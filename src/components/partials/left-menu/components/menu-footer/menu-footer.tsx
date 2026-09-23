@@ -11,7 +11,7 @@ const MenuFooter = ({ user, handleExitClick }: IMenuFooterProps) => {
 	return (
 		<div className="menu-footer">
 			<div className="avatar-wrapper">
-				<img className="image" src={ user?.avatar } />
+				<img className="image" src={ `${import.meta.env.VITE_APP_SERVER_API}${user?.avatar}` } />
 			</div>
 			<div className="user-info">
 				<div className="user-name">

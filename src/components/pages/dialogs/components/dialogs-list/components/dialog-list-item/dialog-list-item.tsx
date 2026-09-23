@@ -9,7 +9,7 @@ const DialogListItemWrapper = ({ dialogListItem }: IDialogListItemProps) => {
 	return (
 		<div className='dialog-list-item-wrapper'>
 			<div className="dialog-avatar-wrapper">
-				<img className='image' src = { dialogListItem.image }/>
+				<img className='image' src = { `${import.meta.env.VITE_APP_SERVER_API}${dialogListItem.image}` }/>
 			</div>
 			<div className="dialog-info">
 				<div className="dialog-name">{ dialogListItem.name }</div>

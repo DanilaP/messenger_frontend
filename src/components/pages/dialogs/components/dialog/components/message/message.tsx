@@ -190,7 +190,7 @@ const DialogMessage = memo(({
 						}
 						<div className={ `text-content ${ senderInfo.id === user.id ? `user-message` : `opponent-message` }` }>
 							<div className="avatar">
-								<img className='image' src = { senderInfo.avatar } />
+								<img className='image' src = { `${import.meta.env.VITE_APP_SERVER_API}${senderInfo.avatar}` } />
 							</div>
 							<div className="text">{ message.text }</div>
 						</div>

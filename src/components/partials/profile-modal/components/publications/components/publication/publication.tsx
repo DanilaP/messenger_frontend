@@ -10,7 +10,7 @@ const Publication = ({ publication }: IPublicationProps) => {
 		<div className="publication">
 			<div
 				className="image"
-				style={ { backgroundImage: `url("${publication.file.url}")` } }
+				style={ { backgroundImage: `url("${import.meta.env.VITE_APP_SERVER_API}${publication.file.url}")` } }
 			>
 				<div className="image-overlay"></div>
 				<div className="image-text">{ publication.text }</div>
