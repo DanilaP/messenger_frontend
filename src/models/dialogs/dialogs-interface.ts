@@ -29,7 +29,7 @@ export interface IMessage {
     repliedMessage: {
         id: number,
         text: string,
-        senderId: number
+        sender: IOpponent
     } | null
 }
 
