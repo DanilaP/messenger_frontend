@@ -87,16 +87,24 @@ const UserInfo = ({
 						defaultValue={ userInfo.username } 
 					/>
 				</div>
-				<div className="user-info-item">
-					<label className="input-name">Дата рождения: </label>
-					<DatePicker 
-						disabled={ !isModificationEnabled }
-						format="DD.MM.YYYY"
-						placeholder="Выберите дату"
-						defaultValue={ userInfo.date_of_birth ? dayjs(userInfo.date_of_birth, "DD.MM.YYYY") : null }
-						onChange={ handleDatePickerChange } 
-					/>
-				</div>
+				{
+					(user.id === userInfo.id || userInfo.date_of_birth) && (
+						<div className="user-info-item">
+							<label className="input-name">Дата рождения: </label>
+							<DatePicker
+								disabled={!isModificationEnabled}
+								format="DD.MM.YYYY"
+								placeholder="Выберите дату"
+								defaultValue={
+									userInfo.date_of_birth
+										? dayjs(userInfo.date_of_birth, "DD.MM.YYYY")
+										: null
+								}
+								onChange={handleDatePickerChange}
+							/>
+						</div>
+					)
+				}	
 			</div>
 			<Cropper
 				open={ cropModalOpen }

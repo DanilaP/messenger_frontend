@@ -165,7 +165,7 @@ const DialogMessage = memo(({
 	const handleMessageClick = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.stopPropagation();
 	};
-
+	console.log(dialogInfo.opponent);
 	return (
 		<Fragment>
 			{ contextHolder } 
@@ -181,7 +181,7 @@ const DialogMessage = memo(({
 									<div className="sender-info">
 										{
 											message.repliedMessage.sender.id == user.id
-												? `${ user.name } ${ user.lastname }`
+												? `${ user.name } ${ user.surname }`
 												: `${ dialogInfo.opponent.name } ${ dialogInfo.opponent.surname }`
 										}
 									</div>
