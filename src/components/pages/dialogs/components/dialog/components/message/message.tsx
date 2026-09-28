@@ -43,7 +43,7 @@ const DialogMessage = memo(({
 
 	const [isModifyMessageModalOpen, setIsModifyMessageModalOpen] = useState<boolean>(false);
 	const [messageApi, contextHolder] = messageAntd.useMessage();
-
+	
 	const items: MenuProps["items"] = [
 		{
 			label: "Копировать",
@@ -165,11 +165,12 @@ const DialogMessage = memo(({
 	const handleMessageClick = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.stopPropagation();
 	};
-	console.log(dialogInfo.opponent);
+	
 	return (
 		<Fragment>
 			{ contextHolder } 
 			<div 
+				id={message.id.toString()}
 				onClick={ handleMessageWrapperClick } 
 				className={ `message-wrapper ${ senderInfo.id == user.id ? `user-message` : `opponent-message` } ${ isSelected ? `selected-wrapper` : "" }` }
 			>
