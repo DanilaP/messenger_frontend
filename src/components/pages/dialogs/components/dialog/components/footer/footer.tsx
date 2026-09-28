@@ -1,9 +1,11 @@
-import { Button, Input } from "antd";
+import { Input } from "antd";
 import { sendMessage } from "../../../../../../../models/dialogs/dialogs-api";
 import { memo, useState } from "react";
 import { IoMdShareAlt, IoMdClose } from "react-icons/io";
+import { sendChatMessage } from "../../../../../../../models/chats/chats-api";
 import type { UploadFile } from "antd/es/upload/interface";
 import type { IDialog, IMessage, ISendMessageResponse } from "../../../../../../../models/dialogs/dialogs-interface";
+import type { IChat, ISendChatMessageResponse } from "../../../../../../../models/chats/chats-interface";
 import type { IUser } from "../../../../../../../models/user/user-interface";
 import FileUploader from "../file-uploader/file-uploader";
 import EmojiPicker from "../../../../../../partials/emoji-picker/emoji-picker";
@@ -11,7 +13,8 @@ import "./footer.scss";
 
 interface IDialogFooterProps {
 	user: Partial<IUser>,
-    dialogInfo: IDialog,
+    dialogInfo: IDialog | null,
+	chatInfo: IChat | null,
 	currentReplyMessage: IMessage | null,
     handleSendMessage: (message: IMessage) => void,
 	handleChooseMessageForReplying: (message: IMessage | null) => void
@@ -20,6 +23,7 @@ interface IDialogFooterProps {
 const DialogFooter = memo(({ 
 	user,
 	dialogInfo, 
+	chatInfo,
 	currentReplyMessage,
 	handleSendMessage,
 	handleChooseMessageForReplying
@@ -30,12 +34,19 @@ const DialogFooter = memo(({
 	const handleSendButtonClick = async () => {
 		if (messageText !== "") {	
 			const formData = new FormData();
-			formData.append("opponentId", dialogInfo.opponent.id.toString());
+			if (dialogInfo) {
+				formData.append("opponentId", dialogInfo.opponent.id.toString());
+			}
+			else if (chatInfo) {
+				formData.append("chatId", chatInfo.id.toString());
+			}
 			formData.append("text", messageText);
 			if (currentReplyMessage) {
 				formData.append("replyMessageId", currentReplyMessage.id.toString());
 			}
-			await sendMessage(formData)
+
+			if (dialogInfo) {
+				await sendMessage(formData)
 				.then((res: ISendMessageResponse) => {
 					handleClearMessageText();
 					handleSendMessage(res.data.createdMessage);
@@ -44,13 +55,30 @@ const DialogFooter = memo(({
 				.catch((error: unknown) => {
 					console.error(error);
 				});
+			}
+			else if (chatInfo) {
+				await sendChatMessage(formData)
+				.then((res: ISendChatMessageResponse) => {
+					handleClearMessageText();
+					handleSendMessage(res.data.createdMessage);
+					handleChooseMessageForReplying(null);
+				})
+				.catch((error: unknown) => {
+					console.error(error);
+				});
+			}
 		}
 	};
 
 	const handleSendMessageWithFiles = async (text: string, files: UploadFile[]) => {
 		if (text !== "") {
 			const formData = new FormData();
-			formData.append("opponentId", dialogInfo.opponent.id.toString());
+			if (dialogInfo) {
+				formData.append("opponentId", dialogInfo.opponent.id.toString());
+			}
+			else if (chatInfo) {
+				formData.append("chatId", chatInfo.id.toString());
+			}
 			formData.append("text", text);
 			if (currentReplyMessage) {
 				formData.append("replyMessageId", currentReplyMessage.id.toString());
@@ -61,7 +89,8 @@ const DialogFooter = memo(({
 				}
 			});
 
-			await sendMessage(formData)
+			if (dialogInfo) {
+				await sendMessage(formData)
 				.then((res: ISendMessageResponse) => {
 					handleSendMessage(res.data.createdMessage);
 					handleChooseMessageForReplying(null);
@@ -69,6 +98,18 @@ const DialogFooter = memo(({
 				.catch((error: unknown) => {
 					console.error(error);
 				});
+			}
+			else if (chatInfo) {
+				await sendChatMessage(formData)
+				.then((res: ISendChatMessageResponse) => {
+					handleClearMessageText();
+					handleSendMessage(res.data.createdMessage);
+					handleChooseMessageForReplying(null);
+				})
+				.catch((error: unknown) => {
+					console.error(error);
+				});
+			}
 		}
 	};
 
@@ -97,9 +138,7 @@ const DialogFooter = memo(({
 							<div className="message-info">
 								<div className="sender-info">
 									{
-										currentReplyMessage.sender.id == user.id
-											? `${ user.name } ${ user.lastname }`
-											: `${ dialogInfo.opponent.name } ${ dialogInfo.opponent.surname }`
+										`${ currentReplyMessage.sender.name } ${ currentReplyMessage.sender.surname }`
 									}
 								</div>
 								<div className="text">{ currentReplyMessage.text }</div>

@@ -8,12 +8,15 @@ import { RxCross1 } from "react-icons/rx";
 import type { IFile } from "../../../../../../../interfaces/files";
 import type { IDialog, IMessage } from "../../../../../../../models/dialogs/dialogs-interface";
 import type { IUser } from "../../../../../../../models/user/user-interface";
+import type { IChat } from "../../../../../../../models/chats/chats-interface";
 import DialogMessage from "../message/message";
 import VirtualizedList, { type VirtualizedListRef } from "../../../../../../partials/virtualized-list/virtualized-list";
 import "./messages-list.scss";
+import { deleteChatMessage } from "../../../../../../../models/chats/chats-api";
 
 interface IDialogsMessages {
-    dialogInfo: IDialog,
+    dialogInfo: IDialog | null,
+	chatInfo: IChat | null,
     user: Partial<IUser>,
 	currentReplyMessage: IMessage | null,
 	scrollToMessageRequest: { messageId: number; token: number } | null,
@@ -31,6 +34,7 @@ const MESSAGE_GAP = 10;
 
 const DialogsMessages = ({ 
 	dialogInfo, 
+	chatInfo,
 	user, 
 	currentReplyMessage,
 	scrollToMessageRequest,
@@ -57,8 +61,8 @@ const DialogsMessages = ({
 	const isLoadingNextBatchRef = useRef(false);
 
 	const initialScrollDoneRef = useRef(false);
-	const prevMessagesLengthRef = useRef(dialogInfo.messages.length);
-	const prevFirstMessageIdRef = useRef(dialogInfo.messages[0]?.id);
+	const prevMessagesLengthRef = useRef(dialogInfo?.messages?.length || chatInfo?.messages?.length || null);
+	const prevFirstMessageIdRef = useRef(dialogInfo?.messages?.[0]?.id || chatInfo?.messages?.[0]?.id || null);
 
 	const scrollToBottom = useCallback(() => {
 		listRef.current?.scrollToBottom();
@@ -97,7 +101,8 @@ const DialogsMessages = ({
 	const handleDeleteButtonClick = async () => {
 		if (selectedMessages.length !== 0) {
 			const selectedMessagesIds = selectedMessages.map(msg => msg.id);
-			await deleteMessage(dialogInfo.id, selectedMessagesIds)
+			if (dialogInfo) {
+				await deleteMessage(dialogInfo.id, selectedMessagesIds)
 				.then(() => {
 					setSelectedMessages([]);
 					handleDeleteMessage(selectedMessagesIds);
@@ -105,6 +110,17 @@ const DialogsMessages = ({
 				.catch((error: unknown) => {
 					console.error(error);
 				});
+			}
+			else if (chatInfo) {
+				await deleteChatMessage(chatInfo.id, selectedMessagesIds)
+				.then(() => {
+					setSelectedMessages([]);
+					handleDeleteMessage(selectedMessagesIds);
+				})
+				.catch((error: unknown) => {
+					console.error(error);
+				});
+			}
 		}
 	};
 
@@ -121,7 +137,7 @@ const DialogsMessages = ({
 		}
 
 		const atTop = scrollTop === 0;
-		if (atTop && !isLoadingMoreRef.current && dialogInfo.messages.length > 0) {
+		if (atTop && !isLoadingMoreRef.current && (dialogInfo!.messages.length > 0 || chatInfo!.messages.length > 0)) {
 			clearRestoreTopTimers();
 			isProcessingRef.current = true;
 			const oldScrollHeight = target.scrollHeight;
@@ -148,7 +164,7 @@ const DialogsMessages = ({
 				isProcessingRef.current = false;
 			});
 		}
-		else if (atBottom && !isLoadingMoreRef.current && dialogInfo.messages.length > 0) {
+		else if (atBottom && !isLoadingMoreRef.current && (dialogInfo!.messages.length > 0 || chatInfo!.messages.length > 0)) {
 			if (bottomLoadLockRef.current) return;
 			bottomLoadLockRef.current = true;
 			isProcessingRef.current = true;
@@ -158,7 +174,12 @@ const DialogsMessages = ({
 			isLoadingMoreRef.current = false;
 			isProcessingRef.current = false;
 		}
-	}, [handleGetNextMessages, dialogInfo.messages.length, clearRestoreTopTimers]);
+	}, [
+		dialogInfo?.messages?.length, 
+		chatInfo?.messages?.length, 
+		handleGetNextMessages, 
+		clearRestoreTopTimers
+	]);
 
 	const clearSelectedMessages = () => {
 		setSelectedMessages([]);
@@ -176,6 +197,7 @@ const DialogsMessages = ({
 					senderInfo={ message.sender }
 					message={ message }
 					dialogInfo={ dialogInfo }
+					chatInfo={ chatInfo }
 					isSelected={ isSelected }
 					handleDeleteMessage={ handleDeleteMessage }
 					handleChangeMessage={ handleChangeMessage }
@@ -197,7 +219,7 @@ const DialogsMessages = ({
 	]);
 
 	useEffect(() => {
-		if (!scrollToMessageRequest || dialogInfo.messages.length === 0) return;
+		if (!scrollToMessageRequest || (dialogInfo?.messages.length === 0 || chatInfo?.messages.length === 0)) return;
 		let cancelled = false;
 		let attempts = 0;
 		activeScrollRequestTokenRef.current = scrollToMessageRequest.token;
@@ -227,25 +249,35 @@ const DialogsMessages = ({
 				isProcessingRef.current = false;
 			}
 		};
-	}, [scrollToMessageRequest, dialogInfo.messages, handleScrollToMessageHandled, clearRestoreTopTimers]);
+	}, [
+		scrollToMessageRequest, 
+		dialogInfo?.messages,
+		chatInfo?.messages,
+		handleScrollToMessageHandled, 
+		clearRestoreTopTimers
+	]);
 
 	// Автоскролл при добавлении новых сообщений в конец
 	useEffect(() => {
-		const currentLength = dialogInfo.messages.length;
-		const currentFirstId = dialogInfo.messages[0]?.id;
-		const isNewMessageAddedToEnd = 
-            currentLength > prevMessagesLengthRef.current && 
-            currentFirstId === prevFirstMessageIdRef.current;
-		const shouldAutoScrollToBottom = isNewMessageAddedToEnd && !isLoadingNextBatchRef.current;
-        
-		if (shouldAutoScrollToBottom) {
-			setTimeout(() => scrollToBottom(), 0);
+		const currentLength = dialogInfo?.messages.length || chatInfo?.messages.length;
+		const currentFirstId = dialogInfo?.messages[0]?.id || chatInfo?.messages[0]?.id;
+
+		if (currentLength && currentFirstId && prevMessagesLengthRef.current) {
+			const isNewMessageAddedToEnd = 
+				currentLength > prevMessagesLengthRef.current && 
+				currentFirstId === prevFirstMessageIdRef.current;
+			const shouldAutoScrollToBottom = isNewMessageAddedToEnd && !isLoadingNextBatchRef.current;
+			
+			if (shouldAutoScrollToBottom) {
+				setTimeout(() => scrollToBottom(), 0);
+			}
+			isLoadingNextBatchRef.current = false;
+			
+			prevMessagesLengthRef.current = currentLength;
+			prevFirstMessageIdRef.current = currentFirstId;
 		}
-		isLoadingNextBatchRef.current = false;
-        
-		prevMessagesLengthRef.current = currentLength;
-		prevFirstMessageIdRef.current = currentFirstId;
-	}, [dialogInfo.messages, scrollToBottom]);
+		
+	}, [dialogInfo?.messages, chatInfo?.messages, scrollToBottom]);
 
 	// Измерение высоты контейнера
 	useEffect(() => {
@@ -266,14 +298,23 @@ const DialogsMessages = ({
 
 	// Первоначальный скролл вниз
 	useEffect(() => {
-		if (containerHeight > 0 && dialogInfo.messages.length > 0 && !initialScrollDoneRef.current) {
+		if (
+			containerHeight > 0 && 
+			((dialogInfo?.messages?.length ?? 0) > 0 || (chatInfo?.messages?.length ?? 0) > 0) && 
+			!initialScrollDoneRef.current
+		) {
 			const timer = setTimeout(() => {
 				scrollToBottom();
 				initialScrollDoneRef.current = true;
 			}, 50);
 			return () => clearTimeout(timer);
 		}
-	}, [containerHeight, dialogInfo.messages.length, scrollToBottom]);
+	}, [
+		containerHeight, 
+		dialogInfo?.messages?.length, 
+		chatInfo?.messages?.length,
+		scrollToBottom
+	]);
 
 	useEffect(() => {
 		return () => clearRestoreTopTimers();
@@ -288,7 +329,14 @@ const DialogsMessages = ({
 			{ containerHeight > 0 && (
 				<VirtualizedList
 					ref={ listRef }
-					items={ dialogInfo.messages }
+					items={ 
+						dialogInfo 
+							? dialogInfo.messages 
+							: chatInfo
+								? chatInfo.messages
+								: []
+						
+					}
 					height={ containerHeight }
 					renderItem={ renderMessage }
 					getKey={ (msg) => msg.id }

@@ -3,6 +3,7 @@ import { readMessages } from "../../../../../models/dialogs/dialogs-api";
 import type { IDialog, IMessage } from "../../../../../models/dialogs/dialogs-interface";
 import type { IUser } from "../../../../../models/user/user-interface";
 import type { IFile } from "../../../../../interfaces/files";
+import type { IChat } from "../../../../../models/chats/chats-interface";
 import DialogHeader from "./components/header/header";
 import DialogFooter from "./components/footer/footer";
 import DialogsMessages from "./components/messages-list/messages-list";
@@ -10,6 +11,7 @@ import "./dialog.scss";
 
 interface IDialogProps {
     dialogInfo: IDialog | null,
+	chatInfo: IChat | null,
     user: Partial<IUser>,
 	currentReplyMessage: IMessage | null,
     isMobile: boolean,
@@ -27,6 +29,7 @@ interface IDialogProps {
 
 const Dialog = memo(({ 
 	dialogInfo, 
+	chatInfo,
 	user, 
 	currentReplyMessage,
 	isMobile,
@@ -51,7 +54,7 @@ const Dialog = memo(({
 		}
 	}, [dialogInfo]);
 
-	if (!dialogInfo) {
+	if (!dialogInfo && !chatInfo) {
 		return (
 			<div className="dialog-wrapper-empty">
 				<div className="message">Здесь пока ничего нет...</div>
@@ -61,12 +64,26 @@ const Dialog = memo(({
 	return (
 		<div className={ isMobile ? "dialog-wrapper-mobile" : "dialog-wrapper" }>
 			<DialogHeader 
-				opponent={ dialogInfo.opponent } 
+				name={ 
+					dialogInfo 
+						? `${ dialogInfo.opponent.name } ${ dialogInfo.opponent.surname }`
+						: chatInfo
+							? chatInfo.name
+							: ""
+				}
+				avatar={
+					dialogInfo 
+						? dialogInfo.opponent.avatar
+						: chatInfo
+							? chatInfo.image
+							: ""
+				}
 				handleChangeProfileModalVisibility={ handleChangeProfileModalVisibility }
 			/>
 			<DialogsMessages 
 				user={ user } 
-				dialogInfo={ dialogInfo } 
+				dialogInfo={ dialogInfo }
+				chatInfo={ chatInfo } 
 				currentReplyMessage={ currentReplyMessage }
 				scrollToMessageRequest={ scrollToMessageRequest }
 				handleDeleteMessage={ handleDeleteMessage }
@@ -80,7 +97,8 @@ const Dialog = memo(({
 			<DialogFooter 
 				user={ user } 
 				currentReplyMessage={ currentReplyMessage }
-				dialogInfo={ dialogInfo } 
+				dialogInfo={ dialogInfo }
+				chatInfo={ chatInfo } 
 				handleSendMessage={ handleSendMessage } 
 				handleChooseMessageForReplying={ handleChooseMessageForReplying }
 			/>

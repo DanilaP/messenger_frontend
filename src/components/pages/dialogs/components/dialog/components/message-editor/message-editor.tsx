@@ -6,7 +6,7 @@ import FileList from "../../../../../../partials/file-list/file-list";
 import "./message-editor.scss";
 
 interface IMessageEditorProps {
-    message: IMessage
+    message: IMessage,
     handleChangeMessage: (msg: IMessage, files: UploadFile[]) => void,
     handleCloseModal: () => void
 }

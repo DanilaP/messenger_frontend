@@ -8,7 +8,7 @@ import { getChatInfoById, getChatsList } from "../../../models/chats/chats-api";
 import type { IDialog, IGetDialogResponse, IMessage } from "../../../models/dialogs/dialogs-interface";
 import type { RootState } from "../../../stores/root/root";
 import type { IFile } from "../../../interfaces/files";
-import type { IChat } from "../../../models/chats/chats-interface";
+import type { IChat, IChatMessage, IGetChatResponse } from "../../../models/chats/chats-interface";
 import DialogsList from "./components/dialogs-list/dialogs-list";
 import Dialog from "./components/dialog/dialog";
 import Loader from "../../partials/loader/loader";
@@ -46,11 +46,17 @@ const Dialogs = () => {
 	const scrollRequestTokenRef = useRef(0);
 	const navigate = useNavigate();
 
-	const handleSendMessage = (message: IMessage) => {
+	const handleSendMessage = (message: IMessage | IChatMessage) => {
 		if (dialogInfo) {
 			setDialogInfo({
 				...dialogInfo,
 				messages: [...dialogInfo.messages, message]
+			});
+		}
+		else if (chatInfo) {
+			setChatInfo({
+				...chatInfo,
+				messages: [...chatInfo.messages, message]
 			});
 		}
 		handleUpdateLastMessageBeforeSending(message);
@@ -69,6 +75,19 @@ const Dialogs = () => {
 			};
 			setDialogInfo(updatedDialogInfo);
 			handleUpdateLastMessageBeforeDeleting(updatedDialogInfo);
+		}
+		else if (chatInfo) {
+			const updatedChatInfo = {
+				...chatInfo,
+				messages: chatInfo.messages.filter(message => {
+					if (messagesIds.find(id => message.id === id)) {
+						return false;
+					}
+					return true;
+				})
+			};
+			setChatInfo(updatedChatInfo);
+			handleUpdateLastMessageBeforeDeleting(updatedChatInfo);
 		}
 	};
 
@@ -90,6 +109,23 @@ const Dialogs = () => {
 			setDialogInfo(updatedDialogInfo);
 			handleUpdateLastMessageBeforeChanging(message, updatedDialogInfo);
 		}
+		else if (chatInfo) {
+			const updatedChatInfo = {
+				...chatInfo,
+				messages: chatInfo.messages.map(msg => {
+					if (msg.id === message.id) {
+						return {
+							...msg,
+							text: message.text,
+							files: files
+						};
+					}
+					return msg;
+				})
+			};
+			setChatInfo(updatedChatInfo);
+			handleUpdateLastMessageBeforeChanging(message, updatedChatInfo);
+		}
 	};
 	
 	const handleChooseMessageForReplying = (message: IMessage | null) => {
@@ -97,13 +133,24 @@ const Dialogs = () => {
 	};
 
 	const handleScrollToMessage = (messages: IMessage[], targetMessageId: number) => {
-		setDialogInfo(prev => {
-			if (!prev) return prev;
-			return {
-				...prev,
-				messages
-			};
-		});
+		if (dialogInfo) {
+			setDialogInfo(prev => {
+				if (!prev) return prev;
+				return {
+					...prev,
+					messages
+				};
+			});
+		}
+		else if (chatInfo) {
+			setChatInfo(prev => {
+				if (!prev) return prev;
+				return {
+					...prev,
+					messages
+				};
+			});
+		}
 		scrollRequestTokenRef.current += 1;
 		setScrollToMessageRequest({
 			messageId: targetMessageId,
@@ -115,7 +162,7 @@ const Dialogs = () => {
 		setScrollToMessageRequest(null);
 	};
 
-	const handleUpdateLastMessageBeforeChanging = (message: IMessage, updatedDialogInfo: IDialog) => {
+	const handleUpdateLastMessageBeforeChanging = (message: IMessage, updatedDialogInfo: IDialog | IChat) => {
 		const lastDialogMessage = updatedDialogInfo.messages[updatedDialogInfo.messages.length - 1];
 		setDialogsList(prev => {
 			const updatedList = prev.map(dialogListItem => {
@@ -141,27 +188,29 @@ const Dialogs = () => {
 	};
 
 	const handleUpdateLastMessageBeforeSending = (message: IMessage) => {
-		setDialogsList(prev => {
-			const updatedList = prev.map(dialogListItem => {
-				if (dialogListItem.id === dialogInfo?.id) {
-					return {
-						...dialogListItem,
-						lastMessage: dialogListItem.lastMessage 
-							? {
-								id: dialogListItem.lastMessage.id,
-								text: message.text !== "" ? message.text : "Файл",
-								date: message.date
-							} 
-							: null
-					};
-				}
-				return dialogListItem;
+		if (dialogInfo || chatInfo) {
+			setDialogsList(prev => {
+				const updatedList = prev.map(dialogListItem => {
+					if (dialogListItem.id === dialogInfo?.id || dialogListItem.id === chatInfo?.id) {
+						return {
+							...dialogListItem,
+							lastMessage: dialogListItem.lastMessage 
+								? {
+									id: dialogListItem.lastMessage.id,
+									text: message.text !== "" ? message.text : "Файл",
+									date: message.date
+								} 
+								: null
+						};
+					}
+					return dialogListItem;
+				});
+				return handleSortDialogsListByLastMessageDate(updatedList);
 			});
-			return handleSortDialogsListByLastMessageDate(updatedList);
-		});
+		}
 	};
 
-	const handleUpdateLastMessageBeforeDeleting = (dialogInfo: IDialog) => {
+	const handleUpdateLastMessageBeforeDeleting = (dialogInfo: IDialog | IChat) => {
 		const lastMessage = dialogInfo.messages.sort()[dialogInfo.messages.length - 1] || null;
 		setDialogsList(prev => {
 			const updatedList = prev.map(dialogListItem => {
@@ -198,44 +247,76 @@ const Dialogs = () => {
 	};
 
 	const handleGetNextMessages = async (mode: "prev" | "next") => {
-		if (!dialogInfo) return;
+		if (!dialogInfo && !chatInfo) return;
 		let currentMessage = null;
 		if (mode === "prev") {
-			currentMessage = dialogInfo.messages[0];
+			currentMessage = dialogInfo?.messages[0] || chatInfo?.messages[0];
 		}
 		else if (mode === "next") {
-			currentMessage = dialogInfo.messages[dialogInfo.messages.length - 1];
+			currentMessage = 
+				dialogInfo?.messages[dialogInfo?.messages.length - 1] || chatInfo?.messages[chatInfo?.messages.length - 1];
 		}
-		const dialogRes: IGetDialogResponse = await getDialogInfo(Number(id), currentMessage?.id, mode);
-		if (dialogRes.data.dialog.messages.length !== 0) {
-			if (isDialogListUpdatingAllowed) {
-				setDialogInfo(prev => {
-					if (!prev) return prev;
-					return {
-						...prev,
-						messages: 
-							mode === "prev" 
-								? [...dialogRes.data.dialog.messages, ...prev.messages]
-								: [...prev.messages, ...dialogRes.data.dialog.messages]
-					};
-				});
+		if (dialogInfo) {
+			const dialogRes: IGetDialogResponse = await getDialogInfo(Number(id), currentMessage?.id, mode);
+			if (dialogRes.data.dialog.messages.length !== 0) {
+				if (isDialogListUpdatingAllowed) {
+					setDialogInfo(prev => {
+						if (!prev) return prev;
+						return {
+							...prev,
+							messages: 
+								mode === "prev" 
+									? [...dialogRes.data.dialog.messages, ...prev.messages]
+									: [...prev.messages, ...dialogRes.data.dialog.messages]
+						};
+					});
+				}
+			}
+		}
+		else if (chatInfo) {
+			const chatRes: IGetChatResponse = await getChatInfoById(Number(id), mode, currentMessage?.id);
+			if (chatRes.data.chat.messages.length !== 0) {
+				if (isDialogListUpdatingAllowed) {
+					setChatInfo(prev => {
+						if (!prev) return prev;
+						return {
+							...prev,
+							messages: 
+								mode === "prev" 
+									? [...chatRes.data.chat.messages, ...prev.messages]
+									: [...prev.messages, ...chatRes.data.chat.messages]
+						};
+					});
+				}
 			}
 		}
 	};
 
 	const handleFetchDataBeforeScrollToBottom = useCallback(async () => {
 		setIsDialogListUpdatingAllowed(false);
-		const dialogRes: IGetDialogResponse = await getDialogInfo(Number(id));
-		if (dialogRes.data.dialog.messages.length !== 0) {
-			if (dialogInfo) {
-				setDialogInfo({
-					...dialogInfo,
-					messages: dialogRes.data.dialog.messages
+		if (dialogInfo) {
+			const dialogRes: IGetDialogResponse = await getDialogInfo(Number(id));
+			if (dialogRes.data.dialog.messages.length !== 0) {
+				if (dialogInfo) {
+					setDialogInfo({
+						...dialogInfo,
+						messages: dialogRes.data.dialog.messages
+					});
+					setIsDialogListUpdatingAllowed(true);
+				}
+			}
+		}
+		else if (chatInfo) {
+			const chatRes: IGetChatResponse = await getChatInfoById(Number(id));
+			if (chatRes.data.chat.messages.length !== 0) {
+				setChatInfo({
+					...chatInfo,
+					messages: chatRes.data.chat.messages
 				});
 				setIsDialogListUpdatingAllowed(true);
 			}
 		}
-	}, [dialogInfo, id]);
+	}, [dialogInfo, id, chatInfo]);
 
 	const handleChangeDialog = (dialogId: number, type: "chat" | "dialog") => {
 		if (type === "chat") {
@@ -297,10 +378,12 @@ const Dialogs = () => {
 								messages: dialogRes.data.dialog.messages,
 								opponent: dialogRes.data.dialog.opponent,
 							});
+							setChatInfo(null);
 						}
 						else if (currentType.current === "chat") {
 							const chatRes = await getChatInfoById(Number(id));
-							setChatInfo(chatRes.data);
+							setChatInfo(chatRes.data.chat);
+							setDialogInfo(null);
 						}
 					}
 				}
@@ -324,7 +407,7 @@ const Dialogs = () => {
 
 		return () => window.removeEventListener("resize", handleResize);
 	}, []);
-
+	
 	if (!isLoading) {
 		return (
 			<Loader />
@@ -348,6 +431,7 @@ const Dialogs = () => {
 						?
 						<Dialog 
 							user={ user } 
+							chatInfo={ chatInfo }
 							dialogInfo={ dialogInfo } 
 							currentReplyMessage={ currentReplyMessage }
 							isMobile={ isMobile }

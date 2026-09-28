@@ -25,7 +25,7 @@ export interface IChatMessage {
     date: string,
     isRead: boolean,
     sender: IChatMessageSender,
-    repliedMessage: IRepliedMessage,
+    repliedMessage: IRepliedMessage | null,
     files: IFile[]
 }
 
@@ -42,9 +42,46 @@ export interface IChatMessageSender {
     avatar: string
 }
 
+export interface IGetChatResponse {
+    data: {
+        message: string,
+        chat: {
+            id: number,
+            name: string,
+            image: string,
+            messages: IChatMessage[]
+        }
+    }
+}
+
 export interface IGetChatsListResponse {
     data: {
         message: string,
         chats: IBasicChatInfo[]
+    }
+}
+
+export interface ISendChatMessageResponse {
+    data: {
+        message: string,
+        createdMessage: IChatMessage
+    }
+}
+
+export interface IChangeChatMessageResponse {
+    data: {
+        message: string,
+        modifiedMessageInfo: {
+            id: string,
+            text: string,
+            files: IFile[]
+        }
+    }
+}
+
+export interface IScrollToChatMessageResponse {
+    data: {
+        message: string,
+        messages: IChatMessage[]
     }
 }

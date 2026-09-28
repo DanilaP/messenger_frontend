@@ -12,7 +12,7 @@ export const getChatsList = async (): Promise<IGetChatsListResponse> => {
 };
 
 export const getChatInfoById = async (chatId: number, mode?: "prev" | "next", messageId?: number) => {
-	const response = $api.get(`/chats?id=${chatId}${messageId ? `&targetMessageId=${messageId}` : ``}${mode ? `&mode=${mode}` : ``}`);
+	const response = $api.get(`/chats?chatId=${chatId}${messageId ? `&targetMessageId=${messageId}` : ``}${mode ? `&mode=${mode}` : ``}`);
 	return response;
 };
 
@@ -68,5 +68,10 @@ export const changeChatMessage = async (formData: FormData) => {
 
 export const readChatMessage = async (chatId: number) => {
 	const response = $api.post("/chats/message/read", chatId);
+	return response;
+};
+
+export const scrollToChatMessage = async (chatId: number, messageId: number) => {
+	const response = $api.post("/chats/message/scroll", { chatId, messageId });
 	return response;
 };

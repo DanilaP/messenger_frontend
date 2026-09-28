@@ -3,16 +3,17 @@ import { memo } from "react";
 import { RxDotsVertical } from "react-icons/rx";
 import { Dropdown, type MenuProps } from "antd";
 import { MdAttachFile, MdDelete  } from "react-icons/md";
-import type { IOpponent } from "../../../../../../../models/dialogs/dialogs-interface";
 import "./header.scss";
 
 interface IDialogHeaderProps {
-    opponent: IOpponent,
+	name: string,
+	avatar: string,
 	handleChangeProfileModalVisibility: () => void,
 }
 
 const DialogHeader = memo(({
-	opponent,
+	name,
+	avatar,
 	handleChangeProfileModalVisibility
 }: IDialogHeaderProps) => {
 
@@ -43,9 +44,9 @@ const DialogHeader = memo(({
 	return (
 		<div className='dialog-header'>
 			<div onClick={ handleChangeProfileModalVisibility } className="dialog-image-wrapper">
-				<img src={ `${import.meta.env.VITE_APP_SERVER_API}${opponent.avatar}` } className='dialog-image'/>
+				<img src={ `${import.meta.env.VITE_APP_SERVER_API}${avatar}` } className='dialog-image'/>
 			</div>
-			<div className="dialog-name">{ opponent.name } { opponent.surname }</div>
+			<div className="dialog-name">{ name }</div>
 			<div className="dialog-settings">
 				<IoSearchOutline className="icon" />
 				<Dropdown menu={ { items, onClick: handleMenuClick } } trigger={ ["click"] }>

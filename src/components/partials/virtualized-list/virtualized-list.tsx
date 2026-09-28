@@ -30,6 +30,7 @@ function VirtualizedListInner<T>(
 	const [scrollTop, setScrollTop] = useState(0);
 	const [heightsByKey, setHeightsByKey] = useState<Record<string, number>>({});
 	const itemRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+	
 	const itemKeys = useMemo(
 		() => items.map((item, index) => String(getKey ? getKey(item, index) : `${DEFAULT_KEY_PREFIX}${index}`)),
 		[items, getKey]

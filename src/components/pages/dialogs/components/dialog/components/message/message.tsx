@@ -11,15 +11,18 @@ import { IoCheckmarkDoneOutline } from "react-icons/io5";
 import type { IDialog, IEditMessageResponse, IMessage, IOpponent, IScrollToMessageResponse } from "../../../../../../../models/dialogs/dialogs-interface";
 import type { IFile } from "../../../../../../../interfaces/files";
 import type { IUser } from "../../../../../../../models/user/user-interface";
+import type { IChangeChatMessageResponse, IChat, IScrollToChatMessageResponse } from "../../../../../../../models/chats/chats-interface";
 import FileList from "../../../../../../partials/file-list/file-list";
 import MessageEditor from "../message-editor/message-editor";
 import "./message.scss";
+import { changeChatMessage, deleteChatMessage, scrollToChatMessage } from "../../../../../../../models/chats/chats-api";
 
 interface IMessageProps {
     senderInfo: Partial<IUser> | IOpponent,
     message: IMessage,
     user: Partial<IUser>,
-    dialogInfo: IDialog,
+    dialogInfo: IDialog | null,
+	chatInfo: IChat | null,
     isSelected: boolean,
     handleDeleteMessage: (messagesIds: number[]) => void,
     handleChangeMessage: (message: IMessage, files: IFile[]) => void,
@@ -33,6 +36,7 @@ const DialogMessage = memo(({
 	message, 
 	user, 
 	dialogInfo, 
+	chatInfo,
 	isSelected,
 	handleDeleteMessage,
 	handleChangeMessage,
@@ -87,13 +91,25 @@ const DialogMessage = memo(({
 	};
 
 	const deleteMessageFromDialog = async () => {
-		await deleteMessage(dialogInfo.id, [message.id])
+		if (dialogInfo) {
+			await deleteMessage(dialogInfo.id, [message.id])
 			.then(() => {
 				handleDeleteMessage([message.id]);
 			})
 			.catch((error: unknown) => {
 				console.error(error);
 			});
+		}
+		else if (chatInfo) {
+			await deleteChatMessage(chatInfo.id, [message.id])
+			.then(() => {
+				handleDeleteMessage([message.id]);
+			})
+			.catch((error: unknown) => {
+				console.error(error);
+			});
+		}
+		
 	};
 
 	const handleChangeModifyMessageModalVisibility = () => {
@@ -102,7 +118,12 @@ const DialogMessage = memo(({
 
 	const changeMessage = async (modifiedMessage: IMessage, files: UploadFile[]) => {
 		const formData = new FormData();
-		formData.append("dialogId", dialogInfo.id.toString());
+		if (dialogInfo) {
+			formData.append("dialogId", dialogInfo.id.toString());
+		}
+		else if (chatInfo) {
+			formData.append("chatId", chatInfo.id.toString());
+		}
 		formData.append("messageId", modifiedMessage.id.toString());
 		formData.append("text", modifiedMessage.text);
 
@@ -112,7 +133,8 @@ const DialogMessage = memo(({
 			}
 		});
 
-		await editMessage(formData)
+		if (dialogInfo) {
+			await editMessage(formData)
 			.then((res: IEditMessageResponse) => {
 				const updatedFiles = files.length > 0 ? res.data.modifiedMessageInfo.files : modifiedMessage.files;
 				handleChangeMessage(modifiedMessage, updatedFiles);
@@ -120,6 +142,18 @@ const DialogMessage = memo(({
 			.catch((error: unknown) => {
 				console.error(error);
 			});
+		}
+		else if (chatInfo) {
+			await changeChatMessage(formData)
+			.then((res: IChangeChatMessageResponse) => {
+				const updatedFiles = files.length > 0 ? res.data.modifiedMessageInfo.files : modifiedMessage.files;
+				handleChangeMessage(modifiedMessage, updatedFiles);
+			})
+			.catch((error: unknown) => {
+				console.error(error);
+			});
+		}
+		
 	};
 
 	const handleCopyMessageText = async () => {
@@ -145,13 +179,24 @@ const DialogMessage = memo(({
 
 	const handleReplyingMessageClick = () => {
 		if (message.repliedMessage) {
-			scrollToMessage(dialogInfo.id, message.repliedMessage?.id)
+			if (dialogInfo) {
+				scrollToMessage(dialogInfo.id, message.repliedMessage?.id)
 				.then((res: IScrollToMessageResponse) => {
 					handleScrollToMessage(res.data.messages, message.repliedMessage!.id);
 				})
 				.catch((error) => {
 					console.error(error);
 				});
+			}
+			else if (chatInfo) {
+				scrollToChatMessage(chatInfo.id, message.repliedMessage?.id)
+				.then((res: IScrollToChatMessageResponse) => {
+					handleScrollToMessage(res.data.messages, message.repliedMessage!.id);
+				})
+				.catch((error) => {
+					console.error(error);
+				});
+			}
 		}
 	};
 
@@ -181,9 +226,7 @@ const DialogMessage = memo(({
 								<div onClick={ handleReplyingMessageClick } className="replied-message">
 									<div className="sender-info">
 										{
-											message.repliedMessage.sender.id == user.id
-												? `${ user.name } ${ user.surname }`
-												: `${ dialogInfo.opponent.name } ${ dialogInfo.opponent.surname }`
+											`${ message.sender.name } ${ message.sender.surname }`
 										}
 									</div>
 									<div className="text">{ message.repliedMessage.text }</div>
