@@ -97,7 +97,7 @@ const DialogFooter = memo(({
 							<div className="message-info">
 								<div className="sender-info">
 									{
-										currentReplyMessage.senderId === user.id
+										currentReplyMessage.sender.id == user.id
 											? `${ user.name } ${ user.lastname }`
 											: `${ dialogInfo.opponent.name } ${ dialogInfo.opponent.surname }`
 									}
@@ -127,7 +127,6 @@ const DialogFooter = memo(({
 				{
 					<EmojiPicker handleChangeValue={ handleAddEmojiToMessageText } />
 				}
-				<Button className="send-message-button" onClick={ handleSendButtonClick } type='primary'>Отправить</Button>
 			</div>
 		</div>
 	);

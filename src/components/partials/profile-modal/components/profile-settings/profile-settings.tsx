@@ -40,16 +40,19 @@ const ProfileSettings = ({
 					defaultValue={ userInfo.surname } 
 				/>
 			</div>
-			<div className="profile-setting-item">
-				<label className="input-name">О себе: </label>
-				<TextArea 
-					disabled={ !isModificationEnabled } 
-					onChange={ (e) => handleFieldChange("status", e.target.value) } 
-					style={ { resize: "none" } } 
-					defaultValue={ userInfo.status } 
-					maxLength={ 110 }
-				/>
-			</div>
+			{	
+				userInfo.status &&
+					<div className="profile-setting-item">
+						<label className="input-name">О себе: </label>
+						<TextArea 
+							disabled={ !isModificationEnabled } 
+							onChange={ (e) => handleFieldChange("status", e.target.value) } 
+							style={ { resize: "none" } } 
+							defaultValue={ userInfo.status } 
+							maxLength={ 110 }
+						/>
+					</div>
+			}
 		</div>
 	);
 };

@@ -2,21 +2,27 @@
     width: 75vw;
     display: flex;
     flex-direction: column;
-    padding: 10px;
+    align-items: center;
+    padding-bottom: 8px;
     gap: 10px;
-    box-sizing: border-box;
-    border-top: 1px solid var(--border-color);
-    background-color: var(--bg-color);
     position: absolute;
     bottom: 0;
     z-index: 5;
 
     & .message-editor-footer-wrapper {
         display: flex;
+        width: 70%;
         gap: 10px;
+        border-radius: 20px;
+
+        & .ant-input {
+            height: 40px;
+        }
     }
 
     & .replied-message-footer-wrapper {
+        width: 70%;
+
         & .replied-message-footer-info {
             width: 100%;
             display: flex;
@@ -71,6 +77,6 @@
 
 @media screen and (max-width: 1100px) {
     .dialog-footer {
-        width: 100vw;
+        width: 100%;
     }
 }
