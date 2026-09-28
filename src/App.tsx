@@ -59,9 +59,13 @@ function App() {
 
 		socket.onmessage = function(event) {
 			const parsedData = JSON.parse(event.data);
+			console.log(parsedData);
 			rootStore.dispatch({ type: "WS_MESSAGE", payload: event.data });
 			//Отображаем уведомление о пришедшем сообщении
-			if (locationPathRef.current !== `/main/dialogs/${parsedData.dialogId}`) {
+			if (
+				locationPathRef.current !== `/main/dialogs/${parsedData.dialogId}` && 
+				locationPathRef.current !== `/main/chats/${parsedData.chatId}`
+			) {
 				messageApi.open({
 					type: "info",
 					content: <SocketMessageWrapper data={ parsedData } />,

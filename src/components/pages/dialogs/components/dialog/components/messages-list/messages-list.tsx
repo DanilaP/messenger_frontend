@@ -137,7 +137,7 @@ const DialogsMessages = ({
 		}
 
 		const atTop = scrollTop === 0;
-		if (atTop && !isLoadingMoreRef.current && (dialogInfo!.messages.length > 0 || chatInfo!.messages.length > 0)) {
+		if (atTop && !isLoadingMoreRef.current && ((dialogInfo?.messages?.length ?? 0) > 0 || (chatInfo?.messages?.length ?? 0) > 0)) {
 			clearRestoreTopTimers();
 			isProcessingRef.current = true;
 			const oldScrollHeight = target.scrollHeight;
@@ -164,7 +164,7 @@ const DialogsMessages = ({
 				isProcessingRef.current = false;
 			});
 		}
-		else if (atBottom && !isLoadingMoreRef.current && (dialogInfo!.messages.length > 0 || chatInfo!.messages.length > 0)) {
+		else if (atBottom && !isLoadingMoreRef.current && ((dialogInfo?.messages?.length ?? 0) > 0 || (chatInfo?.messages?.length ?? 0) > 0)) {
 			if (bottomLoadLockRef.current) return;
 			bottomLoadLockRef.current = true;
 			isProcessingRef.current = true;
