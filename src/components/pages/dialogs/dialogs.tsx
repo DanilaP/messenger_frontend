@@ -325,6 +325,8 @@ const Dialogs = () => {
 		else if (type === "dialog") {
 			navigate(`/main/dialogs/${dialogId}`);
 		}
+		setChatInfo(null);
+		setDialogInfo(null);
 	};
 	const handleChangeProfileModalVisibility = () => {
 		setUserProfileModalInfo({
@@ -390,6 +392,7 @@ const Dialogs = () => {
 			} 
 			catch {
 				setDialogInfo(null);
+				setChatInfo(null);
 			} 
 			finally {
 				setIsLoading(true);
