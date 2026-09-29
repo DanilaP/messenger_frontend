@@ -6,12 +6,14 @@ import { MdAttachFile, MdDelete  } from "react-icons/md";
 import "./header.scss";
 
 interface IDialogHeaderProps {
+	headerType: "chat" | "dialog",
 	name: string,
 	avatar: string,
 	handleChangeProfileModalVisibility: () => void,
 }
 
 const DialogHeader = memo(({
+	headerType,
 	name,
 	avatar,
 	handleChangeProfileModalVisibility
@@ -41,9 +43,15 @@ const DialogHeader = memo(({
 		}
 	};
 
+	const handleAvatarClick = () => {
+		if (headerType === "dialog") {
+			handleChangeProfileModalVisibility();
+		}
+	}
+
 	return (
 		<div className='dialog-header'>
-			<div onClick={ handleChangeProfileModalVisibility } className="dialog-image-wrapper">
+			<div onClick={ handleAvatarClick } className="dialog-image-wrapper">
 				<img src={ `${import.meta.env.VITE_APP_SERVER_API}${avatar}` } className='dialog-image'/>
 			</div>
 			<div className="dialog-name">{ name }</div>

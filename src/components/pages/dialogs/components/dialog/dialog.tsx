@@ -64,6 +64,7 @@ const Dialog = memo(({
 	return (
 		<div className={ isMobile ? "dialog-wrapper-mobile" : "dialog-wrapper" }>
 			<DialogHeader 
+				headerType={ dialogInfo ? "dialog" : "chat" }
 				name={ 
 					dialogInfo 
 						? `${ dialogInfo.opponent.name } ${ dialogInfo.opponent.surname }`
