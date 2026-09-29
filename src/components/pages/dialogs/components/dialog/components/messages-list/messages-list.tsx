@@ -218,10 +218,10 @@ const DialogsMessages = ({
 		handleScrollToMessage
 	]);
 
+	
 	useEffect(() => {
 		if (!scrollToMessageRequest || (dialogInfo?.messages.length === 0 || chatInfo?.messages.length === 0)) return;
 		let cancelled = false;
-		let attempts = 0;
 		activeScrollRequestTokenRef.current = scrollToMessageRequest.token;
 		isProcessingRef.current = true;
 		clearRestoreTopTimers();
@@ -230,8 +230,8 @@ const DialogsMessages = ({
 			if (cancelled) return;
 			if (activeScrollRequestTokenRef.current !== scrollToMessageRequest.token) return;
 			const isScrolled = listRef.current?.scrollToItemByKey(scrollToMessageRequest.messageId, "start") ?? false;
-			attempts += 1;
-			if (isScrolled || attempts >= 8) {
+
+			if (isScrolled) {
 				activeScrollRequestTokenRef.current = null;
 				isProcessingRef.current = false;
 				handleScrollToMessageHandled();
@@ -256,7 +256,7 @@ const DialogsMessages = ({
 		handleScrollToMessageHandled, 
 		clearRestoreTopTimers
 	]);
-
+	
 	// Автоскролл при добавлении новых сообщений в конец
 	useEffect(() => {
 		const currentLength = dialogInfo?.messages.length || chatInfo?.messages.length;
