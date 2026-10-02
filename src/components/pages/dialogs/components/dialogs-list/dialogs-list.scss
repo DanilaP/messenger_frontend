@@ -9,6 +9,16 @@
     padding-top: 15px;
 }
 
+@mixin add-dialog-icon-styles {
+    position: absolute;
+    color: white;
+
+    &:hover {
+        cursor: pointer;
+        color: var(--default-color);
+    }
+}
+
 .dialogs-list-search {
     position: relative;
     
@@ -24,10 +34,24 @@
 
 .dialogs-list-wrapper {
     @include dialogs-list-base;
+    position: relative;
+
+    & .add-dialog-icon {
+        @include add-dialog-icon-styles;
+        bottom: 50px;
+        right: 20px;
+    }
 }
 
 .dialogs-list-wrapper-mobile {
     @include dialogs-list-base;
     width: 100vw;
     height: 100vh;
+    position: relative;
+    
+    & .add-dialog-icon {
+        @include add-dialog-icon-styles;
+        bottom: 90px;
+        right: 20px;
+    }
 }

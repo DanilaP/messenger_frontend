@@ -328,12 +328,23 @@ const Dialogs = () => {
 		setChatInfo(null);
 		setDialogInfo(null);
 	};
+
 	const handleChangeProfileModalVisibility = () => {
 		setUserProfileModalInfo({
 			...userProfileModalInfo,
 			open: !userProfileModalInfo.open
 		});
 	};
+
+	const handleAddNewChat = (chat: Partial<IChatsAndDialogsList>) => {
+		setDialogsList([...dialogsList, {
+			id: chat.id || 0,
+			type: "chat",
+			name: chat.name || "",
+			image: chat.image || "",
+			lastMessage: null
+		}]);
+	}
 
 	useEffect(() => {
 
@@ -425,6 +436,7 @@ const Dialogs = () => {
 						dialogsList={ dialogsList } 
 						isMobile={ isMobile }
 						handleChangeDialog={ handleChangeDialog }
+						handleAddNewChat={ handleAddNewChat }
 					/>
 					: null
 			}

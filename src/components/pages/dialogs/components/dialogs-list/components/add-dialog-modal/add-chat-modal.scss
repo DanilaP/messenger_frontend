@@ -1,0 +1,11 @@
+.add-chat-wrapper {
+    & .ant-form {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        
+        & .ant-form-item {
+            margin-bottom: 5px;
+        }
+    }
+}
