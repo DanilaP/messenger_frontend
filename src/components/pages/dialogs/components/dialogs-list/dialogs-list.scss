@@ -7,6 +7,20 @@
     background-color: var(--default-color-second);
     overflow-y: auto;
     padding-top: 15px;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: transparent;
+        border-radius: 8px;
+    }
 }
 
 @mixin add-dialog-icon-styles {
