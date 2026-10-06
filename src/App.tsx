@@ -64,7 +64,8 @@ function App() {
 			//Отображаем уведомление о пришедшем сообщении
 			if (
 				locationPathRef.current !== `/main/dialogs/${parsedData.dialogId}` && 
-				locationPathRef.current !== `/main/chats/${parsedData.chatId}`
+				locationPathRef.current !== `/main/chats/${parsedData.chatId}` &&
+				parsedData.type !== "connected_clients"
 			) {
 				messageApi.open({
 					type: "info",

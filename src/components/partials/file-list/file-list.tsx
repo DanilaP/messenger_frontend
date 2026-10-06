@@ -29,7 +29,7 @@ const FileList = ({ files }: IFileListProps) => {
 			return <FaFilePdf color='red' />;
 		}
 		if (fileType.includes("image") || fileType.includes("application/octet-stream")) {
-			return <img className='file-list-image' src = { url } />;
+			return <div style={{ backgroundImage: `url(${ url })` }} className='file-list-image'></div>;
 		}
 	};
 
