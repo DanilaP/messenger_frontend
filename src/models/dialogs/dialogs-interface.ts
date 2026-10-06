@@ -7,6 +7,12 @@ export interface IOpponent {
     avatar: string
 }
 
+export interface IRepliedMessage {
+    id: number,
+    text: string,
+    sender: IOpponent
+}
+
 export interface IDialogListItem {
     id: number,
     type: "dialog",

@@ -1,7 +1,28 @@
+import type { IFile } from "../../interfaces/files";
+import type { IChatMessageSender, IRepliedMessage } from "../../models/chats/chats-interface";
+
+export interface WSMessage {
+	dialogId: number | null,
+	chatId: number | null,
+	type: string,
+	deletedMessagesIds?: string,
+	message?: IWebSocketChatAndDialogMessage
+}
+
+export interface IWebSocketChatAndDialogMessage {
+	id: number,
+	text: string,
+	files: IFile[],
+	repliedMessage?: IRepliedMessage,
+	date?: string,
+	isRead?: boolean,
+	sender: IChatMessageSender
+}
+
 export interface WebSocketState {
     connection: WebSocket | null;
     isConnected: boolean;
-    lastMessage: any;
+    lastMessage: WSMessage | null;
 }
 
 const initialState: WebSocketState = {
