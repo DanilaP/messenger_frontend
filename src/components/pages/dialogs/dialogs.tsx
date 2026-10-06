@@ -191,7 +191,7 @@ const Dialogs = () => {
 		if (dialogInfo || chatInfo) {
 			setDialogsList(prev => {
 				const updatedList = prev.map(dialogListItem => {
-					if (dialogListItem.id == dialogInfo?.id || dialogListItem.id == chatInfo?.id) {
+					if (dialogListItem.id === dialogInfo?.id || dialogListItem.id === chatInfo?.id) {
 						return {
 							...dialogListItem,
 							lastMessage: dialogListItem.lastMessage 

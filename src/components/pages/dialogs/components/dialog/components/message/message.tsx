@@ -59,7 +59,7 @@ const DialogMessage = memo(({
 			key: "4",
 			icon: <IoMdShareAlt />,
 		},
-		...(senderInfo.id == user.id ? [
+		...(senderInfo.id === user.id ? [
 			{
 				label: "Редактировать",
 				key: "1",
@@ -201,7 +201,7 @@ const DialogMessage = memo(({
 	};
 
 	const handleMessageWrapperClick = (e: React.MouseEvent<HTMLDivElement>) => {
-		if (message.sender.id == user.id) {
+		if (message.sender.id === user.id) {
 			e.stopPropagation();
 			handleChooseMessage(message);
 		}
@@ -217,7 +217,7 @@ const DialogMessage = memo(({
 			<div 
 				id={message.id.toString()}
 				onClick={ handleMessageWrapperClick } 
-				className={ `message-wrapper ${ senderInfo.id == user.id ? `user-message` : `opponent-message` } ${ isSelected ? `selected-wrapper` : "" }` }
+				className={ `message-wrapper ${ senderInfo.id === user.id ? `user-message` : `opponent-message` } ${ isSelected ? `selected-wrapper` : "" }` }
 			>
 				<Dropdown menu={ { items, onClick: handleMenuClick } } trigger={ ["contextMenu"] }>
 					<div onClick={ handleMessageClick } className="message">
@@ -232,7 +232,7 @@ const DialogMessage = memo(({
 									<div className="text">{ message.repliedMessage.text }</div>
 								</div>
 						}
-						<div className={ `text-content ${ senderInfo.id == user.id ? `user-message` : `opponent-message` }` }>
+						<div className={ `text-content ${ senderInfo.id === user.id ? `user-message` : `opponent-message` }` }>
 							<div className="avatar">
 								<img className='image' src = { `${import.meta.env.VITE_APP_SERVER_API}${senderInfo.avatar}` } />
 							</div>
@@ -241,7 +241,7 @@ const DialogMessage = memo(({
 						<FileList files={ message.files } />
 						<div className="date">{ message.date }</div>
 						{ 
-							senderInfo.id == user.id &&
+							senderInfo.id === user.id &&
                                 <div className="read-status">
                                 	<IoCheckmarkDoneOutline color={ `${ message.isRead ? `var(--default-color)` : `` }` } />
                                 </div>
@@ -249,7 +249,7 @@ const DialogMessage = memo(({
 					</div>
 				</Dropdown>
 				{
-					senderInfo.id == user.id &&
+					senderInfo.id === user.id &&
                         <div className={ `select-button ${ isSelected ? `selected` : "" } ` }>
                         	<CiCircleCheck />
                         </div>
