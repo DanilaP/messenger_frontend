@@ -42,6 +42,13 @@ export interface IChatMessageSender {
     avatar: string
 }
 
+export interface IGetChatsListResponse {
+    data: {
+        message: string,
+        chats: IBasicChatInfo[]
+    }
+}
+
 export interface IGetChatResponse {
     data: {
         message: string,
@@ -54,10 +61,58 @@ export interface IGetChatResponse {
     }
 }
 
-export interface IGetChatsListResponse {
+export interface ICreateChatResponse {
     data: {
         message: string,
-        chats: IBasicChatInfo[]
+        chatInfo: {
+            id: number,
+            name: string,
+            image: string,
+            description: string,
+            dateOfCreation: string
+        }
+    }
+}
+
+export interface IChangeChatInfoResponse {
+    data: {
+        message: string,
+    }
+}
+
+export interface IChangeChatAvatarResponse {
+    data: {
+        message: string,
+        updatedFileUrl: string
+    }
+}
+
+export interface ISendInvitationToChatResponse {
+    data: {
+        message: string,
+        invitation: {
+            id: number,
+            chatId: number,
+            userId: number
+        }
+    }
+}
+
+export interface IDeclineInvitationToChatResponse {
+    data: {
+        message: string,
+    }
+}
+
+export interface IAcceptInvitationToChatResponse {
+    data: {
+        message: string,
+    }
+}
+
+export interface IDeleteChatMemberResponse {
+    data: {
+        message: string,
     }
 }
 
@@ -65,6 +120,12 @@ export interface ISendChatMessageResponse {
     data: {
         message: string,
         createdMessage: IChatMessage
+    }
+}
+
+export interface IDeleteChatMessageResponse {
+    data: {
+        message: string,
     }
 }
 
@@ -76,6 +137,13 @@ export interface IChangeChatMessageResponse {
             text: string,
             files: IFile[]
         }
+    }
+}
+
+export interface IReadChatMessagesResponse {
+    data: {
+        message: string,
+        readMessages: number[]
     }
 }
 
