@@ -54,24 +54,26 @@ const DialogsList = memo(({
 					}
 				/>
 			</div>
-			{
-				dialogsList.length !== 0 
-					?
-					dialogsList.map(dialogListItem => {
-						return (
-							<div 
-								key={ dialogListItem.id }
-								onClick={ () => handleDialogListItemClick(dialogListItem.id, dialogListItem.type) } 
-								className="dialog-list-item-wrapper-main"
-							>
-								<DialogListItemWrapper  
-									dialogListItem = { dialogListItem } 
-								/>
-							</div>
-						);
-					})
-					: <EmptyDialogsList />
-			}
+			<div className="dialog-list-items">
+				{
+					dialogsList.length !== 0 
+						?
+						dialogsList.map(dialogListItem => {
+							return (
+								<div 
+									key={ dialogListItem.id }
+									onClick={ () => handleDialogListItemClick(dialogListItem.id, dialogListItem.type) } 
+									className="dialog-list-item-wrapper-main"
+								>
+									<DialogListItemWrapper  
+										dialogListItem = { dialogListItem } 
+									/>
+								</div>
+							);
+						})
+						: <EmptyDialogsList />
+				}
+			</div>
 			<div className="add-dialog-icon">
 				<IoIosAddCircle onClick={ () => handleOpenModal("addDialogModal") } fontSize={40} />
 			</div>

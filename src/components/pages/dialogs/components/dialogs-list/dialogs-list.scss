@@ -5,8 +5,32 @@
     padding: 20px;
     border-right: 1px solid var(--border-color);
     background-color: var(--default-color-second);
-    overflow-y: auto;
     padding-top: 15px;
+    height: calc(100vh - 40.8px);
+}
+
+@mixin add-dialog-icon-styles {
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
+    color: white;
+    left: calc(100% - 40px);
+    bottom: 20px;
+
+    &:hover {
+        cursor: pointer;
+        color: var(--default-color);
+    }
+}
+
+.dialog-list-items {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    overflow-y: scroll;
+    height: 100%;
 
     &::-webkit-scrollbar {
         width: 6px;
@@ -20,22 +44,6 @@
     &::-webkit-scrollbar-thumb {
         background-color: transparent;
         border-radius: 8px;
-    }
-}
-
-@mixin add-dialog-icon-styles {
-    width: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: sticky;
-    color: white;
-    left: calc(100% - 40px);
-    bottom: 40px;
-
-    &:hover {
-        cursor: pointer;
-        color: var(--default-color);
     }
 }
 
