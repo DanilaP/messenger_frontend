@@ -5,7 +5,7 @@ import { parseCustomDate } from "../../../helpers/parsers/parsers";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { Modal } from "antd";
 import { getChatInfoById, getChatsList } from "../../../models/chats/chats-api";
-import type { IDialog, IGetDialogResponse, IMessage } from "../../../models/dialogs/dialogs-interface";
+import type { IDialog, IMessage } from "../../../models/dialogs/dialogs-interface";
 import type { RootState } from "../../../stores/root/root";
 import type { IFile } from "../../../interfaces/files";
 import type { IChat, IChatMessage, IGetChatResponse } from "../../../models/chats/chats-interface";
@@ -257,7 +257,7 @@ const Dialogs = () => {
 				dialogInfo?.messages[dialogInfo?.messages.length - 1] || chatInfo?.messages[chatInfo?.messages.length - 1];
 		}
 		if (dialogInfo) {
-			const dialogRes: IGetDialogResponse = await getDialogInfo(Number(id), currentMessage?.id, mode);
+			const dialogRes = await getDialogInfo(Number(id), currentMessage?.id, mode);
 			if (dialogRes.data.dialog.messages.length !== 0) {
 				if (isDialogListUpdatingAllowed) {
 					setDialogInfo(prev => {
@@ -295,7 +295,7 @@ const Dialogs = () => {
 	const handleFetchDataBeforeScrollToBottom = useCallback(async () => {
 		setIsDialogListUpdatingAllowed(false);
 		if (dialogInfo) {
-			const dialogRes: IGetDialogResponse = await getDialogInfo(Number(id));
+			const dialogRes = await getDialogInfo(Number(id));
 			if (dialogRes.data.dialog.messages.length !== 0) {
 				if (dialogInfo) {
 					setDialogInfo({

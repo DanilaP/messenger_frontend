@@ -4,7 +4,7 @@ import { memo, useState } from "react";
 import { IoMdShareAlt, IoMdClose } from "react-icons/io";
 import { sendChatMessage } from "../../../../../../../models/chats/chats-api";
 import type { UploadFile } from "antd/es/upload/interface";
-import type { IDialog, IMessage, ISendMessageResponse } from "../../../../../../../models/dialogs/dialogs-interface";
+import type { IDialog, IMessage } from "../../../../../../../models/dialogs/dialogs-interface";
 import type { IChat, ISendChatMessageResponse } from "../../../../../../../models/chats/chats-interface";
 import type { IUser } from "../../../../../../../models/user/user-interface";
 import FileUploader from "../file-uploader/file-uploader";
@@ -47,7 +47,7 @@ const DialogFooter = memo(({
 
 			if (dialogInfo) {
 				await sendMessage(formData)
-				.then((res: ISendMessageResponse) => {
+				.then(res => {
 					handleClearMessageText();
 					handleSendMessage(res.data.createdMessage);
 					handleChooseMessageForReplying(null);
@@ -91,7 +91,7 @@ const DialogFooter = memo(({
 
 			if (dialogInfo) {
 				await sendMessage(formData)
-				.then((res: ISendMessageResponse) => {
+				.then(res => {
 					handleSendMessage(res.data.createdMessage);
 					handleChooseMessageForReplying(null);
 				})

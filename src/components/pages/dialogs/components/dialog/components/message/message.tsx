@@ -8,7 +8,7 @@ import { IoMdShareAlt } from "react-icons/io";
 import { MdEdit } from "react-icons/md";
 import { CiCircleCheck } from "react-icons/ci";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
-import type { IDialog, IEditMessageResponse, IMessage, IOpponent, IScrollToMessageResponse } from "../../../../../../../models/dialogs/dialogs-interface";
+import type { IDialog, IMessage, IOpponent } from "../../../../../../../models/dialogs/dialogs-interface";
 import type { IFile } from "../../../../../../../interfaces/files";
 import type { IUser } from "../../../../../../../models/user/user-interface";
 import type { IChangeChatMessageResponse, IChat, IScrollToChatMessageResponse } from "../../../../../../../models/chats/chats-interface";
@@ -135,7 +135,7 @@ const DialogMessage = memo(({
 
 		if (dialogInfo) {
 			await editMessage(formData)
-			.then((res: IEditMessageResponse) => {
+			.then(res => {
 				const updatedFiles = files.length > 0 ? res.data.modifiedMessageInfo.files : modifiedMessage.files;
 				handleChangeMessage(modifiedMessage, updatedFiles);
 			})
@@ -181,7 +181,7 @@ const DialogMessage = memo(({
 		if (message.repliedMessage) {
 			if (dialogInfo) {
 				scrollToMessage(dialogInfo.id, message.repliedMessage?.id)
-				.then((res: IScrollToMessageResponse) => {
+				.then(res => {
 					handleScrollToMessage(res.data.messages, message.repliedMessage!.id);
 				})
 				.catch((error) => {

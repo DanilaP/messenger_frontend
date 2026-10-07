@@ -102,3 +102,16 @@ export interface IScrollToMessageResponse {
         messages: IMessage[]
     }
 }
+
+export interface IDeleteMessageResponse {
+    data: {
+        message: string
+    }
+}
+
+export interface IReadMessagesResponse {
+    data: {
+        message: string,
+        readMessages: number[]
+    }
+}
