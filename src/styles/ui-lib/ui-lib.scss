@@ -35,10 +35,7 @@
     background-color: var(--default-color);
     color: var(--text-color);
     border-radius: 20px;
-    
-    &:hover, &:focus {
-        border: none !important;
-    }
+    border: none !important;
 }
 
 .ant-btn.ant-btn-color-default.ant-btn-variant-outlined {
