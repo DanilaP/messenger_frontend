@@ -9,7 +9,7 @@ import SocketMessageWrapper from "./components/partials/socket-message-wrapper/s
 import "./App.css";
 import "./styles/themes/dark.scss";
 import "./styles/themes/white.scss";
-import "./styles/ui-lib/ui-lib.scss";
+import "./styles/ui-lib/root.scss";
 import "./styles/main/main.scss";
 
 function App() {

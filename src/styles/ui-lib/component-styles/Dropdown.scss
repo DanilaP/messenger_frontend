@@ -1,0 +1,11 @@
+.ant-dropdown .ant-dropdown-menu {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item {
+    color: var(--text-color);
+
+    &:hover {
+        background-color: var(--bg-color-block);
+    }
+}

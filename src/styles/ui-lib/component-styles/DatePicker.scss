@@ -1,0 +1,44 @@
+.ant-picker, .ant-picker-outlined {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 0px;
+    color: var(--text-color);
+    outline: none;
+    padding-left: 0px;
+
+    & .ant-picker-suffix {
+        color: var(--text-color);
+    }
+
+    & .ant-picker-clear {
+        color: var(--text-color);
+
+        &:hover {
+            color: var(--text-color);
+        }
+    }
+
+    & .ant-picker-input {
+        & input {
+            &::placeholder {
+                color: var(--text-color);
+            }
+        }
+    }
+
+    & .ant-picker-input-placeholder > input {
+        color: var(--text-color);
+    }
+
+    &:hover, &:focus, &:focus-within {   
+        background-color: transparent;
+        border-color: var(--border-color);
+        color: var(--text-color);
+        outline: none;
+
+        & .ant-picker-suffix {
+            color: var(--text-color) !important;
+        }
+    }
+}

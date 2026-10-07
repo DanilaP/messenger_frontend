@@ -1,0 +1,8 @@
+.ant-modal .ant-modal-container {
+    background-color: var(--bg-color-block);
+    color: var(--text-color);
+
+    & .ant-modal-title, .ant-modal-close-x {
+        color: var(--text-color);
+    }
+}
