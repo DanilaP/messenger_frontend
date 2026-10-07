@@ -24,8 +24,14 @@
 }
 
 @mixin add-dialog-icon-styles {
-    position: absolute;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
     color: white;
+    left: calc(100% - 40px);
+    bottom: 40px;
 
     &:hover {
         cursor: pointer;
@@ -52,8 +58,6 @@
 
     & .add-dialog-icon {
         @include add-dialog-icon-styles;
-        bottom: 50px;
-        right: 20px;
     }
 }
 
@@ -65,7 +69,5 @@
     
     & .add-dialog-icon {
         @include add-dialog-icon-styles;
-        bottom: 90px;
-        right: 20px;
     }
 }
