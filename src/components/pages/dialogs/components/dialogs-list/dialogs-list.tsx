@@ -12,14 +12,16 @@ interface IDialogsListProps {
     dialogsList: IChatsAndDialogsList[],
     isMobile: boolean,
     handleChangeDialog: (dialogId: number, type: "chat" | "dialog") => void
-	handleAddNewChat: (chat: Partial<IChatsAndDialogsList>) => void
+	handleAddNewChat: (chat: Partial<IChatsAndDialogsList>) => void,
+	handleSeatchDialog: (value: string) => void
 }
 
 const DialogsList = memo(({ 
 	dialogsList, 
 	isMobile,
 	handleChangeDialog,
-	handleAddNewChat
+	handleAddNewChat,
+	handleSeatchDialog
 }: IDialogsListProps) => {
 
 	const [modal, setModal] = useState<{ name: string, open: boolean }>({ name: "", open: false });
@@ -36,8 +38,8 @@ const DialogsList = memo(({
 		setModal({ name: "", open: false });
 	}
 
-	const handleSearch = () => {
-
+	const handleSearch = (value: string) => {
+		handleSeatchDialog(value);
 	};
 
 	return (
@@ -45,10 +47,9 @@ const DialogsList = memo(({
 			<div className="dialogs-list-search">
 				<Input
 					placeholder="Поиск"
-					onPressEnter={ (e) => console.log("Enter нажат, значение:", e.currentTarget.value) }
+					onPressEnter={ (e) => handleSearch(e.currentTarget.value) }
 					suffix={ 
 						<IoSearchOutline 
-							onClick={ handleSearch } 
 							fontSize={ 20 }
 						/> 
 					}

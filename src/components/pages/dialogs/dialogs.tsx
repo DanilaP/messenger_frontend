@@ -33,6 +33,7 @@ const Dialogs = () => {
 	const location = useLocation();
 	const currentType = useRef<string>(null);
 	const [dialogsList, setDialogsList] = useState<IChatsAndDialogsList[]>([]);
+	const [filteredDialogsList, setFilteredDialogsList] = useState<IChatsAndDialogsList[]>([]);
 	const [dialogInfo, setDialogInfo] = useState<IDialog | null>(null);
 	const [chatInfo, setChatInfo] = useState<IChat | null>(null);
 	const [currentReplyMessage, setCurrentReplyedMessage] = useState<IMessage | null>(null);
@@ -164,7 +165,7 @@ const Dialogs = () => {
 
 	const handleUpdateLastMessageBeforeChanging = (message: IMessage, updatedDialogInfo: IDialog | IChat) => {
 		const lastDialogMessage = updatedDialogInfo.messages[updatedDialogInfo.messages.length - 1];
-		setDialogsList(prev => {
+		setFilteredDialogsList(prev => {
 			const updatedList = prev.map(dialogListItem => {
 				if (dialogListItem.id === dialogInfo?.id) {
 					if (lastDialogMessage) {
@@ -189,7 +190,7 @@ const Dialogs = () => {
 
 	const handleUpdateLastMessageBeforeSending = (message: IMessage) => {
 		if (dialogInfo || chatInfo) {
-			setDialogsList(prev => {
+			setFilteredDialogsList(prev => {
 				const updatedList = prev.map(dialogListItem => {
 					if (dialogListItem.id === dialogInfo?.id || dialogListItem.id === chatInfo?.id) {
 						return {
@@ -212,7 +213,7 @@ const Dialogs = () => {
 
 	const handleUpdateLastMessageBeforeDeleting = (dialogInfo: IDialog | IChat) => {
 		const lastMessage = dialogInfo.messages.sort()[dialogInfo.messages.length - 1] || null;
-		setDialogsList(prev => {
+		setFilteredDialogsList(prev => {
 			const updatedList = prev.map(dialogListItem => {
 				if (dialogListItem.id === dialogInfo?.id) {
 					return {
@@ -325,8 +326,10 @@ const Dialogs = () => {
 		else if (type === "dialog") {
 			navigate(`/main/dialogs/${dialogId}`);
 		}
-		setChatInfo(null);
-		setDialogInfo(null);
+		if (id !== dialogId.toString()) {
+			setChatInfo(null);
+			setDialogInfo(null);
+		}
 	};
 
 	const handleChangeProfileModalVisibility = () => {
@@ -337,14 +340,25 @@ const Dialogs = () => {
 	};
 
 	const handleAddNewChat = (chat: Partial<IChatsAndDialogsList>) => {
-		setDialogsList([...dialogsList, {
+		setFilteredDialogsList([...dialogsList, {
 			id: chat.id || 0,
 			type: "chat",
 			name: chat.name || "",
 			image: chat.image || "",
 			lastMessage: null
 		}]);
-	}
+	};
+
+	const handleSeatchDialog = (value: string) => {
+		if (value === "") {
+			setFilteredDialogsList(dialogsList);
+		}
+		else {
+			setFilteredDialogsList(() => {
+				return dialogsList.filter(el => el.name.toLowerCase().includes(value.toLowerCase()));
+			});
+		}
+	};	
 
 	useEffect(() => {
 
@@ -381,6 +395,7 @@ const Dialogs = () => {
 				const finalDialogsAndChatsList = [...modifiedDialogsRes, ...modifiedChatsRes];
 				const sortedData = handleSortDialogsListByLastMessageDate(finalDialogsAndChatsList);
 				setDialogsList(sortedData);
+				setFilteredDialogsList(sortedData);
 
 				if (id) {
 					if (isDialogListUpdatingAllowed) {
@@ -433,10 +448,11 @@ const Dialogs = () => {
 				!isMobile || (isMobile && !dialogInfo) 
 					?
 					<DialogsList 
-						dialogsList={ dialogsList } 
+						dialogsList={ filteredDialogsList } 
 						isMobile={ isMobile }
 						handleChangeDialog={ handleChangeDialog }
 						handleAddNewChat={ handleAddNewChat }
+						handleSeatchDialog={ handleSeatchDialog }
 					/>
 					: null
 			}
