@@ -360,6 +360,21 @@ const Dialogs = () => {
 		}
 	};	
 
+	const handleDeleteChatOrDialog = async (info: IChatsAndDialogsList) => {
+		setFilteredDialogsList(filteredDialogsList.filter(el => !(el.type === info.type && el.id === info.id)));
+		setDialogsList(dialogsList.filter(el => !(el.type === info.type && el.id === info.id)));
+		if (info.type === "dialog" && dialogInfo) {
+			if (dialogInfo.id === info.id) {
+				setDialogInfo(null);
+			}
+		}
+		else if (info.type === "chat" && chatInfo) {
+			if (chatInfo.id === info.id) {
+				setChatInfo(null);
+			}
+		}
+	}
+
 	useEffect(() => {
 
 		if (location.pathname.includes("/main/dialogs")) {
@@ -453,6 +468,7 @@ const Dialogs = () => {
 						handleChangeDialog={ handleChangeDialog }
 						handleAddNewChat={ handleAddNewChat }
 						handleSeatchDialog={ handleSeatchDialog }
+						handleDeleteChatOrDialog={ handleDeleteChatOrDialog }
 					/>
 					: null
 			}

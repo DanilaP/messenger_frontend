@@ -153,3 +153,9 @@ export interface IScrollToChatMessageResponse {
         messages: IChatMessage[]
     }
 }
+
+export interface IDeleteChatResponse {
+    data: {
+        message: string,
+    }
+}

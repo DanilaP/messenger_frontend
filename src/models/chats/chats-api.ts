@@ -1,4 +1,4 @@
-import type { IAcceptInvitationToChatResponse, IChangeChatAvatarResponse, IChangeChatInfoResponse, IChangeChatMessageResponse, ICreateChatResponse, IDeclineInvitationToChatResponse, IDeleteChatMemberResponse, IDeleteChatMessageResponse, IGetChatResponse, IGetChatsListResponse, IReadChatMessagesResponse, IScrollToChatMessageResponse, ISendChatMessageResponse, ISendInvitationToChatResponse } from "./chats-interface";
+import type { IAcceptInvitationToChatResponse, IChangeChatAvatarResponse, IChangeChatInfoResponse, IChangeChatMessageResponse, ICreateChatResponse, IDeclineInvitationToChatResponse, IDeleteChatMemberResponse, IDeleteChatMessageResponse, IDeleteChatResponse, IGetChatResponse, IGetChatsListResponse, IReadChatMessagesResponse, IScrollToChatMessageResponse, ISendChatMessageResponse, ISendInvitationToChatResponse } from "./chats-interface";
 import $api from "../../configs/axios";
 
 interface IChatInfoForCreation {
@@ -73,5 +73,10 @@ export const readChatMessage = async (chatId: number): Promise<IReadChatMessages
 
 export const scrollToChatMessage = async (chatId: number, messageId: number): Promise<IScrollToChatMessageResponse> => {
 	const response = $api.post("/chats/message/scroll", { chatId, messageId });
+	return response;
+};
+
+export const deleteChat = async (chatId: number): Promise<IDeleteChatResponse> => {
+	const response = $api.post("/chats/message/scroll", { chatId });
 	return response;
 };

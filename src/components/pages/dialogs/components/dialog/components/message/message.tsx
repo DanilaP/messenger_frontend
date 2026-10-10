@@ -8,6 +8,7 @@ import { IoMdShareAlt } from "react-icons/io";
 import { MdEdit } from "react-icons/md";
 import { CiCircleCheck } from "react-icons/ci";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import { changeChatMessage, deleteChatMessage, scrollToChatMessage } from "../../../../../../../models/chats/chats-api";
 import type { IDialog, IMessage, IOpponent } from "../../../../../../../models/dialogs/dialogs-interface";
 import type { IFile } from "../../../../../../../interfaces/files";
 import type { IUser } from "../../../../../../../models/user/user-interface";
@@ -15,7 +16,6 @@ import type { IChangeChatMessageResponse, IChat, IScrollToChatMessageResponse } 
 import FileList from "../../../../../../partials/file-list/file-list";
 import MessageEditor from "../message-editor/message-editor";
 import "./message.scss";
-import { changeChatMessage, deleteChatMessage, scrollToChatMessage } from "../../../../../../../models/chats/chats-api";
 
 interface IMessageProps {
     senderInfo: Partial<IUser> | IOpponent,

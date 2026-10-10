@@ -13,7 +13,8 @@ interface IDialogsListProps {
     isMobile: boolean,
     handleChangeDialog: (dialogId: number, type: "chat" | "dialog") => void
 	handleAddNewChat: (chat: Partial<IChatsAndDialogsList>) => void,
-	handleSeatchDialog: (value: string) => void
+	handleSeatchDialog: (value: string) => void,
+	handleDeleteChatOrDialog: (info: IChatsAndDialogsList) => void,
 }
 
 const DialogsList = memo(({ 
@@ -21,7 +22,8 @@ const DialogsList = memo(({
 	isMobile,
 	handleChangeDialog,
 	handleAddNewChat,
-	handleSeatchDialog
+	handleSeatchDialog,
+	handleDeleteChatOrDialog
 }: IDialogsListProps) => {
 
 	const [modal, setModal] = useState<{ name: string, open: boolean }>({ name: "", open: false });
@@ -67,7 +69,8 @@ const DialogsList = memo(({
 									className="dialog-list-item-wrapper-main"
 								>
 									<DialogListItemWrapper  
-										dialogListItem = { dialogListItem } 
+										dialogListItem={ dialogListItem }
+										handleDeleteChatOrDialog={ handleDeleteChatOrDialog } 
 									/>
 								</div>
 							);
