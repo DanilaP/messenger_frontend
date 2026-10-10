@@ -2,6 +2,7 @@ import { DatePicker, Input, Upload, type DatePickerProps } from "antd";
 import { changeUserAvatar } from "../../../../../models/user-profile/user-profile-api";
 import { useState } from "react";
 import { rootStore } from "../../../../../stores/root/root";
+import { LuMessageCircleMore } from "react-icons/lu";
 import type { IUser } from "../../../../../models/user/user-interface";
 import type { IChangeUserAvatarResponse, IUserProfileInfo } from "../../../../../models/user-profile/user-profile-interface";
 import Cropper from "../../../cropper/cropper";
@@ -76,6 +77,7 @@ const UserInfo = ({
 						className="image"
 					/>
 				</Upload>
+				<LuMessageCircleMore className="message-icon" fontSize={20} />
 			</div>
 			<div className="additional-info">
 				<div className="user-info-item">

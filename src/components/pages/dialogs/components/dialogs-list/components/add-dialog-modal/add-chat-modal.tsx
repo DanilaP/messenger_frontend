@@ -76,7 +76,7 @@ export const AddChatModal = ({ handleCloseModal, handleAddNewChat }: IAddChatMod
 				</FormItem>
 				<FormItem className='form-submit'>
 					<Button className='form-submit-btn' type="primary" htmlType="submit">
-                        Войти
+                        Создать чат
 					</Button>
 				</FormItem>
 			</Form>

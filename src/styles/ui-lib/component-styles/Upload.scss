@@ -9,3 +9,7 @@
 .ant-upload-wrapper .ant-upload-list .ant-upload-list-item .ant-upload-list-item-actions .anticon {
     color: var(--text-color);
 }
+
+.ant-upload-wrapper .ant-upload-disabled {
+    cursor: pointer;
+}
