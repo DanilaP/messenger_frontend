@@ -1,10 +1,10 @@
 import { useSelector } from "react-redux";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getDialogInfo, getDialogsList } from "../../../models/dialogs/dialogs-api";
+import { deleteDialog, getDialogInfo, getDialogsList } from "../../../models/dialogs/dialogs-api";
 import { parseCustomDate } from "../../../helpers/parsers/parsers";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { Modal } from "antd";
-import { getChatInfoById, getChatsList } from "../../../models/chats/chats-api";
+import { deleteChat, getChatInfoById, getChatsList } from "../../../models/chats/chats-api";
 import type { IDialog, IMessage } from "../../../models/dialogs/dialogs-interface";
 import type { RootState } from "../../../stores/root/root";
 import type { IFile } from "../../../interfaces/files";
@@ -361,16 +361,38 @@ const Dialogs = () => {
 	};	
 
 	const handleDeleteChatOrDialog = async (info: IChatsAndDialogsList) => {
-		setFilteredDialogsList(filteredDialogsList.filter(el => !(el.type === info.type && el.id === info.id)));
-		setDialogsList(dialogsList.filter(el => !(el.type === info.type && el.id === info.id)));
-		if (info.type === "dialog" && dialogInfo) {
-			if (dialogInfo.id === info.id) {
-				setDialogInfo(null);
+		console.log(info);
+		let isDeleted = false;
+		try {
+			if (info.type === "dialog") {
+				await deleteDialog(info.id)
+				.then(() => {
+					if (dialogInfo && dialogInfo.id === info.id) {
+						setDialogInfo(null);
+					}
+					isDeleted = true;
+				})
+				.catch(error => console.log(error));
+			}
+			else if (info.type === "chat") {
+				await deleteChat(info.id)
+				.then(() => {
+					if (chatInfo && chatInfo.id === info.id) {
+						setChatInfo(null);
+					}
+					isDeleted = true;
+				})
+				.catch(error => console.log(error));
 			}
 		}
-		else if (info.type === "chat" && chatInfo) {
-			if (chatInfo.id === info.id) {
-				setChatInfo(null);
+		catch (error) {
+			console.log(error);
+		}
+		finally {
+			if (isDeleted) {
+				isDeleted = false;
+				setFilteredDialogsList(filteredDialogsList.filter(el => !(el.type === info.type && el.id === info.id)));
+				setDialogsList(dialogsList.filter(el => !(el.type === info.type && el.id === info.id)));
 			}
 		}
 	}

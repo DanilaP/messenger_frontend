@@ -115,3 +115,9 @@ export interface IReadMessagesResponse {
         readMessages: number[]
     }
 }
+
+export interface IDeleteDialogResponse {
+    data: {
+        message: string,
+    }
+}

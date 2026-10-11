@@ -77,6 +77,6 @@ export const scrollToChatMessage = async (chatId: number, messageId: number): Pr
 };
 
 export const deleteChat = async (chatId: number): Promise<IDeleteChatResponse> => {
-	const response = $api.post("/chats/message/scroll", { chatId });
+	const response = $api.delete(`/chats?id=${ chatId }`);
 	return response;
 };

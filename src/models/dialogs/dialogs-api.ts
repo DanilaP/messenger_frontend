@@ -1,4 +1,4 @@
-import type { IDeleteMessageResponse, IEditMessageResponse, IGetDialogResponse, IGetDialogsListResponse, IReadMessagesResponse, IScrollToMessageResponse, ISendMessageResponse } from "./dialogs-interface";
+import type { IDeleteDialogResponse, IDeleteMessageResponse, IEditMessageResponse, IGetDialogResponse, IGetDialogsListResponse, IReadMessagesResponse, IScrollToMessageResponse, ISendMessageResponse } from "./dialogs-interface";
 import $api from "../../configs/axios";
 
 export const getDialogsList = async (): Promise<IGetDialogsListResponse> => {
@@ -33,5 +33,10 @@ export const readMessages = async (dialogId: number, opponentId: number): Promis
 
 export const scrollToMessage = async (dialogId: number, messageId: number): Promise<IScrollToMessageResponse> => {
 	const response = $api.post("/dialogs/message/scroll", { dialogId, messageId });
+	return response;
+};  
+
+export const deleteDialog = async (dialogId: number): Promise<IDeleteDialogResponse> => {
+	const response = $api.delete(`/dialogs?id=${ dialogId }`);
 	return response;
 };  
