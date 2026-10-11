@@ -1,13 +1,15 @@
 import { DatePicker, Input, Upload, type DatePickerProps } from "antd";
 import { changeUserAvatar } from "../../../../../models/user-profile/user-profile-api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { rootStore } from "../../../../../stores/root/root";
 import { LuMessageCircleMore } from "react-icons/lu";
+import { useLocation, useNavigate } from "react-router";
 import type { IUser } from "../../../../../models/user/user-interface";
 import type { IChangeUserAvatarResponse, IUserProfileInfo } from "../../../../../models/user-profile/user-profile-interface";
 import Cropper from "../../../cropper/cropper";
 import dayjs from "dayjs";
 import "./user-info.scss";
+import { isDialogsBetweenUsersExists } from "../../../../../models/dialogs/dialogs-api";
 
 export interface IUserInfoProps {
 	user: IUser;
@@ -24,7 +26,10 @@ const UserInfo = ({
 	const [avatarUrl, setAvatarUrl] = useState<string>(userInfo.avatar);
 	const [cropModalOpen, setCropModalOpen] = useState(false);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+	const [dialogId, setDialogId] = useState<number | null>(null);
 	const isModificationEnabled: boolean = user.id === userInfo.id;
+	const navigate = useNavigate();
+	const location = useLocation();
 
 	const handleBeforeUpload = (file: File) => {
 		setSelectedFile(file);
@@ -63,6 +68,31 @@ const UserInfo = ({
 		}
 	};
 
+	const handleNavigateToDialog = () => {
+		navigate(`/main/dialogs/initial`);
+		rootStore.dispatch({ 
+			type: "SET_DIALOG",
+			payload: {
+				id: Date.now(),
+				messages: [],
+				oppponent: {
+					id: userInfo.id,
+					name: userInfo.name,
+					surname: userInfo.surname,
+					avatar: userInfo.avatar
+				}
+			} 
+		});
+	};
+
+	useEffect(() => {
+		isDialogsBetweenUsersExists(userInfo.id)
+		.then(res => {
+			setDialogId(res.data.dialogId);
+		})
+		.catch(error => console.log(error));
+	}, []);
+
 	return (
 		<div className="user-info">
 			<div className="avatar">
@@ -77,7 +107,10 @@ const UserInfo = ({
 						className="image"
 					/>
 				</Upload>
-				<LuMessageCircleMore className="message-icon" fontSize={20} />
+				{ 
+					!location.pathname.includes(`/main/dialogs/${ dialogId }`) && user.id !== userInfo.id &&
+					<LuMessageCircleMore onClick={ handleNavigateToDialog } className="message-icon" fontSize={ 20 } />
+				}
 			</div>
 			<div className="additional-info">
 				<div className="user-info-item">

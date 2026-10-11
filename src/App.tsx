@@ -59,7 +59,6 @@ function App() {
 
 		socket.onmessage = function(event) {
 			const parsedData = JSON.parse(event.data);
-			console.log(parsedData);
 			rootStore.dispatch({ type: "WS_MESSAGE", payload: event.data });
 			//Отображаем уведомление о пришедшем сообщении
 			if (

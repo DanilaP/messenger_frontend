@@ -1,4 +1,4 @@
-import type { IDeleteDialogResponse, IDeleteMessageResponse, IEditMessageResponse, IGetDialogResponse, IGetDialogsListResponse, IReadMessagesResponse, IScrollToMessageResponse, ISendMessageResponse } from "./dialogs-interface";
+import type { IDeleteDialogResponse, IDeleteMessageResponse, IEditMessageResponse, IGetDialogResponse, IGetDialogsListResponse, IIsDialogBetweenUsersExistsResponse, IReadMessagesResponse, IScrollToMessageResponse, ISendMessageResponse } from "./dialogs-interface";
 import $api from "../../configs/axios";
 
 export const getDialogsList = async (): Promise<IGetDialogsListResponse> => {
@@ -40,3 +40,8 @@ export const deleteDialog = async (dialogId: number): Promise<IDeleteDialogRespo
 	const response = $api.delete(`/dialogs?id=${ dialogId }`);
 	return response;
 };  
+
+export const isDialogsBetweenUsersExists = async (opponentId: number): Promise<IIsDialogBetweenUsersExistsResponse> => {
+	const response = $api.post(`/dialogs/exists`, { opponentId });
+	return response;
+}; 

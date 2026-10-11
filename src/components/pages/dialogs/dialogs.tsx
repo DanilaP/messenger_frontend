@@ -44,6 +44,7 @@ const Dialogs = () => {
 	const [isDialogListUpdatingAllowed, setIsDialogListUpdatingAllowed] = useState<boolean>(true);
 
 	const user = useSelector((state: RootState) => state.user.user);
+	//const temporaryDialogInfo = useSelector((state: RootState) => state.temporaryDialogInfo.dialog);
 	const scrollRequestTokenRef = useRef(0);
 	const navigate = useNavigate();
 
@@ -361,7 +362,6 @@ const Dialogs = () => {
 	};	
 
 	const handleDeleteChatOrDialog = async (info: IChatsAndDialogsList) => {
-		console.log(info);
 		let isDeleted = false;
 		try {
 			if (info.type === "dialog") {
@@ -398,17 +398,14 @@ const Dialogs = () => {
 	}
 
 	useEffect(() => {
-
 		if (location.pathname.includes("/main/dialogs")) {
 			currentType.current = "dialog";
 		}
 		else if (location.pathname.includes("/main/chats")) {
 			currentType.current = "chat";
 		}
-
 		const fetchData = async () => {
 			setIsLoading(false);
-
 			try {
 				const [chatsRes, dialogsRes] = await Promise.all([
 					getChatsList(),
@@ -474,6 +471,14 @@ const Dialogs = () => {
 		return () => window.removeEventListener("resize", handleResize);
 	}, []);
 	
+	/*
+	useEffect(() => {
+		if (temporaryDialogInfo) {
+			setDialogInfo(temporaryDialogInfo);
+		}
+	}, [temporaryDialogInfo]);
+	*/
+
 	if (!isLoading) {
 		return (
 			<Loader />

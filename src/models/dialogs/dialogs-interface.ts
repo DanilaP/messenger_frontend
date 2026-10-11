@@ -121,3 +121,10 @@ export interface IDeleteDialogResponse {
         message: string,
     }
 }
+
+export interface IIsDialogBetweenUsersExistsResponse {
+    data: {
+        message: string,
+        dialogId: number | null
+    }
+}
