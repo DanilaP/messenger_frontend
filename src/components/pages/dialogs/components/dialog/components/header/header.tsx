@@ -1,8 +1,10 @@
 import { IoSearchOutline } from "react-icons/io5";
-import { memo } from "react";
+import { memo, useState } from "react";
 import { RxDotsVertical } from "react-icons/rx";
-import { Dropdown, type MenuProps } from "antd";
+import { Dropdown, Modal, type MenuProps } from "antd";
 import { MdAttachFile, MdDelete  } from "react-icons/md";
+import { ChatInfoModal } from "../../../../../../partials/chat-info-modal/chat-info-modal";
+import { useParams } from "react-router";
 import "./header.scss";
 
 interface IDialogHeaderProps {
@@ -18,6 +20,9 @@ const DialogHeader = memo(({
 	avatar,
 	handleChangeProfileModalVisibility
 }: IDialogHeaderProps) => {
+
+	const { id } = useParams<{ id: string }>();
+	const [chatInfoModalOpen, setChatInfoModalOpen] = useState<boolean>(false);
 
 	const items: MenuProps["items"] = [
 		{
@@ -47,6 +52,13 @@ const DialogHeader = memo(({
 		if (headerType === "dialog") {
 			handleChangeProfileModalVisibility();
 		}
+		else if (headerType === "chat") {
+			handleChangeChatInfoModalVisibility();
+		}
+	}
+
+	const handleChangeChatInfoModalVisibility = () => {
+		setChatInfoModalOpen(!chatInfoModalOpen);
 	}
 
 	return (
@@ -61,6 +73,17 @@ const DialogHeader = memo(({
 					<RxDotsVertical className="icon" />
 				</Dropdown>
 			</div>
+			{
+				<Modal
+					centered
+					destroyOnHidden
+					footer={ null }
+					open={ chatInfoModalOpen }
+					onCancel={ handleChangeChatInfoModalVisibility }
+				>
+					<ChatInfoModal chatId={ Number(id) }/>
+				</Modal>
+			}
 		</div>
 	);
 });

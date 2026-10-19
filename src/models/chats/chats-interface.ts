@@ -159,3 +159,19 @@ export interface IDeleteChatResponse {
         message: string,
     }
 }
+
+export interface IChatInfo {
+    id: number,
+    image: string,
+    name: string,
+    description: string,
+    dateOfCreation: string,
+    members: IChatMessageSender[]
+}
+
+export interface IGetBasicChatInfoResponse {
+    data: {
+        message: string,
+        chat: IChatInfo
+    }
+}
