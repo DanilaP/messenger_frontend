@@ -341,13 +341,15 @@ const Dialogs = () => {
 	};
 
 	const handleAddNewChat = (chat: Partial<IChatsAndDialogsList>) => {
-		setFilteredDialogsList([...dialogsList, {
+		const newChatInfo = {
 			id: chat.id || 0,
-			type: "chat",
+			type: "chat" as "chat",
 			name: chat.name || "",
 			image: chat.image || "",
 			lastMessage: null
-		}]);
+		};
+		setFilteredDialogsList([...dialogsList, newChatInfo]);
+		setDialogsList([...dialogsList, newChatInfo]);
 	};
 
 	const handleSeatchDialog = (value: string) => {

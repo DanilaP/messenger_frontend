@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { Input, Modal } from "antd";
 import { IoSearchOutline } from "react-icons/io5";
 import { IoIosAddCircle } from "react-icons/io";
@@ -6,6 +6,7 @@ import { AddChatModal } from "./components/add-dialog-modal/add-chat-modal";
 import type { IChatsAndDialogsList } from "../../dialogs";
 import DialogListItemWrapper from "./components/dialog-list-item/dialog-list-item";
 import EmptyDialogsList from "./components/empty-dialogs-list/empty-dialogs-list";
+import VirtualizedList, { type VirtualizedListRef } from "../../../../partials/virtualized-list/virtualized-list";
 import "./dialogs-list.scss";
 
 interface IDialogsListProps {
@@ -27,6 +28,24 @@ const DialogsList = memo(({
 }: IDialogsListProps) => {
 
 	const [modal, setModal] = useState<{ name: string, open: boolean }>({ name: "", open: false });
+	const [containerHeight, setContainerHeight] = useState(0);
+	const containerRef = useRef<HTMLDivElement>(null);
+	const listRef = useRef<VirtualizedListRef>(null);
+
+	const renderDialogListItem = useCallback((dialogListItem: IChatsAndDialogsList) => {
+		return (
+			<div 
+				key={ dialogListItem.id }
+				className="dialog-list-item-wrapper-main"
+				onClick={ () => handleDialogListItemClick(dialogListItem.id, dialogListItem.type) } 
+			>
+				<DialogListItemWrapper  
+					dialogListItem={ dialogListItem }
+					handleDeleteChatOrDialog={ handleDeleteChatOrDialog } 
+				/>
+			</div>
+		);
+	}, [dialogsList]);
 
 	const handleDialogListItemClick = (dialogId: number, type: "chat" | "dialog") => {
 		handleChangeDialog(dialogId, type);
@@ -44,6 +63,23 @@ const DialogsList = memo(({
 		handleSeatchDialog(value);
 	};
 
+	// Измерение высоты контейнера
+	useEffect(() => {
+		const measureHeight = () => {
+			if (containerRef.current) {
+				setContainerHeight(containerRef.current.clientHeight);
+			}
+		};
+		measureHeight();
+		window.addEventListener("resize", measureHeight);
+		const observer = new ResizeObserver(measureHeight);
+		if (containerRef.current) observer.observe(containerRef.current);
+		return () => {
+			window.removeEventListener("resize", measureHeight);
+			observer.disconnect();
+		};
+	}, []);
+
 	return (
 		<div className={ isMobile ? "dialogs-list-wrapper-mobile" : "dialogs-list-wrapper" }>
 			<div className="dialogs-list-search">
@@ -57,24 +93,17 @@ const DialogsList = memo(({
 					}
 				/>
 			</div>
-			<div className="dialog-list-items">
+			<div ref={ containerRef } className="dialog-list-items">
 				{
+
 					dialogsList.length !== 0 
 						?
-						dialogsList.map(dialogListItem => {
-							return (
-								<div 
-									key={ dialogListItem.id }
-									onClick={ () => handleDialogListItemClick(dialogListItem.id, dialogListItem.type) } 
-									className="dialog-list-item-wrapper-main"
-								>
-									<DialogListItemWrapper  
-										dialogListItem={ dialogListItem }
-										handleDeleteChatOrDialog={ handleDeleteChatOrDialog } 
-									/>
-								</div>
-							);
-						})
+							<VirtualizedList
+								ref={ listRef }
+								items={ dialogsList }
+								height={ containerHeight }
+								renderItem={ renderDialogListItem }
+							/>
 						: <EmptyDialogsList />
 				}
 			</div>
