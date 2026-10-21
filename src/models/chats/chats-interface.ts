@@ -175,3 +175,19 @@ export interface IGetBasicChatInfoResponse {
         chat: IChatInfo
     }
 }
+
+export interface IGetChatsInvitationsResponse {
+    data: {
+        message: string,
+        invitations: {
+            id: number,
+            chatInfo: {
+                id: number,
+                name: string,
+                description: string,
+                image: string
+            },
+            membersCount: number
+        }
+    }
+}

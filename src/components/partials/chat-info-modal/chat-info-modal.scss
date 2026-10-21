@@ -16,6 +16,9 @@
 
         & .chat-header-info {
             & .members-count {
+                display: flex;
+                align-items: center;
+                gap: 5px;
                 cursor: pointer;
 
                 &:hover {
@@ -23,6 +26,27 @@
                     text-decoration: underline;
                 }
             }
+        }
+    }
+
+    & .content {
+        & .description {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        & .date-of-creation {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+    }
+
+    & .footer {
+        & .settings {
+            display: flex;
+            gap: 10px;
         }
     }
 }
