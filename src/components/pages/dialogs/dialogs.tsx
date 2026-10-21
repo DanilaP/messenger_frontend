@@ -489,7 +489,7 @@ const Dialogs = () => {
 	return (
 		<div className={ isMobile ? "dialogs-wrapper-mobile" : "dialogs-wrapper" }>
 			{ 
-				!isMobile || (isMobile && !dialogInfo) 
+				!isMobile || (isMobile && !dialogInfo && !chatInfo) 
 					?
 					<DialogsList 
 						dialogsList={ filteredDialogsList } 
@@ -503,7 +503,7 @@ const Dialogs = () => {
 			}
 			{  
 				user ? 
-					!isMobile || (isMobile && dialogInfo)
+					!isMobile || (isMobile && (dialogInfo || chatInfo))
 						?
 						<Dialog 
 							user={ user } 
