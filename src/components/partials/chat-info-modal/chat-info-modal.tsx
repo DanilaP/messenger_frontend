@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { getBasicChatInfo } from '../../../models/chats/chats-api';
 import { IoPeople } from "react-icons/io5";
 import { MdDateRange, MdEdit, MdDescription } from "react-icons/md";
-import { FaUserPlus } from "react-icons/fa6";
-import { Button } from 'antd';
+import { Button, Modal } from 'antd';
 import type { IChatInfo } from '../../../models/chats/chats-interface';
 import './chat-info-modal.scss';
+import { ChatMembersModal } from '../chat-members-modal/chat-members-modal';
 
 interface IChatInfoModalProps {
     chatId: number
@@ -14,6 +14,11 @@ interface IChatInfoModalProps {
 export const ChatInfoModal = ({ chatId } : IChatInfoModalProps) => {
 
     const [chatInfo, setChatInfo] = useState<IChatInfo | null>(null);
+    const [chatMembersModal, setChatMembersModal] = useState<boolean>(false);
+
+    const handleChangeChatMembersModalVisibility = () => {
+        setChatMembersModal(!chatMembersModal);
+    }
 
     useEffect(() => {
         getBasicChatInfo(chatId)
@@ -29,7 +34,7 @@ export const ChatInfoModal = ({ chatId } : IChatInfoModalProps) => {
                 <div style={{ backgroundImage: `url(${import.meta.env.VITE_APP_SERVER_API}${ chatInfo?.image })` }} className="chat-image"></div>
                 <div className="chat-header-info">
                     <div className="chat-name">{ chatInfo?.name }</div>
-                    <div className="members-count">
+                    <div onClick={ handleChangeChatMembersModalVisibility } className="members-count">
                         <IoPeople /> Участники: { chatInfo?.members.length }
                     </div>
                 </div>
@@ -52,12 +57,20 @@ export const ChatInfoModal = ({ chatId } : IChatInfoModalProps) => {
                         Редактировать
                         <MdEdit fontSize={15} />
                     </Button>
-                    <Button>
-                        Пригласить
-                        <FaUserPlus fontSize={15} />
-                    </Button>
                 </div>
             </div>
+            { 
+				chatInfo &&
+					<Modal
+						centered
+						destroyOnHidden
+						footer={ null }
+						open={ chatMembersModal }
+						onCancel={ handleChangeChatMembersModalVisibility }
+					>
+						<ChatMembersModal userRole='Владелец' />
+					</Modal>
+			}
         </div>
     );
 };

@@ -42,7 +42,6 @@ const Dialogs = () => {
 	const [isMobile, setIsMobile] = useState<boolean>(false);
 	const [userProfileModalInfo, setUserProfileModalInfo] = useState<{ open: boolean}>({ open: false });
 	const [isDialogListUpdatingAllowed, setIsDialogListUpdatingAllowed] = useState<boolean>(true);
-	console.log(userProfileModalInfo);
 	const user = useSelector((state: RootState) => state.user.user);
 	//const temporaryDialogInfo = useSelector((state: RootState) => state.temporaryDialogInfo.dialog);
 	const scrollRequestTokenRef = useRef(0);
