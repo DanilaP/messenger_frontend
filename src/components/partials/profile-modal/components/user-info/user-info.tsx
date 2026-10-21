@@ -108,7 +108,7 @@ const UserInfo = ({
 					/>
 				</Upload>
 				{ 
-					!location.pathname.includes(`/main/dialogs/${ dialogId }`) && user.id !== userInfo.id &&
+					user.id !== userInfo.id &&
 					<LuMessageCircleMore onClick={ handleNavigateToDialog } className="message-icon" fontSize={ 20 } />
 				}
 			</div>
