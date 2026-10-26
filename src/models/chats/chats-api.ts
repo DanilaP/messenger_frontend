@@ -1,4 +1,4 @@
-import type { IAcceptInvitationToChatResponse, IChangeChatAvatarResponse, IChangeChatInfoResponse, IChangeChatMessageResponse, ICreateChatResponse, IDeclineInvitationToChatResponse, IDeleteChatMemberResponse, IDeleteChatMessageResponse, IDeleteChatResponse, IGetBasicChatInfoResponse, IGetChatResponse, IGetChatsInvitationsResponse, IGetChatsListResponse, IReadChatMessagesResponse, IScrollToChatMessageResponse, ISendChatMessageResponse, ISendInvitationToChatResponse } from "./chats-interface";
+import type { IAcceptInvitationToChatResponse, IChangeChatAvatarResponse, IChangeChatInfoResponse, IChangeChatMessageResponse, ICreateChatResponse, IDeclineInvitationToChatResponse, IDeleteChatMemberResponse, IDeleteChatMessageResponse, IDeleteChatResponse, IGetBasicChatInfoResponse, IGetChatMembersResponse, IGetChatResponse, IGetChatsInvitationsResponse, IGetChatsListResponse, IReadChatMessagesResponse, IScrollToChatMessageResponse, ISendChatMessageResponse, ISendInvitationToChatResponse } from "./chats-interface";
 import $api from "../../configs/axios";
 
 interface IChatInfoForCreation {
@@ -88,5 +88,10 @@ export const getBasicChatInfo = async (chatId: number): Promise<IGetBasicChatInf
 
 export const getChatsInvitations = async (): Promise<IGetChatsInvitationsResponse> => {
 	const response = $api.get("/chats/invitations");
+	return response;
+};
+
+export const getChatMembers = async (chatId: number, mode: "prev" | "next", cursorId: number | null): Promise<IGetChatMembersResponse> => {
+	const response = $api.get(`/chats/members?chatId=${chatId}&mode=${mode}&cursorId=${cursorId}`);
 	return response;
 };

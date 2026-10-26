@@ -1,3 +1,5 @@
+import type { IChatMessageSenderWithRole } from '../../../../../models/chats/chats-interface';
+import { MemberCard } from './components/member-card/member-card';
 import './members-list.scss';
 
 export interface IMember {
@@ -8,14 +10,19 @@ export interface IMember {
 }
 
 interface IMembersListProps {
-    userRole: string
+    userRole: string,
+    members: IChatMessageSenderWithRole[]
 }
 
-export const MembersList = ({ userRole }: IMembersListProps) => {
+export const MembersList = ({ userRole, members }: IMembersListProps) => {
     
     return (
         <div className='members-list'>
-            { userRole }
+            {
+                members.map(member => {
+                    return <MemberCard key={ member.id } member={ member } />
+                })
+            }
         </div>
     );
 };

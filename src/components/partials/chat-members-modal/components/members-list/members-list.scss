@@ -1,0 +1,10 @@
+.members-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 80vh;
+    overflow-y: auto;
+    scrollbar-color: transparent transparent;
+    scrollbar-width: thin;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+}

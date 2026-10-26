@@ -166,7 +166,7 @@ export interface IChatInfo {
     name: string,
     description: string,
     dateOfCreation: string,
-    members: IChatMessageSender[]
+    membersCount: number
 }
 
 export interface IGetBasicChatInfoResponse {
@@ -189,5 +189,16 @@ export interface IGetChatsInvitationsResponse {
             },
             membersCount: number
         }
+    }
+}
+
+export interface IChatMessageSenderWithRole extends IChatMessageSender {
+  role: string;
+}
+
+export interface IGetChatMembersResponse {
+    data: {
+        message: string,
+        members: IChatMessageSenderWithRole[]
     }
 }
